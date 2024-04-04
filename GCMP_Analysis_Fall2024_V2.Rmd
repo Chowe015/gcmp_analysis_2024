@@ -9,12 +9,11 @@ output: html_document
 # First, Set working Directory load library and Import Data into Phyloseq
 ```{r warning=FALSE}
 # Command for setting your work directory
-setwd("C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_qiime_input")
+setwd("C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024")
 
 # Print your working directory
+#getwd() 
 
-getwd() 
-#
 ```
 
 ## Load required libraries. 
@@ -46,10 +45,10 @@ library(microbiomeMarker)
 ```{r}
 
 #Import from .qza file into a phyloseq object
-asv <- qza_to_phyloseq(features = "gcmp_qiime_input/filtered_merged_table_v2.qza")
+asv <- qza_to_phyloseq(features = "gcmp_qiime_input/carib_silva_merged_table.qza")
 
 #### Import Metadata read.table
-metadata <- read.table(file = "gcmp_qiime_input/gcmp_mapping30_2024.csv",header=T,comment.char="", row.names=1, sep=",")
+metadata <- read.table(file = "gcmp_qiime_input/carib_merged_mapping.csv",header=T,comment.char="", row.names=1, sep=",")
 
 ### Import Tree file from biom output tree.nwk
 tree2 <- read_tree("gcmp_qiime_input/tree.nwk")

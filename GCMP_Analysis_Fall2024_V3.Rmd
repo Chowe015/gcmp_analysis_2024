@@ -116,39 +116,13 @@ library(gridExtra)
 phylo_noKing <-subset_taxa(main_coral, kingdom != "d__Eukaryota")
 
 # Remove features that are identified as Chloroplast and Mitochondria or unclassified bacteria
-phylo_noNA <- subset_taxa(phylo_noKing,Phylum != "NA", Order!= "Chloroplast" & Family != "Mitochondria" & Order !="Unclassified bacteroidia")
+phylo_noNA <- subset_taxa(phylo_noKing,Phylum != "Unclassified", Order!= "Chloroplast" & Family != "Mitochondria" & Order !="Unclassified bacteroidia")
 
 # Remove any samples with less than 1 read
 phylo_coral = prune_samples(sample_sums(phylo_noNA) > 1, phylo_noNA)
 phylo_noNA
 phylo_coral
 
-
-
-# Compute prevalence of each feature, store as data.frame
-orb_varadero <-subset_samples(phylo_coral, ocean_area == "Caribbean" & reef_name == "Varadero" & host_species == "faveolata")
-
-prevdf = apply(X = otu_table(orb_varadero),
-               MARGIN = ifelse(taxa_are_rows(orb_varadero), yes = 1, no = 2),
-               FUN = function(x){sum(x > 0)})
-
-# Add taxonomy and total read counts to this data.frame
-prevdf = data.frame(Prevalence = prevdf,
-                    TotalAbundance = taxa_sums(orb_varadero),
-                    tax_table(orb_varadero))
-
-#Compute the total and average prevalences of the features in each phylum(Family)
-plyr::ddply(prevdf, "Species", function(df1){cbind(mean(df1$Prevalence),sum(df1$Prevalence))})
-
-write.table(prevdf, file = "Orbicella faveolata 16s Taxonomy Table Varadero Reef.txt", sep = ",",row.names = TRUE, col.names = TRUE)
-
-phylo_prev = 0.005* nsamples(orb_varadero)
-
-keepTaxa = rownames(prevdf)[(prevdf$Prevalence >= phylo_prev)]
-phylo_nlow_prev = prune_taxa(keepTaxa, orb_varadero)
-
-## Check Results
-#get_taxa_unique(phylo_nlow_prev, "Family") 
 ```
 
 ### Subset Caribbean Phyloseq Objects for Comparative Analysis 
@@ -321,7 +295,7 @@ sncm.LL <- function(m, sigma){
 	-sum(log(R))
 }
 	
-m.mle <- mle(sncm.LL, start=list(m=0.1, sigma=0.1), nobs=length(p))
+m.mle <- mle(sncm.LL, start=list(m=0.1, sigma=0.1), nobs=length(p), method="Nelder-Mead")
 
 ##Calculate Akaike's Information Criterion (AIC)
 aic.fit <- AIC(m.mle, k=2)
@@ -411,7 +385,8 @@ addf = function(freq, pred.upr, pred.lwr) {
 ```{r}
 ###coral communities
 set.seed(111)
-coral <- prune_taxa(taxa_sums(glom_col5) >0, glom_col5)
+coral <- 0
+coral <- prune_taxa(taxa_sums(glom_orb) > 0, glom_orb)
 coral
 otu_coral = as.data.frame(t(otu_table(coral)))
 
@@ -419,7 +394,7 @@ otu_coral = as.data.frame(t(otu_table(coral)))
 mod_w_coral = sncm.fit(otu_coral)
 mod1_w_coral = sncm.fit(otu_coral,stats = F)
 
-min(sample_sums(glom_col_orb))
+#min(sample_sums(glom_col_orb))
 
 mod1_w_coral$model = mapply(addf, mod1_w_coral$freq, mod1_w_coral$pred.upr, mod1_w_coral$pred.lwr)  
 length(which(mod1_w_coral$model == "above"))
@@ -430,15 +405,15 @@ mod1_w_coral$model <- factor(mod1_w_coral$model,
                              levels = c("above", "neutral", "below"))
 
 ## Assign Taxonomy to table of significant microbes
-coral_taxa = cbind(as(mod1_w_coral, "data.frame"), as(tax_table(glom_col5)[rownames(mod1_w_coral), ], "matrix"))
+coral_taxa = cbind(as(mod1_w_coral, "data.frame"), as(tax_table(glom_orb)[rownames(mod1_w_coral), ], "matrix"))
 #coral_taxa
-write.csv(coral_taxa,"Coloimbia E5 Coral Samples Neutral Taxonomy table.csv",row.names = TRUE)
+write.csv(coral_taxa,"Caribbean Orbicella Samples Neutral Taxonomy table.csv",row.names = TRUE)
 
 
 set.seed(111)
 ###seawater communities
 #seawater <- subset_samples(physeq2, SampleType == "seawater")
-seawater <- prune_taxa(taxa_sums(glom_col12) >0, glom_col12)
+seawater <- prune_taxa(taxa_sums(glom_env) > 0, glom_env)
 seawater
 
 otu_seawater = as.data.frame(t(otu_table(seawater)))
@@ -456,9 +431,9 @@ mod1_w_seawater$model <- factor(mod1_w_seawater$model,
                                 levels = c("above", "neutral", "below"))
 
 ## Assign Taxonomy to table of significant microbes
-env_taxa = cbind(as(mod1_w_seawater, "data.frame"), as(tax_table(glom_col12)[rownames(mod1_w_seawater), ], "matrix"))
+env_taxa = cbind(as(mod1_w_seawater, "data.frame"), as(tax_table(glom_env)[rownames(mod1_w_seawater), ], "matrix"))
 
-write.csv(env_taxa,"Colombia E12 Coral Samples Neutral Taxonomy table.csv",row.names = TRUE)
+write.csv(env_taxa,"Colombia environmental Samples Neutral Taxonomy table.csv",row.names = TRUE)
 
 
 ```
@@ -491,7 +466,7 @@ p_neuM_coral=ggplot(mod1_w_coral, aes(x=log10(p), y=freq, color = model))+
 
 lb1 <- mod_w_coral$Rsqr
 lb2 <- mod_w_coral$m
-lb3 <- expression(paste("Colombia E5 \n Coral Samples"))
+lb3 <- expression(paste("Caribbean Orbicella \n Coral Samples"))
 
 p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=6.5, label=lb1, 
                                         fontface="bold", color="black",
@@ -529,7 +504,7 @@ p_neuM_seawater=ggplot(mod1_w_seawater, aes(x=log10(p), y=freq, color = model))+
 
 ev1 <- mod_w_seawater$Rsqr
 ev2 <- mod_w_seawater$m
-ev3 <- expression(paste("Colombia E12 \n Coral Samples"))
+ev3 <- expression(paste("Colombia environmental \n Coral Samples"))
 
 p_neuM_seawater1 = p_neuM_seawater + annotate("text", x = -3.5, y=0.7, size=6.5, label=ev1, 
                                               fontface="bold", color="black",
@@ -596,32 +571,24 @@ plot(testp)
 
 # Calculate DISTANCE MATRICES
 ```{r}
-## Flavobacteriaceae & Cyclobacteriaceae seems to be the most frequent and abundant between Pamana east & West
-## Found Across Ofav samples in Colombia E5: Order: Halanaerobiales Family: Halanaerobiaceae
-## Lastly, I looked at Endozoicomonadaceae
-## Colombia Neutral Model shows Actinomarinaceae high relative abundance but low frequency
+## Distance Matrices
+all_coral <- subset_samples(phylo_coral, sample_type_EMP == "coral")
 
-carib <-subset_samples(phylo_coral, ocean_area == "Caribbean" & coral_group == "yes")
-flavo <- subset_taxa(colombia, Family=="Actinomarinaceae")
-flavo_prune = prune_samples(sample_sums(flavo)>1, flavo)
-
-#glom_flavo <-tax_glom(flavo, taxrank = 'Genus', NArm = TRUE)
-
-## Complex Corals 
-bray_flavo = phyloseq::distance(flavo_prune, method="bray")
-uni_flavo = phyloseq::distance(flavo_prune, method="unifrac")
-wuni_flavo= phyloseq::distance(flavo_prune, method="wUnifrac")
+## Corals 
+bray_coral = phyloseq::distance(all_coral, method="bray")
+uni_coral = phyloseq::distance(all_coral, method="unifrac")
+wuni_coral = phyloseq::distance(all_coral, method="wUnifrac")
 
 # Create data frame for downstream analysis
-flavo_dd <- data.frame(sample_data(flavo))
+coral_df <- data.frame(sample_data(all_coral))
 
 ## Robust Corals 
-bray_robust = phyloseq::distance(robust.rarefied, method="bray")
-uni_robust = phyloseq::distance(robust.rarefied, method="unifrac")
-wuni_robust = phyloseq::distance(robust.rarefied, method="wUnifrac")
+bray_col = phyloseq::distance(colombia.rarefied, method="bray")
+uni_col = phyloseq::distance(colombia.rarefied, method="unifrac")
+wuni_col = phyloseq::distance(colombia.rarefied, method="wUnifrac")
 
 # Create data frame for downstream analysis
-rob_df <- data.frame(sample_data(robust.rarefied))
+col_df <- data.frame(sample_data(colombia.rarefied))
 
 
 ```
@@ -629,11 +596,11 @@ rob_df <- data.frame(sample_data(robust.rarefied))
 # Ordination from Distance Matrix and PCoA Plots 
 ```{r}
 ##Calculate the PCoA on Complex Corals
-rt.pcoa = ordinate(flavo, method="PCoA", distance=uni_flavo)
+rt.pcoa = ordinate(colombia.rarefied, method="PCoA", distance=wuni_col)
 # Set variables to zero for subsequent changes
 #Ofra
 pcoa<-0
-pcoa <- plot_ordination(flavo, rt.pcoa,  shape = "BiologicalMatter",color="family")+  geom_point(size=3) + theme_bw() + theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse(level = 0.95,type = "norm",aes(group=family))+ theme(legend.text=element_text(size=12)) + theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold"))) # title =expression(paste(italic(" Orbicella spp")," Bray-Curtis Distance PCoA across Depth")) scale_color_manual(values=c("#E31A1C","#1F78B4"))+
+pcoa <- plot_ordination(colombia.rarefied, rt.pcoa,  shape = "run_lane",color="family")+  geom_point(size=3) + theme_bw() + theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse(level = 0.95,type = "norm",aes(group=run_lane))+ theme(legend.text=element_text(size=12)) + theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold"))) # title =expression(paste(italic(" Orbicella spp")," Bray-Curtis Distance PCoA across Depth")) scale_color_manual(values=c("#E31A1C","#1F78B4"))+
                       
 
 ```
