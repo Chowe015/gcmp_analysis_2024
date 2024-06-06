@@ -112,34 +112,28 @@ TREE = read_tree(tree2)
 # Create Working phyloseq object
 main_coral <- phyloseq(OTU,tax1,SAMPLE,TREE)
 
-library(gridExtra)
-# Remove features that have only been classified at the kingdom level
-phylo_noKing <-subset_taxa(main_coral, kingdom != "d__Eukaryota" & Phylum != "Unclassified d__Bacteria" & Order != "Unclassified Proteobacteria" & Family != c("Mitochondria","Unknown_Family"))
+# visualize tax table
+table(tax_table(main_coral)[,"Kingdom"])
 
-# Remove features that are identified as Chloroplast and Mitochondria or unclassified bacteria
-phylo_noNA <- subset_taxa(phylo_noKing, kingdom != "Unassigned" & Phylum != "Unclassified Unassigned" & Order!= "Chloroplast" & Order !="Unclassified bacteroidia" & Class != "Unclassified Proteobacteria" & Family != "Unclassified Alphaproteobacteria")
+# remove unknown bacteria or unassigned
+phylo_noking <-main_coral %>%
+  phyloseq::subset_taxa(!Kingdom %in% c("Unassigned","Unclassified d__Bacteria","d__Eukaryota")) %>%
+  phyloseq::subset_taxa(!Phylum %in% c("Unclassified Unassigned","Unclassified d__Archaea","Unclassified d__Bacteria","Unclassified d__Eukaryota"))
 
 # Remove any samples with less than 1 read
-phylo_coral = prune_samples(sample_sums(phylo_noNA) > 1, phylo_noNA)
-main_coral
-phylo_noKing
-phylo_noNA
-phylo_coral # 729 samples with 59796 unique asv
+phylo_coral = prune_samples(sample_sums(phylo_noking)>1, phylo_noking)
+phylo_coral
 
 ```
 
 ### Subset Caribbean Phyloseq Objects for Comparative Analysis 
 ```{r}
-#clear entire dataset
-#rm(list=ls())
-
 ## Caribbean dataset rarefication to 2000 per sample for downstream analysis Retained 1,222,000 (22.55%) features in 611 (82.12%) samples at the specifed sampling depth.
 
 #seed set to 111 to keep result reproductive
 ############# Subsample Colombian region including E5 & E12 Cartagena Coast ################
 #### Subsample Colombia Expedition E5
-
-coral <-subset_samples(phylo_coral, sample_type_EMP == "coral" & outgroup == "n" & within_group == "yes") # all corals without out groups, environmental samples & subset expeditions (i.e, singapore).
+coral <-subset_samples(phylo_coral, sample_type_EMP == "coral" & outgroup == "n") # all corals without out groups, environmental samples & subset expeditions (i.e, singapore).
 coral
 
 # rarefy to even depth
@@ -147,7 +141,7 @@ coral.rarefied = rarefy_even_depth(coral, rngseed=111, sample.size=2000, replace
 coral.rarefied
 
 
-colombia5 <-subset_samples(phylo_coral, political_area == "Colombia" & expedition_number == "E5" & sample_type_EMP == "coral" & outgroup == "n")
+colombia5 <-subset_samples(coral, political_area == "Colombia" & expedition_number == "E5" & sample_type_EMP == "coral" & outgroup == "n")
 colombia5
 
 # rarefy to even depth
@@ -155,7 +149,7 @@ colombia.rarefied5 = rarefy_even_depth(colombia5, rngseed=111, sample.size=2000,
 colombia.rarefied5
 
 #### Subsample Colombia Expedition E12 This expedition is mainly comprised of sequences from 2022
-colombia12 <-subset_samples(phylo_coral, political_area == "Colombia" & expedition_number == "E12" & sample_type_EMP == "coral"& outgroup == "n")
+colombia12 <-subset_samples(coral, political_area == "Colombia" & expedition_number == "E12" & sample_type_EMP == "coral"& outgroup == "n")
 colombia12
 
 # rarefy to even depth
@@ -163,7 +157,7 @@ colombia.rarefied12 = rarefy_even_depth(colombia12, rngseed=111, sample.size=200
 colombia.rarefied12
 
 #### Subsample Corals from Colombia includes E5 & E12
-colombia <-subset_samples(phylo_coral, political_area == "Colombia" & sample_type_EMP == "coral" & outgroup == "n")
+colombia <-subset_samples(coral, political_area == "Colombia" & sample_type_EMP == "coral" & outgroup == "n")
 colombia
 
 # rarefy to even depth
@@ -171,32 +165,32 @@ colombia.rarefied = rarefy_even_depth(colombia, rngseed=111, sample.size=2000, r
 colombia.rarefied
 
 #### Subsample Orbicella from Colombia E5 & E12
-col_orb <-subset_samples(phylo_coral, political_area == "Colombia" & host_genus_id == "Orbicella")# political_area == "Colombia" & expedition_number == "E5")
-col_orb
+#col_orb <-subset_samples(coral, political_area == "Colombia" & host_genus_id == "Orbicella")# political_area == "Colombia" & expedition_number == "E5")
+#col_orb
 
 # rarefy to even depth
-col.orb.rarefied = rarefy_even_depth(col_orb, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-col.orb.rarefied
+#col.orb.rarefied = rarefy_even_depth(col_orb, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+#col.orb.rarefied
 
 #### Subsample Orbicella faveolata E5 & E12
-faveolata <-subset_samples(phylo_coral, political_area == "Colombia" & host_species == "faveolata")
-faveolata
+#faveolata <-subset_samples(coral, political_area == "Colombia" & host_species == "faveolata")
+#faveolata
 
 # rarefy to even depth faveolata
-faveolata.rarefied = rarefy_even_depth(faveolata, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-faveolata.rarefied
+#faveolata.rarefied = rarefy_even_depth(faveolata, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+#faveolata.rarefied
 
 
 ############# Subsample Panama political_area including E2 & E11 East & West################
-panama <-subset_samples(phylo_coral, political_area == "Panama" & sample_type_EMP == "coral" & outgroup == "n")
-panama
+#panama <-subset_samples(coral, political_area == "Panama" & sample_type_EMP == "coral" & outgroup == "n")
+#panama
 
 # rarefy to even depth
-panama.rarefied = rarefy_even_depth(panama, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-panama.rarefied
+#panama.rarefied = rarefy_even_depth(panama, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+#panama.rarefied
 
 #### Subsample Panama west E11
-panama.w <-subset_samples(phylo_coral, political_area == "Panama" & expedition_number == "E11" & sample_type_EMP == "coral" & outgroup == "n")
+panama.w <-subset_samples(coral, political_area == "Panama" & expedition_number == "E11" & sample_type_EMP == "coral" & outgroup == "n")
 panama.w
 
 # rarefy to even depth
@@ -204,7 +198,7 @@ panama.w.rarefied = rarefy_even_depth(panama.w, rngseed=111, sample.size=2000, r
 panama.w.rarefied
 
 #### Subsample Panama east E2
-panama.e <-subset_samples(phylo_coral, political_area == "Panama" & expedition_number == "E2" & sample_type_EMP == "coral" & outgroup == "n")
+panama.e <-subset_samples(coral, political_area == "Panama" & expedition_number == "E2" & sample_type_EMP == "coral" & outgroup == "n")
 panama.e
 
 # rarefy to even depth
@@ -212,45 +206,45 @@ panama.e.rarefied = rarefy_even_depth(panama.e, rngseed=111, sample.size=2000, r
 panama.e.rarefied
 
 #### Subsample Panama Orbicella Corals
-pan_orb <-subset_samples(phylo_coral, political_area == "Panama" & host_genus_id == "Orbicella")
-pan_orb
+#pan_orb <-subset_samples(coral, political_area == "Panama" & host_genus_id == "Orbicella")
+#pan_orb
 
 # rarefy to even depth
-pan.orb.rarefied = rarefy_even_depth(pan_orb, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-pan.orb.rarefied
+#pan.orb.rarefied = rarefy_even_depth(pan_orb, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+#pan.orb.rarefied
 
 #### Subsample Panama Orbicella faveolata Corals
-pan_ofav <-subset_samples(phylo_coral, political_area == "Panama" & host_species == "faveolata")
-pan_ofav
+#pan_ofav <-subset_samples(coral, political_area == "Panama" & host_species == "faveolata")
+#pan_ofav
 
 # rarefy to even depth
-pan.ofav.rarefied = rarefy_even_depth(pan_ofav, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-pan.ofav.rarefied
+#pan.ofav.rarefied = rarefy_even_depth(pan_ofav, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+#pan.ofav.rarefied
 
 
 ############# Subsample Orbicella and Environmental Samples################
 # subset Orbicella genus across colombia and panama (all orbicella samples) expedition 5 is well mixed between 2022 and 2023 sequencing. E12 is mainly from 2022 and all orbicella corals from E12 are from 2022. 
-orbicella <- subset_samples(phylo_coral, host_genus_id == "Orbicella" & expedition_number == "E12") 
+#orbicella <- subset_samples(coral, host_genus_id == "Orbicella" & expedition_number == "E12") 
 
 # rarefy to even depth
-orb.rarefied = rarefy_even_depth(orbicella, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-orb.rarefied
+#orb.rarefied = rarefy_even_depth(orbicella, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+#orb.rarefied
 
 ## Overall Caribbean
-carib <-subset_samples(phylo_coral, ocean_area == "Caribbean" & sample_type_EMP == "coral" & outgroup == "n")
-carib
+#carib <-subset_samples(coral, ocean_area == "Caribbean" & sample_type_EMP == "coral" & outgroup == "n")
+#carib
 
 # rarefy to even depth
-carib.rarefied = rarefy_even_depth(carib, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-carib.rarefied
+#carib.rarefied = rarefy_even_depth(carib, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+#carib.rarefied
 
 #### Environmental Samples 
-env_sample <- subset_samples(phylo_coral, env_sample == "yes" & political_area == "Colombia")
-env_sample
+#env_sample <- subset_samples(coral, env_sample == "yes" & political_area == "Colombia")
+#env_sample
 
 # keep result reproductive
-env.rarefied = rarefy_even_depth(env_sample, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-env.rarefied
+#env.rarefied = rarefy_even_depth(env_sample, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+#env.rarefied
 
 #### Water 
 water <- subset_samples(phylo_coral, sample_type == "Reef Water" & political_area == "Colombia")
@@ -270,7 +264,7 @@ sed.rarefied
 
 ## Hawaii 
 #### Subsample Panama east E2
-hawaii <-subset_samples(phylo_coral, expedition_number == "E15" & sample_type_EMP == "coral" & outgroup == "n")
+hawaii <-subset_samples(coral, expedition_number == "E15" & sample_type_EMP == "coral" & outgroup == "n")
 hawaii
 
 # rarefy to even depth
@@ -279,7 +273,7 @@ hawaii.rarefied
 
 ## Compartment
 #### Subsample Mucus from Colombia
-mucus <-subset_samples(phylo_coral, political_area == "Colombia" & BiologicalMatter == "Coral Mucus")
+mucus <-subset_samples(coral, political_area == "Colombia" & BiologicalMatter == "Coral Mucus")
 mucus
 
 # rarefy to even depth
@@ -287,21 +281,22 @@ mucus.rarefied = rarefy_even_depth(mucus, rngseed=111, sample.size=2000, replace
 mucus.rarefied
 
 #### Subsample Panama east E12 E5
-tissue <-subset_samples(phylo_coral, political_area == "Colombia" & BiologicalMatter == "Coral Tissue")
+tissue <-subset_samples(coral, political_area == "Colombia" & BiologicalMatter == "Coral Tissue")
 tissue
 # rarefy to even depth
 tissue.rarefied = rarefy_even_depth(tissue, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
 tissue.rarefied
 
 #### Subsample Panama east E12 E5
-skeleton <-subset_samples(phylo_coral, political_area == "Colombia" & BiologicalMatter == "Coral Skeleton")
+skeleton <-subset_samples(coral, political_area == "Colombia" & BiologicalMatter == "Coral Skeleton")
 skeleton
 # rarefy to even depth
 skeleton.rarefied = rarefy_even_depth(skeleton, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
 skeleton.rarefied
 
 ## Aglomerate Taxa to Family Level
-glom_col <- tax_glom(colombia.rarefied, taxrank = 'Family', NArm = TRUE)##  150 samples
+glom_coral <- tax_glom(coral.rarefied, taxrank = 'Family', NArm = TRUE) ## 386 Samples 
+#glom_col <- tax_glom(colombia.rarefied, taxrank = 'Family', NArm = TRUE)##  150 samples
 glom_col5 <- tax_glom(colombia.rarefied5, taxrank = 'Family', NArm = TRUE)## 65 samples
 glom_col12 <- tax_glom(colombia.rarefied12, taxrank = 'Family', NArm = TRUE)## 85 samples
 #glom_col_orb <- tax_glom(col.orb.rarefied, taxrank = 'Family', NArm = TRUE)## 33 samples
@@ -310,22 +305,20 @@ glom_col12 <- tax_glom(colombia.rarefied12, taxrank = 'Family', NArm = TRUE)## 8
 #glom_pan_ofav <- tax_glom(pan.ofav.rarefied, taxrank = 'Family', NArm = TRUE) # 9 Samples
 #glom_carib <-tax_glom(carib.rarefied, taxrank = 'Family', NArm = TRUE) ## 253 from  E2 Panama and Colombia E5 & E12
 
-glom_pan <- tax_glom(panama.rarefied, taxrank = 'Family', NArm = TRUE)##  185 samples from Panama E2 and E11 
-#glom_panw <- tax_glom(panama.w.rarefied, taxrank = 'Family', NArm = TRUE)## 82 samples
+#glom_pan <- tax_glom(panama.rarefied, taxrank = 'Family', NArm = TRUE)##  185 samples from Panama E2 and E11 
+glom_panw <- tax_glom(panama.w.rarefied, taxrank = 'Family', NArm = TRUE)## 82 samples
 glom_pane <- tax_glom(panama.e.rarefied, taxrank = 'Family', NArm = TRUE)##  102 samples
-glom_pan_orb <- tax_glom(pan.orb.rarefied, taxrank = 'Family', NArm = TRUE)## 35 samples
+#glom_pan_orb <- tax_glom(pan.orb.rarefied, taxrank = 'Family', NArm = TRUE)## 35 samples
 #glom_pan_ofav <- tax_glom(pan.ofav.rarefied, taxrank = 'Family',  NArm = TRUE)## 68 samples from the Caribbean
-
-
-glom_env <- tax_glom(env.rarefied, taxrank = 'Family', NArm = TRUE)## 52 samples from Colombia, Panama only has one environmental sample
+#glom_env <- tax_glom(env.rarefied, taxrank = 'Family', NArm = TRUE)## 52 samples from Colombia, Panama only has one environmental sample
 glom_wat <- tax_glom(water.rarefied, taxrank = 'Family', NArm = TRUE)## 34 samples from Colombia, Panama only has one environmental sample
 glom_sed <- tax_glom(sed.rarefied, taxrank = 'Family', NArm = TRUE)## 17 samples from Colombia, Panama only has one environmental 
 glom_haw <- tax_glom(hawaii.rarefied, taxrank = 'Family', NArm = TRUE) ## 51 Samples 
-#glom_coral <- tax_glom(coral.rarefied, taxrank = 'Family', NArm = TRUE) ## 386 Samples 
+glom_mucus <- tax_glom(mucus.rarefied, taxrank = 'Family', NArm = TRUE)
+glom_tissue <- tax_glom(tissue.rarefied, taxrank = 'Family', NArm = TRUE)
+glom_skeleton <- tax_glom(skeleton.rarefied, taxrank = 'Family', NArm = TRUE)
 
-#glom_mucus <- tax_glom(mucus.rarefied, taxrank = 'Family', NArm = TRUE)
-#glom_tissue <- tax_glom(tissue.rarefied, taxrank = 'Family', NArm = TRUE)
-#glom_skeleton <- tax_glom(skeleton.rarefied, taxrank = 'Family', NArm = TRUE)
+
 ```
 
 #Bruns et al. 2016 Neutral Model functions
@@ -376,8 +369,8 @@ m.ci <- confint(m.fit, 'm', level=0.95)
 	
 ##Fit neutral model parameter m (or Nm) using Maximum likelihood estimation (MLE)
 sncm.LL <- function(m, sigma){
-	R = freq - pbeta(d, N*m*p, N*m*(1-p), lower.tail=FALSE)
-	R = dnorm(R, 0, sigma)
+	R = freq - pbeta(d, N*m*p, N*m*(1-p), lower.tail=FALSE) #pbeta Density, distribution function, quantile function and random generation for the Beta distribution with parameters shape1 and shape2 (and optional non-centrality parameter ncp).
+	R = dnorm(R, 0, sigma) # dnorm Density, distribution function, quantile function and random generation for the normal distribution with mean equal to mean and standard deviation equal to sd.
 	-sum(log(R))
 }
 	
@@ -690,83 +683,41 @@ wuni_coral = phyloseq::distance(coral.rarefied, method="wUnifrac")
 # Create data frame for downstream analysis
 coral_df <- data.frame(sample_data(coral.rarefied))
 
-
-## Caribbean Corals 
-bray_carib = phyloseq::distance(carib.rarefied, method="bray")
-uni_carib = phyloseq::distance(carib.rarefied, method="unifrac")
-wuni_carib = phyloseq::distance(carib.rarefied, method="wUnifrac")
-
-# Create data frame for downstream analysis
-carib_df <- data.frame(sample_data(carib.rarefied))
-
-## Panama Corals 
-bray_pan = phyloseq::distance(panama.rarefied, method="bray")
-uni_pan = phyloseq::distance(panama.rarefied, method="unifrac")
-wuni_pan = phyloseq::distance(panama.rarefied, method="wUnifrac")
-
-# Create data frame for downstream analysis
-pan_df <- data.frame(sample_data(panama.rarefied))
-
-## Flavobacteriaceae & Cyclobacteriaceae seems to be the most frequent and abundant between Pamana east & West
-## Found Across Ofav samples in Colombia E5: Order: Halanaerobiales Family: Halanaerobiaceae
-## Halobacteroidaceae
-## Colombia Neutral Model shows Actinomarinaceae high relative abundance but low frequency
-#Flavobacteriaceae, Cyanobiaceae, Rhodobacteraceae, Endozoicomonadaceae, Amoebophilaceae
-#Nitrosopumilaceae, Cyclobacteriaceae, Sphingomonadaceae, Alteromonadaceae
-## This was the most abundance across the Caribbean: Fokiniaceae
-#glom_flavo <-tax_glom(flavo, taxrank = 'Order', NArm = TRUE)
-
-flavo <- subset_taxa(coral.rarefied, Family== "Rhodobacteraceae", NArm = TRUE)
-flavo_prune = prune_samples(sample_sums(flavo)>1, flavo)
-
-flavo
-flavo_prune
-
-## Complex Corals 
-bray_flavo = phyloseq::distance(flavo_prune, method="bray")
-uni_flavo = phyloseq::distance(flavo_prune, method="unifrac")
-wuni_flavo= phyloseq::distance(flavo_prune, method="wUnifrac")
-
-# Create data frame for downstream analysis
-flavo_df <- data.frame(sample_data(flavo_prune))
-
-## Subset taxa of Cyanobiaceae
-cyclo <- subset_taxa(coral.rarefied, Family=="Cyanobiaceae", NArm = TRUE)
-cyclo_prune = prune_samples(sample_sums(cyclo)>1, cyclo)
-
-cyclo
-cyclo_prune
-
-## Cyanobiaceae  
-bray_cyclo = phyloseq::distance(cyclo_prune, method="bray")
-uni_cyclo = phyloseq::distance(cyclo_prune, method="unifrac")
-wuni_cyclo = phyloseq::distance(cyclo_prune, method="wUnifrac")
-
-# Create data frame for downstream analysis
-cyclo_df <- data.frame(sample_data(cyclo_prune))
-
-## Subset taxa of Endozoicomonadaceae
-endo <- subset_taxa(coral.rarefied, Family=="Endozoicomonadaceae")
-endo_prune = prune_samples(sample_sums(endo)>1, endo)
-
-## Endozoicomonadaceae  
-bray_endo = phyloseq::distance(endo_prune, method="bray")
-uni_endo = phyloseq::distance(endo_prune, method="unifrac")
-wuni_endo = phyloseq::distance(endo_prune, method="wUnifrac")
-
-# Create data frame for downstream analysis
-endo_df <- data.frame(sample_data(cyclo_prune))
 ```
 
 # Ordination from Distance Matrix and PCoA Plots 
 ```{r}
 ##Calculate the PCoA on Complex Corals
-rt.pcoa = ordinate(flavo_prune, method="PCoA", distance=uni_flavo)
+rt.pcoa = ordinate(coral.rarefied, method="PCoA", distance=uni_coral)
 # Set variables to zero for subsequent changes
 # expedition_number
 pcoa<-0
-pcoa <- plot_ordination(flavo_prune, rt.pcoa,  shape = "sample_type",color="run_prefix")+  geom_point(size=3) + theme_bw() + theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse(level = 0.95,type = "norm",aes(group=sequence_run))+ theme(legend.text=element_text(size=12)) + theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold"))) # title =expression(paste(italic(" Orbicella spp")," Bray-Curtis Distance PCoA across Depth")) scale_color_manual(values=c("#E31A1C","#1F78B4"))+
+pcoa <- plot_ordination(coral.rarefied, rt.pcoa,  shape = "expedition_number",color="sample_type")+  geom_point(size=3) + theme_bw() + theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse(level = 0.95,type = "norm",aes(group=sample_type))+ theme(legend.text=element_text(size=12)) + theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold")))
                       
+
+```
+
+## 1. PERMANOVAs Analysis
+```{r}
+
+#env material include mucus, tissue and skeleton, and outgroups without eDNA
+distance_methods <-c("bray_coral","uni_coral","wuni_coral")
+set.seed(129)
+
+# This is what is called a for loop.        
+for (i in distance_methods){ 
+  form <- as.formula(paste(i,"expedition_number+family+sample_type+Huang_Roy_tree_name+site_name", sep="~"))
+  print(form)
+ adonis2(form, data=coral_df)-> result
+ print(result)
+}
+ 
+
+## Post-hoc comparison between Coral Compartments and Location
+
+bray_carib_pairwise <-pairwise.perm.manova(bray_coral, coral_df$sample_type,nperm=1000,p.method = "BH") 
+uni_carib_pairwise <-pairwise.perm.manova(uni_coral,coral_df$sample_type,nperm=1000,p.method = "BH")
+wuni_carib_pairwise <-pairwise.perm.manova(wuni_coral,coral_df$sample_type,nperm=1000,p.method = "BH")
 
 ```
 
@@ -782,29 +733,6 @@ complex_diversity_compartment <- plot_richness(complex, x="family", color = "Gen
  
 ```
 
-## 1. PERMANOVAs Analysis
-```{r}
-
-#env material include mucus, tissue and skeleton, and outgroups without eDNA
-distance_methods <-c("bray_flavo","uni_flavo","wuni_flavo")
-set.seed(129)
-
-# This is what is called a for loop.        
-for (i in distance_methods){ 
-  form <- as.formula(paste(i,"expedition_number+family+sample_type", sep="~"))
-  print(form)
- adonis2(form, data=flavo_df)-> result
- print(result)
-}
- 
-
-## Post-hoc comparison between Coral Compartments and Location
-
-bray_carib_pairwise <-pairwise.perm.manova(bray_carib, carib_df$expedition_number,nperm=1000,p.method = "BH") 
-uni_carib_pairwise <-pairwise.perm.manova(uni_carib,carib_df$expedition_number,nperm=1000,p.method = "BH")
-wuni_carib_pairwise <-pairwise.perm.manova(wuni_carib,carib_df$expedition_number,nperm=1000,p.method = "BH")
-
-```
 
 # Hclutering
 ```{r}
