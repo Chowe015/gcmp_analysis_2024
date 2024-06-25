@@ -498,8 +498,13 @@ length(which(mod1_w_coral$model == "neutral"))
 mod1_w_coral$model <- factor(mod1_w_coral$model, 
                              levels = c("above", "neutral", "below"))
 
+mod1_w_coral %>% mutate(ci.mean = (pred.upr-pred.lwr),
+                        SE = (ci.mean/(2*1.96)),
+                        zstat = (freq/SE),
+                        padj = (exp(-0.717*zstat-0.416*zstat^2))*length(mod1_w_coral$model)) -> coral_padj
+
 ## Assign Taxonomy to table of significant microbes
-coral_taxa = cbind(as(mod1_w_coral, "data.frame"), as(tax_table(glom_coral)[rownames(mod1_w_coral), ], "matrix"))
+coral_taxa = cbind(as(coral_padj, "data.frame"), as(tax_table(glom_coral)[rownames(coral_padj), ], "matrix"))
 #coral_taxa
 write.csv(coral_taxa,"Corals from E2 E5 E11 E12 E15 Neutral Taxonomy table.csv",row.names = TRUE)
 
@@ -523,9 +528,13 @@ length(which(mod1_w_seawater$model == "neutral"))
 
 mod1_w_seawater$model <- factor(mod1_w_seawater$model, 
                                 levels = c("above", "neutral", "below"))
+mod1_w_seawater %>% mutate(ci.mean = (pred.upr-pred.lwr),
+                        SE = (ci.mean/(2*1.96)),
+                        zstat = (freq/SE),
+                        padj = (exp(-0.717*zstat-0.416*zstat^2))*length(mod1_w_coral$model)) -> envs_padj
 
 ## Assign Taxonomy to table of significant microbes
-env_taxa = cbind(as(mod1_w_seawater, "data.frame"), as(tax_table(glom_wat)[rownames(mod1_w_seawater), ], "matrix"))
+env_taxa = cbind(as(envs_padj, "data.frame"), as(tax_table(glom_wat)[rownames(envs_padj), ], "matrix"))
 
 write.csv(env_taxa,"Colombia Water Samples Neutral Taxonomy table.csv",row.names = TRUE)
 
