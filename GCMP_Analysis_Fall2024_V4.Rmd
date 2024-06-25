@@ -58,6 +58,7 @@ tree2 <- read_tree("tree.nwk")
 taxonomy <- read.table(file = "taxonomy.tsv", sep = "\t", header = T ,row.names = 1)
 
 # clean the taxonomy
+
 ##code referenced from Yan Hui: email me@yanh.org github: yanhui09
 tax <- taxonomy %>%
   select(Taxon) %>% 
@@ -118,11 +119,37 @@ table(tax_table(main_coral)[,"Kingdom"])
 # remove unknown bacteria or unassigned
 phylo_noking <-main_coral %>%
   phyloseq::subset_taxa(!Kingdom %in% c("Unassigned","Unclassified d__Bacteria","d__Eukaryota")) %>%
-  phyloseq::subset_taxa(!Phylum %in% c("Unclassified Unassigned","Unclassified d__Archaea","Unclassified d__Bacteria","Unclassified d__Eukaryota"))
+  phyloseq::subset_taxa(!Phylum %in% c("Unclassified Unassigned","Unclassified d__Archaea","Unclassified d__Bacteria","Unclassified d__Eukaryota")) %>%
+  phyloseq::subset_taxa(!Family %in% c("Mitochondria","Chloroplast"))
 
 # Remove any samples with less than 1 read
 phylo_coral = prune_samples(sample_sums(phylo_noking)>1, phylo_noking)
 phylo_coral
+
+# Subset only corals from database
+coral <-subset_samples(phylo_coral, sample_type_EMP == "coral" & outgroup == "n" & within_group == "yes") # all corals without out groups, environmental samples & subset expeditions (i.e, singapore).
+coral
+## Check: 
+table(tax_table(coral)[,"Family"])
+
+coral.rarefied = rarefy_even_depth(coral, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+coral.rarefied
+##Agglomerate taxa to family 
+glom_coral <- tax_glom(coral.rarefied, taxrank = 'Family', NArm = TRUE) ## 444 Samples 
+coral
+coral.rarefied
+glom_coral
+
+phyloseq::otu_table(coral.rarefied)%>%
+        as.data.frame() %>%
+        rownames_to_column("id") %>%
+        left_join(phyloseq::tax_table(coral.rarefied) %>%
+        as.data.frame() %>%
+        rownames_to_column("id")) -> coral_biom
+        
+
+write.csv(coral_biom, file ="GCMP24_rarefied_coral.csv")
+print(paste("Generating Rarefied Coral dataset:", coral.rarefied))
 
 ```
 
@@ -130,23 +157,12 @@ phylo_coral
 ```{r}
 ## Caribbean dataset rarefication to 2000 per sample for downstream analysis Retained 1,222,000 (22.55%) features in 611 (82.12%) samples at the specifed sampling depth.
 
-#seed set to 111 to keep result reproductive
-############# Subsample Colombian region including E5 & E12 Cartagena Coast ################
-#### Subsample Colombia Expedition E5
-coral <-subset_samples(phylo_coral, sample_type_EMP == "coral" & outgroup == "n" & within_group == "yes") # all corals without out groups, environmental samples & subset expeditions (i.e, singapore).
-coral
+#colombia5 <-subset_samples(coral, political_area == "Colombia" & expedition_number == "E5" & sample_type_EMP == "coral" & outgroup == "n")
+#colombia5
 
 # rarefy to even depth
-coral.rarefied = rarefy_even_depth(coral, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-coral.rarefied
-
-
-colombia5 <-subset_samples(coral, political_area == "Colombia" & expedition_number == "E5" & sample_type_EMP == "coral" & outgroup == "n")
-colombia5
-
-# rarefy to even depth
-colombia.rarefied5 = rarefy_even_depth(colombia5, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
-colombia.rarefied5
+#colombia.rarefied5 = rarefy_even_depth(colombia5, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+#colombia.rarefied5
 
 #### Subsample Colombia Expedition E12 This expedition is mainly comprised of sequences from 2022
 colombia12 <-subset_samples(coral, political_area == "Colombia" & expedition_number == "E12" & sample_type_EMP == "coral"& outgroup == "n")
@@ -273,7 +289,7 @@ hawaii.rarefied
 
 ## Compartment
 #### Subsample Mucus from Colombia
-mucus <-subset_samples(coral, political_area == "Colombia" & BiologicalMatter == "Coral Mucus")
+mucus <-subset_samples(coral,BiologicalMatter == "Coral Mucus")
 mucus
 
 # rarefy to even depth
@@ -281,23 +297,23 @@ mucus.rarefied = rarefy_even_depth(mucus, rngseed=111, sample.size=2000, replace
 mucus.rarefied
 
 #### Subsample Panama east E12 E5
-tissue <-subset_samples(coral, political_area == "Colombia" & BiologicalMatter == "Coral Tissue")
+tissue <-subset_samples(coral,BiologicalMatter == "Coral Tissue")
 tissue
 # rarefy to even depth
 tissue.rarefied = rarefy_even_depth(tissue, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
 tissue.rarefied
 
 #### Subsample Panama east E12 E5
-skeleton <-subset_samples(coral, political_area == "Colombia" & BiologicalMatter == "Coral Skeleton")
+skeleton <-subset_samples(coral, BiologicalMatter == "Coral Skeleton")
 skeleton
 # rarefy to even depth
 skeleton.rarefied = rarefy_even_depth(skeleton, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
 skeleton.rarefied
 
 ## Aglomerate Taxa to Family Level
-glom_coral <- tax_glom(coral.rarefied, taxrank = 'Family', NArm = TRUE) ## 448 Samples 
+glom_coral <- tax_glom(coral.rarefied, taxrank = 'Family', NArm = TRUE) ## 444 Samples 
 #glom_col <- tax_glom(colombia.rarefied, taxrank = 'Family', NArm = TRUE)##  150 samples
-glom_col5 <- tax_glom(colombia.rarefied5, taxrank = 'Family', NArm = TRUE)## 65 samples
+#glom_col5 <- tax_glom(colombia.rarefied5, taxrank = 'Family', NArm = TRUE)## 65 samples
 glom_col12 <- tax_glom(colombia.rarefied12, taxrank = 'Family', NArm = TRUE)## 85 samples
 #glom_col_orb <- tax_glom(col.orb.rarefied, taxrank = 'Family', NArm = TRUE)## 33 samples
 #glom_col12_orb <- tax_glom(orb.rarefied, taxrank = 'Family', NArm = TRUE)## 18 Samples
@@ -462,7 +478,6 @@ addf = function(freq, pred.upr, pred.lwr) {
 ## Neutral Model test
 ```{r}
 ###coral communities
-set.seed(111)
 coral <- 0
 coral <- prune_taxa(taxa_sums(glom_coral) > 0, glom_coral)
 coral
@@ -510,9 +525,9 @@ mod1_w_seawater$model <- factor(mod1_w_seawater$model,
                                 levels = c("above", "neutral", "below"))
 
 ## Assign Taxonomy to table of significant microbes
-#env_taxa = cbind(as(mod1_w_seawater, "data.frame"), as(tax_table(glom_cglom_watol5)[rownames(mod1_w_seawater), ], "matrix"))
+env_taxa = cbind(as(mod1_w_seawater, "data.frame"), as(tax_table(glom_wat)[rownames(mod1_w_seawater), ], "matrix"))
 
-write.csv(env_taxa,"Colombia E5 Samples Neutral Taxonomy table.csv",row.names = TRUE)
+write.csv(env_taxa,"Colombia Water Samples Neutral Taxonomy table.csv",row.names = TRUE)
 
 
 ```
@@ -545,7 +560,7 @@ p_neuM_coral=ggplot(mod1_w_coral, aes(x=log10(p), y=freq, color = model))+
 
 lb1 <- mod_w_coral$Rsqr
 lb2 <- mod_w_coral$m
-lb3 <- expression(paste("Corals from E2 E5 E11 E12 E15 Coral Samples"))
+lb3 <- expression(paste("Corals from E2 E5 E11 E12 E15 expeditions "))
 
 p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=6.5, label=lb1, 
                                         fontface="bold", color="black",
@@ -606,6 +621,71 @@ mp_ncm
 
 ```
 
+# Calculate DISTANCE MATRICES
+```{r}
+## Distance Matrices
+# remove outlier
+to_remove <- ("230-HI62-T")
+orb_prune <- prune_samples(!(sample_names(coral.rarefied) %in% to_remove), coral.rarefied)
+## All Corals 
+bray_coral = phyloseq::distance(orb_prune, method="bray")
+uni_coral = phyloseq::distance(orb_prune, method="unifrac")
+wuni_coral = phyloseq::distance(orb_prune, method="wUnifrac")
+
+# Create data frame for downstream analysis
+coral_df <- data.frame(sample_data(orb_prune))
+
+```
+
+# Ordination from Distance Matrix and PCoA Plots 
+```{r}
+
+##Calculate the PCoA on Complex Corals
+rt.pcoa = ordinate(coral.rarefied, method="PCoA", distance=uni_coral)
+# Set variables to zero for subsequent changes
+# expedition_number
+pcoa<-0
+pcoa <- plot_ordination(coral.rarefied, rt.pcoa,  shape = "sample_type",color="family")+  geom_point(size=3) + theme_bw() + theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse(level = 0.95,type = "norm",aes(group=family))+ theme(legend.text=element_text(size=12)) + theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold")))
+                      
+
+```
+
+## 1. PERMANOVAs Analysis
+```{r}
+
+#env material include mucus, tissue and skeleton, and outgroups without eDNA
+distance_methods <-c("bray_coral","uni_coral","wuni_coral")
+set.seed(129)
+
+# This is what is called a for loop.        
+for (i in distance_methods){ 
+  form <- as.formula(paste(i,"expedition_number+family+sample_type+Huang_Roy_tree_name+host_genus_id", sep="~"))
+  print(form)
+ adonis2(form, data=coral_df)-> result
+ print(result)
+}
+ 
+
+## Post-hoc comparison between Coral Compartments and Location
+
+bray_carib_pairwise <-pairwise.perm.manova(bray_coral, coral_df$family,nperm=1000,p.method = "BH") 
+uni_carib_pairwise <-pairwise.perm.manova(uni_coral,coral_df$family,nperm=1000,p.method = "BH")
+wuni_carib_pairwise <-pairwise.perm.manova(wuni_coral,coral_df$family,nperm=1000,p.method = "BH")
+
+```
+
+# Alpha Diversity BoxPlots Compartments & Family
+```{r, boxplots}
+###Once we have our sub_samples rarefied we can start with some diversity analysis  and visualization
+### Alpha Diversity ** you can make multiple diversity box plots by switch x for sample variables
+
+complex_diversity_compartment <- plot_richness(coral, x="expedition_number", color = "sample_type", title = "Coral Diversity Across compartment", measures = c("Shannon","Observed"),)+
+  geom_boxplot() +
+  theme_classic() +
+  theme(strip.background = element_blank(), plot.title = element_text(hjust = 0.5), axis.text.x.bottom = element_text(angle = -90))
+ 
+```
+
 # BAR PLOTS: Coral Compartments
 ```{r, message=FALSE, warning=FALSE}
 ## Flavobacteriaceae & Cyclobacteriaceae seems to be the most frequent and abundant between Pamana east & West
@@ -659,69 +739,6 @@ testp <-ggplot(ps.melt_sum, aes(x = BiologicalMatter, y = Abundance, fill = Genu
 plot(testp)
 
 ```
-
-# Calculate DISTANCE MATRICES
-```{r}
-## Distance Matrices
-
-## All Corals 
-bray_coral = phyloseq::distance(coral.rarefied, method="bray")
-uni_coral = phyloseq::distance(coral.rarefied, method="unifrac")
-wuni_coral = phyloseq::distance(coral.rarefied, method="wUnifrac")
-
-# Create data frame for downstream analysis
-coral_df <- data.frame(sample_data(coral.rarefied))
-
-```
-
-# Ordination from Distance Matrix and PCoA Plots 
-```{r}
-##Calculate the PCoA on Complex Corals
-rt.pcoa = ordinate(coral.rarefied, method="PCoA", distance=wuni_coral)
-# Set variables to zero for subsequent changes
-# expedition_number
-pcoa<-0
-pcoa <- plot_ordination(coral.rarefied, rt.pcoa,  shape = "expedition_number",color="sample_type")+  geom_point(size=3) + theme_bw() + theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse(level = 0.95,type = "norm",aes(group=sample_type))+ theme(legend.text=element_text(size=12)) + theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold")))
-                      
-
-```
-
-## 1. PERMANOVAs Analysis
-```{r}
-
-#env material include mucus, tissue and skeleton, and outgroups without eDNA
-distance_methods <-c("bray_coral","uni_coral","wuni_coral")
-set.seed(129)
-
-# This is what is called a for loop.        
-for (i in distance_methods){ 
-  form <- as.formula(paste(i,"expedition_number+family+sample_type+Huang_Roy_tree_name+site_name", sep="~"))
-  print(form)
- adonis2(form, data=coral_df)-> result
- print(result)
-}
- 
-
-## Post-hoc comparison between Coral Compartments and Location
-
-bray_carib_pairwise <-pairwise.perm.manova(bray_coral, coral_df$expedition_number,nperm=1000,p.method = "BH") 
-uni_carib_pairwise <-pairwise.perm.manova(uni_coral,coral_df$expedition_number,nperm=1000,p.method = "BH")
-wuni_carib_pairwise <-pairwise.perm.manova(wuni_coral,coral_df$expedition_number,nperm=1000,p.method = "BH")
-
-```
-
-# Alpha Diversity BoxPlots Compartments & Family
-```{r, boxplots}
-###Once we have our sub_samples rarefied we can start with some diversity analysis  and visualization
-### Alpha Diversity ** you can make multiple diversity box plots by switch x for sample variables
-
-complex_diversity_compartment <- plot_richness(complex, x="family", color = "Genus", title = "Merulinidae Diversity Across compartment", measures = c("Shannon","Observed"),)+
-  geom_boxplot() +
-  theme_classic() +
-  theme(strip.background = element_blank(), plot.title = element_text(hjust = 0.5), axis.text.x.bottom = element_text(angle = -90))
- 
-```
-
 
 # Hclutering
 ```{r}
