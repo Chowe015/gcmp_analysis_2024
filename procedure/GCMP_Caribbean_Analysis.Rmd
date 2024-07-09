@@ -9,8 +9,7 @@ output: html_document
 # First, Set working Directory load library and Import Data into Phyloseq
 ```{r warning=FALSE}
 # Command for setting your work directory
-knitr::opts_knit$set(root.dir =("C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/input"))
-
+setwd("C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/input")
 # Print your working directory
 #getwd() 
 
