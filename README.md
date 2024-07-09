@@ -4,4 +4,4 @@
 
 ![GCMP_Logo_FJP_V2_JZ_rightward_arrows_r2_FJP-01](https://github.com/Chowe015/gcmp_analysis_2024/assets/99340131/5271311f-ff74-4a98-87ab-9231809718f5)
  
-latest analysis for GCMP data including Neutral Model Analysis
+latest analysis with GCMP data following a Neutral Model to identify deterministic microbes
