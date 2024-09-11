@@ -3,27 +3,33 @@
 library(qiime2R)
 library(phyloseq)
 library(tidyverse)
+library(btools)
+library(picante)
+
+sink("PIC_results_log.txt",append=FALSE,split=TRUE)
 
 #Get user input and assign to variables
 args <- commandArgs(trailingOnly=TRUE)
 
 feature_table_path <-args[1]
-print(paste("feature_table",feature_table_path))
 
 metadata_path <-args[2]
 taxonomy_path <-args[3]
-
 tree_path <-args[4]
-print(paste("tree_path",tree_path))
+expedition <-args[5]
+biosample <- args[6]
 
 #Import from .qza file into a phyloseq object
 asv <- qza_to_phyloseq(features = feature_table_path)
+print(paste("feature_table",feature_table_path))
 
 #### Import Metadata read.table
 metadata <- read.table(file = metadata_path,header=T, comment.char="",row.names=1, sep="\t")
 
 ### Import Tree file from biom output tree.nwk
 tree <- read_tree(tree_path)
+print(paste("tree_path",tree_path))
+
 
 ### Import taxonomy from biom output as .tsv format using read.table
 taxonomy <- read.table(file = taxonomy_path, sep = "\t", header = T ,row.names = 1)
@@ -31,7 +37,6 @@ taxonomy <- read.table(file = taxonomy_path, sep = "\t", header = T ,row.names =
 
 print(paste("metadata_path",metadata_path))
 print(paste("taxonomy_path",taxonomy_path))
-print(paste("Loading metadata files from path:", metadata_path))
 print(paste("Loading feature table from path:", feature_table_path))
 print(paste("Loading phylogenetic tree file from path:", tree_path))
 print(paste("Loading Taxonomy text files from path:", taxonomy_path))
@@ -81,6 +86,7 @@ for (i in 1:nrow(tax.clean)){
 # create matrix format for OTU and taxonomy table
 OTU <- otu_table(as.matrix(asv), taxa_are_rows = TRUE)
 tax1 = tax_table(as.matrix(tax.clean))
+print(paste("Loading metadata files from path:", metadata_path))
 
 # Set metadata
 SAMPLE <- sample_data(metadata)
@@ -104,13 +110,14 @@ table(tax_table(main_phylo)[,"Kingdom"])
 phylo = prune_samples(sample_sums(phylo_noking)>1, phylo_noking)
 phylo
 
+
 # Subset only corals from database
-subject <-subset_samples(phylo, sample_type_EMP == "coral" & outgroup == "n")# & within_group == "yes") # all corals without out groups, environmental samples & subset expeditions (i.e, singapore).
+subject <-subset_samples(phylo, outgroup == "n" & expedition_number == print(paste(expedition)) & tissue_compartment == print(paste(biosample)))
 subject
 
 print(paste("Generating Rarefied Coral dataset..."))
 # rarefy to even depth
-rarefied = rarefy_even_depth(subject, rngseed=111, sample.size=2000, replace=F, trimOTUs = TRUE)
+rarefied = rarefy_even_depth(subject, rngseed=111, sample.size=1000, replace=F, trimOTUs = TRUE)
 rarefied
 
 paste(print("Joining OTU and taxonomy tables from Rarefied Phyloseq object..."))
@@ -124,7 +131,8 @@ phyloseq::tax_table(rarefied)%>%
 
 paste(print("Printing Rarefied ASV Table"))
 ## Output .csv from the biom file
-write.csv(rare_otu_table, file ="phyloseq_rarefied_table_taxonomy.csv",row.names = FALSE)
+taxonomy_file_name <- paste0(expedition,"_",biosample,"_","feature_table_with_taxonomy.csv")
+write.csv(rare_otu_table, file =taxonomy_file_name, row.names = FALSE)
 
 
 print(paste("Agglomerate Taxonomy to the Family Level"))
@@ -138,7 +146,8 @@ phyloseq::tax_table(glom)%>%
         rownames_to_column("id") -> glom_taxonomy
 
 ## Output .csv from the taxonomy file
-write.csv(glom_taxonomy, file ="agglomerated_taxonomy.csv", row.names = FALSE)
+taxonomy_file_name <- paste0(expedition,"_",biosample,"_taxonomy.csv")
+write.csv(glom_taxonomy, file =taxonomy_file_name, row.names = FALSE)
 
 print(paste("Generating Agglomerated ASV Table dataset..."))
 phyloseq::otu_table(glom)%>%
@@ -146,6 +155,8 @@ phyloseq::otu_table(glom)%>%
         rownames_to_column("id") -> glom_otu_table
 
 ## Output .csv from the otu table file
-write.csv(glom_otu_table, file ="agglomerated_table.csv",row.names = FALSE)
+
+otu_file_name <- paste0(expedition,"_",biosample,"_feature_table.csv")
+write.csv(glom_otu_table, file =otu_file_name ,row.names = FALSE)
 
 print(paste("Finished!"))

@@ -1,16 +1,23 @@
 #Loading Required libraries
 library(qiime2R)
 library(phyloseq)
+library(ggplot2)
+library(gplots)
+library(RColorBrewer)
 library(tidyverse)
 library(minpack.lm)
 library(Hmisc)
 library(stats4)
+
+sink("PIC_results_log.txt",append=FALSE,split=TRUE)
 
 #Get user input and assign to variables
 args <- commandArgs(trailingOnly=TRUE)
 
 otu_table_path <-args[1]
 taxonomy_path <- args[2]
+expedition <- args[3]
+biosample <- args[4]
 
 otu_table <- read.csv(otu_table_path, row.names=1, check.names=FALSE)
 #print(paste("Imported GCMP OTU Table",otu_table))
@@ -167,6 +174,7 @@ length(which(neutral_mod1_w$model == "neutral"))
 neutral_mod1_w %>% mutate(ci.mean = (pred.upr-pred.lwr),
                         SE = (ci.mean/(2*1.96)),
                         zstat = (freq/SE),
+												p_value = (exp(-0.717*zstat-0.416*zstat^2)),
                         padj = (exp(-0.717*zstat-0.416*zstat^2))*length(neutral_mod1_w$model)) -> neutral_results_padj
 
 print(paste("Print Taxonomy Table from Neutral Model"))
@@ -175,5 +183,54 @@ print(paste("Print Taxonomy Table from Neutral Model"))
 env_taxa = cbind(as(neutral_results_padj, "data.frame"), as(taxonomy_table[rownames(taxonomy_table), ], "matrix"))
 #coral_taxa
 
-write.csv(env_taxa,"Neutral Taxonomy table.csv",row.names = TRUE)
+#plot neuModel
+p_neuM_coral=ggplot(neutral_mod1_w, aes(x=log10(p), y=freq, color = model))+
+  geom_point(shape=19, alpha=0.7, size=2.5)+
+  geom_line(aes(x=log10(p), y=freq.pred),
+            color="blue",linetype="solid",linewidth=1)+
+  geom_line(aes(x=log10(p), y=pred.lwr),
+            color="blue",linetype="dashed",linewidth=1)+
+  geom_line(aes(x=log10(p), y=pred.upr),
+            color="blue",linetype="dashed",linewidth=1)+
+  scale_colour_manual(name="OTUs",
+                      values=c("#E41A1C", "#999999", "#FF7F00"),
+                      breaks=c("above", "neutral", "below"),
+                      labels=c("Over-represented", "Neutrally-distributed", "Under-represented"))+
+  xlab("Log10 (Mean Relative abundance)") + ylab("Occurance frequency")+
+  theme_bw() +
+  theme(axis.title.x = element_text(face="bold", size=15),
+        axis.title.y = element_text(face="bold", size=15),
+        axis.text.x = element_text(colour = "black", size=12),
+        axis.text.y = element_text(colour = "black", size=12), 
+        legend.title = element_text(size=11.5, face = "bold"),
+        legend.text = element_text(size=11.5),
+        legend.position="none")
+
+r <- neutral_mod_w$Rsqr
+m_var <- neutral_mod_w$m
+lb1 <- paste0(r,"\n R^2 Value")
+lb2 <- paste0(m_var,"\n migration rate (m):")
+lb3 <- paste0(expedition,"_",biosample,"\n Neutral_Model")
+
+p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=6.5, label=lb1, 
+                                        fontface="bold", color="black",
+                                        parse=FALSE) +
+  annotate("text", x = -3.5, y=0.5, size=6.5, label=lb2, 
+           fontface="bold", color="black",
+           parse=FALSE) +
+  annotate("text", x = -3.5, y=0.9, size=6.5, label=lb3, 
+           fontface="bold", color="black",
+           parse=FALSE)
+
+print(paste("Creating Neutral Results output files"))
+
+# Print output files
+neutral_table_name <- paste0(expedition,"_",biosample,"_Neutralmodel.csv")
+write.csv(env_taxa,neutral_table_name,row.names = TRUE)
+
+## Print Neutral Model Plot
+neutral_file_name <- paste0(expedition,"_",biosample,"_NeutralModel_Plot.pdf")
+ggsave(p_neuM_coral1, filename=neutral_file_name)
+
 print(paste("Finished!"))
+

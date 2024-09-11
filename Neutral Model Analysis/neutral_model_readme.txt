@@ -1,5 +1,6 @@
 Neutral Model Analysis Read Me: 
-
-The input folder contains qiime output files and mapping files required to import into a phyloseq object. 
-The output folder contains figures and data results. The procedure file contains shell and R scripts needed to run preprocessing, filtering and subseting the dataset
-and running the neutral model. 
+This folder contains directories for Australian dataset and Atlantic-Pacific dataset.
+Located in each folder is an input and output folder. The input folder contains qiime artifacts produced using step1 and 2. 
+There should be an Otu_table, mapping file, taxonomy file and tree file.  If running faith pd calculations import coral huang_roy_tree. 
+The output folder contains results from analysis including tables, figures and neutral model stats.csv
+The procedures directory contains all automated scripts used for analysis. The first two are written in Bash and the second are writing in R studio.  
