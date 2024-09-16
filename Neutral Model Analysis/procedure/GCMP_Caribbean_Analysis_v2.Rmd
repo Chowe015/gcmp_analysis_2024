@@ -155,6 +155,7 @@ write.csv(coral_biom, file ="GCMP24_rarefied_coral.csv")
 ```
 ## Calculate Faith's Pd   
 ```{r}
+
 #Microbial Phyloseq Pd analysis 
 estimate_pd(coral.rarefied) %>%
   as.data.frame() %>%

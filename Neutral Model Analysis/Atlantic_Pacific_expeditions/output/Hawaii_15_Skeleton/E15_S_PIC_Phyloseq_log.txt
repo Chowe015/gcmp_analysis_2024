@@ -1,0 +1,38 @@
+[1] "feature_table .\\nomito_table.qza"
+[1] "tree_path .\\tree.nwk"
+[1] "metadata_path .\\carib_miseq_mapping_2024.txt"
+[1] "taxonomy_path .\\taxonomy.tsv"
+[1] "Loading feature table from path: .\\nomito_table.qza"
+[1] "Loading phylogenetic tree file from path: .\\tree.nwk"
+[1] "Loading Taxonomy text files from path: .\\taxonomy.tsv"
+[1] "Loading metadata files from path: .\\carib_miseq_mapping_2024.txt"
+
+ d__Archaea d__Bacteria  Unassigned 
+       1596       48164        1938 
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 49198 taxa and 375 samples ]
+sample_data() Sample Data:       [ 375 samples by 171 sample variables ]
+tax_table()   Taxonomy Table:    [ 49198 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 49198 tips and 49190 internal nodes ]
+[1] "E15"
+[1] "S"
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 49198 taxa and 20 samples ]
+sample_data() Sample Data:       [ 20 samples by 171 sample variables ]
+tax_table()   Taxonomy Table:    [ 49198 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 49198 tips and 49190 internal nodes ]
+[1] "Generating Rarefied Coral dataset..."
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 2528 taxa and 18 samples ]
+sample_data() Sample Data:       [ 18 samples by 171 sample variables ]
+tax_table()   Taxonomy Table:    [ 2528 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 2528 tips and 2527 internal nodes ]
+[1] "Joining OTU and taxonomy tables from Rarefied Phyloseq object..."
+[1] "Joining OTU and taxonomy tables from Rarefied Phyloseq object..."
+[1] "Printing Rarefied ASV Table"
+[1] "Printing Rarefied ASV Table"
+[1] "Agglomerate Taxonomy to the Family Level"
+[1] "Joining OTU and taxonomy tables from Agglomerated phyloseq object..."
+[1] "Joining OTU and taxonomy tables from Agglomerated phyloseq object..."
+[1] "Generating Agglomerated ASV Table dataset..."
+[1] "Finished!"

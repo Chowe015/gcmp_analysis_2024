@@ -1,0 +1,361 @@
+"id","Kingdom","Phylum","Class","Order","Family","Genus","Species"
+"b71dbb55e0a842a95b37677548bb84b7","d__Bacteria","Patescibacteria","ABY1","Candidatus_Magasanikbacteria","Candidatus_Magasanikbacteria",NA,NA
+"7bac724fd3e1414f8ca21e0143023e44","d__Bacteria","Patescibacteria","ABY1","Candidatus_Uhrbacteria","Candidatus_Uhrbacteria",NA,NA
+"fce2d8cc8444856763f2c2a0147f5d5d","d__Bacteria","Patescibacteria","Gracilibacteria","Gracilibacteria","Gracilibacteria",NA,NA
+"440df70c595848bf14dbb3c4ef86c3ae","d__Bacteria","Patescibacteria","Gracilibacteria","Candidatus_Peribacteria","Candidatus_Peribacteria",NA,NA
+"959a2a46b6a5bf6d57caaaea569004d7","d__Bacteria","Patescibacteria","Gracilibacteria","JGI_0000069-P22","JGI_0000069-P22",NA,NA
+"391a5959186795989f6ebd00b8c26d63","d__Bacteria","Patescibacteria","Gracilibacteria","Candidatus_Peregrinibacteria","Candidatus_Peregrinibacteria",NA,NA
+"1d4fe2495302085732bfbf1143c75963","d__Bacteria","Patescibacteria","Gracilibacteria","Absconditabacteriales_(SR1)","Absconditabacteriales_(SR1)",NA,NA
+"18142e3eaeef67b273b6a080676bd2fb","d__Bacteria","Patescibacteria","Parcubacteria","Unclassified Parcubacteria","Unclassified Parcubacteria",NA,NA
+"23416966504891a66d7c0d44489152da","d__Bacteria","Patescibacteria","Parcubacteria","Candidatus_Campbellbacteria","Candidatus_Campbellbacteria",NA,NA
+"9198f5f9c02d0a60e78f03b30ad00307","d__Bacteria","Patescibacteria","Parcubacteria","Parcubacteria","Parcubacteria",NA,NA
+"5027831ff096deea27add85c64f02d60","d__Archaea","Crenarchaeota","Bathyarchaeia","Bathyarchaeia","Bathyarchaeia",NA,NA
+"dcda1d7b6fa38d7464f4aa3e431b43b1","d__Archaea","Crenarchaeota","Nitrososphaeria","Nitrosopumilales","Nitrosopumilaceae",NA,NA
+"5530fdc3047b6455e824e48d0a5c124d","d__Archaea","Asgardarchaeota","Lokiarchaeia","Lokiarchaeia","Lokiarchaeia",NA,NA
+"37a4365a74d0325ca28ff142efad4822","d__Archaea","Asgardarchaeota","Heimdallarchaeia","Heimdallarchaeia","Heimdallarchaeia",NA,NA
+"a7c8e830a1775a84a3835c6c7fbe8cfd","d__Archaea","Thermoplasmatota","Thermoplasmata","Marine_Group_II","Marine_Group_II",NA,NA
+"29cebba1051c3e240f88a2d550573c17","d__Archaea","Thermoplasmatota","Thermoplasmata","uncultured","uncultured",NA,NA
+"a657ce0171cebca4833317521911e047","d__Archaea","Thermoplasmatota","Thermoplasmata","Marine_Benthic_Group_D_and_DHVEG-1","Marine_Benthic_Group_D_and_DHVEG-1",NA,NA
+"e351999a31b6323d6eb054264ea68cf7","d__Archaea","Thermoplasmatota","Thermoplasmata","Methanomassiliicoccales","Methanomethylophilaceae",NA,NA
+"ac507460f12dc9e39b2c15544f003446","d__Archaea","Halobacterota","Halobacteria","Halobacterales","Halococcaceae",NA,NA
+"28fc39cb8cb91682be7760bcfd9ba588","d__Archaea","Nanoarchaeota","Nanoarchaeia","Woesearchaeales","Unclassified Woesearchaeales",NA,NA
+"66b91895b79823f0e41d710a5cd2d958","d__Archaea","Nanoarchaeota","Nanoarchaeia","Woesearchaeales","SCGC_AAA011-D5",NA,NA
+"fb3d8e4080c233cddf6d034aceddfa0c","d__Archaea","Nanoarchaeota","Nanoarchaeia","Woesearchaeales","SCGC_AAA286-E23",NA,NA
+"7f9040ef1f3ffc78071e8d09feb066c7","d__Archaea","Nanoarchaeota","Nanoarchaeia","Woesearchaeales","Woesearchaeales",NA,NA
+"b9b345e60bbd29df9120eabe27a227a9","d__Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Flavobacteriaceae",NA,NA
+"b0e9b395b1a04fd4469c5abc5443101e","d__Bacteria","Proteobacteria","Unclassified Proteobacteria","Unclassified Proteobacteria","Unclassified Proteobacteria",NA,NA
+"2c489c4cb3333d2b35ff7be90b3eef68","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rickettsiales","Fokiniaceae",NA,NA
+"a38381df634e1a993b3e8229c5ade609","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rickettsiales","Unclassified Rickettsiales",NA,NA
+"78f35243032567258f5f99b427431be8","d__Bacteria","Desulfobacterota","Desulfuromonadia","Geobacterales","Geobacteraceae",NA,NA
+"817d63bd6642d6d6ab081f48e481a77c","d__Bacteria","Bdellovibrionota","Oligoflexia","Silvanigrellales","Silvanigrellaceae",NA,NA
+"7c8936cd9d800ad8f763921ec3c93ccf","d__Bacteria","Campilobacterota","Campylobacteria","Campylobacterales","Sulfurospirillaceae",NA,NA
+"758be752fb65eb63718e9e3cc2837ac8","d__Bacteria","Proteobacteria","Alphaproteobacteria","Holosporales","Holosporaceae",NA,NA
+"8432e9c33267f751f023d26165045f0d","d__Bacteria","Dadabacteria","Dadabacteriia","Dadabacteriales","Dadabacteriales",NA,NA
+"f37fbf9ab7a57bdcbf6df971ef61d7cc","d__Bacteria","Spirochaetota","Leptospirae","Leptospirales","Leptospiraceae",NA,NA
+"f01e99c745ae4205ee3f463ac362955c","d__Bacteria","Proteobacteria","Alphaproteobacteria","Tistrellales","Geminicoccaceae",NA,NA
+"bb1e900a986e8e6fe541b9a0d56b9eb8","d__Bacteria","Desulfobacterota","Desulfuromonadia","Unclassified Desulfuromonadia","Unclassified Desulfuromonadia",NA,NA
+"71146d0d695f9b4952043f5dc6446861","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhodospirillales","AEGEAN-169_marine_group",NA,NA
+"63c4521cd58b9a4859f8401f84a2b9b3","d__Bacteria","Proteobacteria","Magnetococcia","Magnetococcales","Magnetococcaceae",NA,NA
+"08445f9bcf5c684ac1b777a2e9e3e125","d__Bacteria","Proteobacteria","Alphaproteobacteria","Micavibrionales","Micavibrionaceae",NA,NA
+"f570c7ebd1f261c64c70fc7c6e49862e","d__Bacteria","Proteobacteria","Alphaproteobacteria","Micavibrionales","uncultured",NA,NA
+"fb035f46f4a8912c5690abda64a687dc","d__Bacteria","Fusobacteriota","Fusobacteriia","Fusobacteriales","Leptotrichiaceae",NA,NA
+"05c49e414c1810d94e05d683c6d11b5a","d__Bacteria","Fusobacteriota","Fusobacteriia","Fusobacteriales","Fusobacteriaceae",NA,NA
+"c3cfc9a59445e619cd11665224e81994","d__Bacteria","Bdellovibrionota","Oligoflexia","Oligoflexales","uncultured",NA,NA
+"432e6aa28a69616c96135b37b5c877f4","d__Bacteria","Bdellovibrionota","Oligoflexia","Oligoflexales","Oligoflexales",NA,NA
+"ba31466ec7d88ace217b29171e6c0014","d__Bacteria","Desulfobacterota","Desulfovibrionia","Desulfovibrionales","Desulfovibrionaceae",NA,NA
+"bc9480d0c3192d3409d481b40cedbfd2","d__Bacteria","Cyanobacteria","Cyanobacteriia","Eurycoccales","Unclassified Eurycoccales",NA,NA
+"e75225f4b7a09175913ffe53e0482afb","d__Bacteria","Cyanobacteria","Cyanobacteriia","Eurycoccales","Eurycoccales_Incertae_Sedis",NA,NA
+"73dfc065b5487651a1b9a6875916246b","d__Bacteria","Proteobacteria","Gammaproteobacteria","Thiotrichales","Thiotrichaceae",NA,NA
+"babb27bd0e5d9f85abb8e27fb244e9af","d__Bacteria","Proteobacteria","Gammaproteobacteria","Ectothiorhodospirales","Ectothiorhodospiraceae",NA,NA
+"2b70cb3925894d2a512bcbd841818384","d__Bacteria","Proteobacteria","Gammaproteobacteria","Francisellales","Francisellaceae",NA,NA
+"2b89cb37c967e090096bc9b56bf3908f","d__Bacteria","Proteobacteria","Gammaproteobacteria","Beggiatoales","Beggiatoaceae",NA,NA
+"04596a9c36dde2a475342dbe5c1804b1","d__Bacteria","Proteobacteria","Gammaproteobacteria","SAR86_clade","SAR86_clade",NA,NA
+"b12ab3b29b3fe97e90a5ebee5112b035","d__Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","BD2-7",NA,NA
+"0d89daed2e31eb0b35eee707949a3f9f","d__Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","Halieaceae",NA,NA
+"13f2fe19bc32a47f57277bcf1e082b28","d__Bacteria","Proteobacteria","Gammaproteobacteria","Milano-WF1B-44","Milano-WF1B-44",NA,NA
+"a1f1aeb8560b0c1c3adeecdf2766e384","d__Bacteria","Proteobacteria","Gammaproteobacteria","Xanthomonadales","Rhodanobacteraceae",NA,NA
+"623fd4a918dd469fed452bf881a41da3","d__Bacteria","Proteobacteria","Gammaproteobacteria","Xanthomonadales","Xanthomonadaceae",NA,NA
+"5daac5f0e6fc03ac862b177c9d93a339","d__Bacteria","Proteobacteria","Gammaproteobacteria","Halothiobacillales","Halothiobacillaceae",NA,NA
+"d30cf235ccfb7a85d4ee84051bf87eb2","d__Bacteria","Proteobacteria","Gammaproteobacteria","Ga0077536","Ga0077536",NA,NA
+"ca3c954f8541ee0151b6613d97c9dcc1","d__Bacteria","Proteobacteria","Gammaproteobacteria","Gammaproteobacteria_Incertae_Sedis","Unknown_Family",NA,NA
+"30c6eae2f70f58bc8a35bdc0e71c46e2","d__Bacteria","Proteobacteria","Gammaproteobacteria","Ectothiorhodospirales","Thioalkalispiraceae",NA,NA
+"d6152d717a559bf1d12f496ebe700924","d__Bacteria","Proteobacteria","Gammaproteobacteria","Steroidobacterales","Woeseiaceae",NA,NA
+"6d7e1ef5352b29025e1584b9f0b92822","d__Bacteria","Proteobacteria","Gammaproteobacteria","EPR3968-O8a-Bc78","EPR3968-O8a-Bc78",NA,NA
+"5959a89bb322ab3a7127538633543d20","d__Bacteria","Proteobacteria","Gammaproteobacteria","AT-s2-59","AT-s2-59",NA,NA
+"b90582aff1a97a7c400c044e1803de7c","d__Bacteria","Proteobacteria","Gammaproteobacteria","Nitrosococcales","Nitrosococcaceae",NA,NA
+"48c8f97196c8123021a03daf60a28028","d__Bacteria","Proteobacteria","Gammaproteobacteria","JTB23","JTB23",NA,NA
+"1d654fcb06cb378ed880382b860ae455","d__Bacteria","Proteobacteria","Gammaproteobacteria","B2M28","B2M28",NA,NA
+"806b355a2c89bd966c2aab9523e5aedf","d__Bacteria","Proteobacteria","Gammaproteobacteria","Tenderiales","Tenderiaceae",NA,NA
+"6d6f9286a4508312f6eef37c3b96d7ad","d__Bacteria","Proteobacteria","Gammaproteobacteria","pItb-vmat-80","pItb-vmat-80",NA,NA
+"75b8ba30a3221d39e275ec3dd0e1186e","d__Bacteria","Proteobacteria","Gammaproteobacteria","Unclassified Gammaproteobacteria","Unclassified Gammaproteobacteria",NA,NA
+"9ca5f6f460a06d143757143b3c38cc10","d__Bacteria","Proteobacteria","Gammaproteobacteria","BD7-8","BD7-8",NA,NA
+"3685d1b3511fbc83570d5032f4899a82","d__Bacteria","Proteobacteria","Gammaproteobacteria","Ectothiorhodospirales","Unclassified Ectothiorhodospirales",NA,NA
+"f0317fb0fcae618b9d339d4f419e856c","d__Bacteria","Proteobacteria","Gammaproteobacteria","Chromatiales","Sedimenticolaceae",NA,NA
+"b109c22e320c9afc2fef1f60c6e98762","d__Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","Nitrosomonadaceae",NA,NA
+"769593636aad0c52dfffb1ca23b4a9c1","d__Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","Comamonadaceae",NA,NA
+"04ce449aaacc9dac1392feb882a192c6","d__Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","Neisseriaceae",NA,NA
+"ce129cff2ee07499895104daefca7da0","d__Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","Alcaligenaceae",NA,NA
+"be8e44bedb9426bf1ab19809c51a709f","d__Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","Burkholderiaceae",NA,NA
+"9527440284244ca3b354d2d3752a5f04","d__Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","MWH-UniP1_aquatic_group",NA,NA
+"9361e2c419c0b1b575e485406f3a4de7","d__Bacteria","Proteobacteria","Gammaproteobacteria","OM182_clade","OM182_clade",NA,NA
+"3ec0e093da5e6fdb6c77ca3d9c964c67","d__Bacteria","Proteobacteria","Gammaproteobacteria","KI89A_clade","KI89A_clade",NA,NA
+"23f60010e342ddad377972c95b3095e7","d__Bacteria","Proteobacteria","Gammaproteobacteria","Cardiobacteriales","Cardiobacteriaceae",NA,NA
+"f4dbdfc7d6c991e66a38e520c081ca20","d__Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","Spongiibacteraceae",NA,NA
+"adbe52fa3684cfd8c329602a44f2f166","d__Bacteria","Proteobacteria","Gammaproteobacteria","HOC36","HOC36",NA,NA
+"a1f7064ffcc8b6700d07c6dddef3f07b","d__Bacteria","Proteobacteria","Gammaproteobacteria","Burkholderiales","Unclassified Burkholderiales",NA,NA
+"3ca25c3ef4d4be166b7e8ce3771095c6","d__Bacteria","Proteobacteria","Gammaproteobacteria","UBA10353_marine_group","UBA10353_marine_group",NA,NA
+"4f2a7324bb4347870b11bcae996ca812","d__Bacteria","Proteobacteria","Gammaproteobacteria","Arenicellales","Arenicellaceae",NA,NA
+"f6a3b4bf9ad5b18805dedc4ca19b0b6b","d__Bacteria","Proteobacteria","Gammaproteobacteria","Pseudomonadales","Moraxellaceae",NA,NA
+"a00e1de52bacd41740918c9192546ade","d__Bacteria","Proteobacteria","Gammaproteobacteria","Thiomicrospirales","Thioglobaceae",NA,NA
+"b02b1920535dcd614c6bd39eb30a7259","d__Bacteria","Proteobacteria","Gammaproteobacteria","Coxiellales","Coxiellaceae",NA,NA
+"9aa62ea10c9a06f75aed2ab3e72356d5","d__Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Pseudohongiellaceae",NA,NA
+"8d0783ff8280fd186bdc1fd75204e8c8","d__Bacteria","Proteobacteria","Gammaproteobacteria","Piscirickettsiales","Piscirickettsiaceae",NA,NA
+"b01047171a057617166d63fe8bf32561","d__Bacteria","Proteobacteria","Gammaproteobacteria","Thiomicrospirales","Thiomicrospiraceae",NA,NA
+"9c0fbffc0e2aa282964e4fd21aea20d1","d__Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Oleiphilaceae",NA,NA
+"a525e24b9b280dee324ced4f781222fb","d__Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","Cellvibrionaceae",NA,NA
+"f1f634cae6cbbc72fee128aab0002ff2","d__Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","Porticoccaceae",NA,NA
+"d18de5988f1a52d7096cd2d26e116ff2","d__Bacteria","Proteobacteria","Gammaproteobacteria","Pseudomonadales","Pseudomonadaceae",NA,NA
+"2ef0b3edacc8715274aa3953eb21d2bc","d__Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","Microbulbiferaceae",NA,NA
+"1092ac22fd78b19564f9b2af21240495","d__Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Saccharospirillaceae",NA,NA
+"2ed400f8a445ee9137866a6d305a9f86","d__Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Marinobacteraceae",NA,NA
+"deca00106ef2149e27d44bd11760a62e","d__Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Nitrincolaceae",NA,NA
+"d7746307ffa227c546e04e0263b1e44f","d__Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Kangiellaceae",NA,NA
+"2e3fd6399a2185eeaa6dbfe0b714e6be","d__Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Unclassified Oceanospirillales",NA,NA
+"2db900a5d9dbabc8b11c4287e1a85d79","d__Bacteria","Proteobacteria","Gammaproteobacteria","Nitrosococcales","Methylophagaceae",NA,NA
+"597d1c27b09258b0dd3140330cce8a54","d__Bacteria","Proteobacteria","Gammaproteobacteria","Granulosicoccales","Granulosicoccaceae",NA,NA
+"2c5e844c95bab8fbc18080849e1f03e6","d__Bacteria","Proteobacteria","Gammaproteobacteria","Diplorickettsiales","Diplorickettsiaceae",NA,NA
+"0ae46f9c33a57142d8bc853c93d9a2a9","d__Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Alcanivoracaceae1",NA,NA
+"643a3e17659f1690e7f4c80c483558ce","d__Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Halomonadaceae",NA,NA
+"646916f8eb114270d553949000ecc8cc","d__Bacteria","Proteobacteria","Gammaproteobacteria","Vibrionales","Vibrionaceae",NA,NA
+"5f8ca14e21ee10c18bf81d30882229ca","d__Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Shewanellaceae",NA,NA
+"e15c6d964c85b3a052aee4cb2ca36031","d__Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Pseudoalteromonadaceae",NA,NA
+"5b46b361ef9119fc127490ff4566c747","d__Bacteria","Proteobacteria","Gammaproteobacteria","Enterobacterales","Enterobacteriaceae",NA,NA
+"16430b0df54355e9d53926005d8948b0","d__Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Unclassified Alteromonadales",NA,NA
+"e689c83a67178b27b52e634ebf9b76dd","d__Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Psychromonadaceae",NA,NA
+"5d60a39e12a094d2fdda2f1bcbf288c4","d__Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Colwelliaceae",NA,NA
+"47564dd71b261bf129543a4841f12ecd","d__Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Idiomarinaceae",NA,NA
+"a5ceca9917b453d152787359f57cdd00","d__Bacteria","Proteobacteria","Gammaproteobacteria","Alteromonadales","Alteromonadaceae",NA,NA
+"a6c078f428600367670fe1309dda900d","d__Bacteria","Gemmatimonadota","PAUC43f_marine_benthic_group","PAUC43f_marine_benthic_group","PAUC43f_marine_benthic_group",NA,NA
+"7d4b5a134555ebee2d7a538441958f8f","d__Bacteria","Gemmatimonadota","BD2-11_terrestrial_group","BD2-11_terrestrial_group","BD2-11_terrestrial_group",NA,NA
+"703397f00871af7f4bc77774a5463b34","d__Bacteria","Acidobacteriota","Blastocatellia","Blastocatellales","Blastocatellaceae",NA,NA
+"1519a88d3a5f4226822fc2af1fe90d31","d__Bacteria","Latescibacterota","Latescibacterota","Latescibacterota","Latescibacterota",NA,NA
+"08f426f4a206c222537c13c3b1735a9a","d__Bacteria","Bacteroidota","Kapabacteria","Kapabacteriales","Kapabacteriales",NA,NA
+"c7d5b21e5fa43a433cc2ae487cd9bcae","d__Bacteria","Bacteroidota","Rhodothermia","Balneolales","Balneolaceae",NA,NA
+"1cbb75f25a8cef8edcaa4449f920f41d","d__Bacteria","Bacteroidota","Rhodothermia","Rhodothermales","Rhodothermaceae",NA,NA
+"a72ad668ed482c714e5cc284822d5cce","d__Bacteria","Bacteroidota","Ignavibacteria","Ignavibacteriales","Melioribacteraceae",NA,NA
+"2dca91bcc1878d547364da771d523fd2","d__Bacteria","Fibrobacterota","Fibrobacteria","Fibrobacterales","Fibrobacteraceae",NA,NA
+"e4deb8a52d9d2ed79a89a358b14ebd09","d__Bacteria","Firmicutes","Clostridia","Clostridia_vadinBB60_group","Clostridia_vadinBB60_group",NA,NA
+"9829c0e87c39bce84f09b097f25f0a18","d__Bacteria","Abditibacteriota","Abditibacteria","Abditibacteriales","Abditibacteriaceae",NA,NA
+"cbff30a7712ff77517720ffd1e3be508","d__Bacteria","Cloacimonadota","Cloacimonadia","Cloacimonadales","MSBL8",NA,NA
+"1c98d1f38a1d6288e65c19df4574b86e","d__Bacteria","Cloacimonadota","Cloacimonadia","Cloacimonadales","Cloacimonadaceae",NA,NA
+"f9aca1932f04c4c7416037dd149e0272","d__Bacteria","Poribacteria","Poribacteria","Poribacteria","Poribacteria",NA,NA
+"a816aadd143048266cc49236204171ce","d__Bacteria","Planctomycetota","Pla4_lineage","Pla4_lineage","Pla4_lineage",NA,NA
+"2ab4b1ab3993f0a6af7f7090f80dcc3c","d__Bacteria","Planctomycetota","028H05-P-BN-P5","028H05-P-BN-P5","028H05-P-BN-P5",NA,NA
+"420a5ea6c091b0fb363388dd28cfc8c7","d__Bacteria","Planctomycetota","Phycisphaerae","MSBL9","SG8-4",NA,NA
+"aaaf1a6b4f607f9a3a175332ab0032ac","d__Bacteria","Planctomycetota","Phycisphaerae","Unclassified Phycisphaerae","Unclassified Phycisphaerae",NA,NA
+"b416572f36ddfede57b7290cbfe72fb0","d__Bacteria","Planctomycetota","Phycisphaerae","Tepidisphaerales","WD2101_soil_group",NA,NA
+"9108ad4924ef5dbb799be552bf102b10","d__Bacteria","Planctomycetota","Phycisphaerae","Phycisphaerales","Phycisphaeraceae",NA,NA
+"c293d52cf8a69b7c95f0d973a4950e6c","d__Bacteria","Planctomycetota","Planctomycetes","Planctomycetales","uncultured",NA,NA
+"2a90ff4a226c1bf0565b00d401cc6a9b","d__Bacteria","Planctomycetota","Planctomycetes","Planctomycetales","Unclassified Planctomycetales",NA,NA
+"c40185b5735e35db6bdd932311fe2a9f","d__Bacteria","Planctomycetota","Planctomycetes","Planctomycetales","Gimesiaceae",NA,NA
+"28224521a0a017b966a064482d0dea96","d__Bacteria","Planctomycetota","Planctomycetes","Pirellulales","Pirellulaceae",NA,NA
+"e5e4c09b7876f9078432a7ef171ffdef","d__Bacteria","Planctomycetota","Planctomycetes","Planctomycetales","Rubinisphaeraceae",NA,NA
+"61b5006cd4ad09c3e1e1636165386a7e","d__Bacteria","Planctomycetota","OM190","OM190","OM190",NA,NA
+"0b1b8f25f2486ea1d574e24018df1185","d__Bacteria","Planctomycetota","Unclassified Planctomycetota","Unclassified Planctomycetota","Unclassified Planctomycetota",NA,NA
+"b9cec7784aec1df61810ab22e4a8b7d7","d__Bacteria","Planctomycetota","Pla3_lineage","Pla3_lineage","Pla3_lineage",NA,NA
+"040b01e3a74fa05b52a9f15ba45ba4c0","d__Bacteria","Acidobacteriota","Subgroup_22","Subgroup_22","Subgroup_22",NA,NA
+"7bebc7d330f1f8de0e2a475fb4edc2d6","d__Bacteria","Spirochaetota","Spirochaetia","Spirochaetales","Spirochaetaceae",NA,NA
+"61862506ed7e849caba9ae7c03bfc14a","d__Bacteria","Spirochaetota","V2072-189E03","V2072-189E03","V2072-189E03",NA,NA
+"32d69f153baa241984556b103f55ba9a","d__Bacteria","Hydrogenedentes","Hydrogenedentia","Hydrogenedentiales","Hydrogenedensaceae",NA,NA
+"e902ec6fb748c93610d6d4a3108e2884","d__Bacteria","Acidobacteriota","Holophagae","Acanthopleuribacterales","Acanthopleuribacteraceae",NA,NA
+"64477177f807ac120b7dd13bf4e3958d","d__Bacteria","Armatimonadota","Fimbriimonadia","Fimbriimonadales","Fimbriimonadaceae",NA,NA
+"dd799b2bc01cdc64bfd262659d42d1b2","d__Bacteria","Verrucomicrobiota","Kiritimatiellae","WCHB1-41","WCHB1-41",NA,NA
+"b5b861f966d41cc4e4de8244b5715f6b","d__Bacteria","Verrucomicrobiota","Kiritimatiellae","Kiritimatiellales","Kiritimatiellaceae",NA,NA
+"ad4759f74d46278bab260afd1ea66c25","d__Bacteria","Nitrospirota","Thermodesulfovibrionia","uncultured","uncultured",NA,NA
+"7a238bb32fb3ea9bcc9146904697ed55","d__Bacteria","Chloroflexi","Gitt-GS-136","Gitt-GS-136","Gitt-GS-136",NA,NA
+"aae2ca56f20129b0375e24a96780cf16","d__Bacteria","Chloroflexi","KD4-96","KD4-96","KD4-96",NA,NA
+"26b78edd733c743faed2733835963cd8","d__Bacteria","Acidobacteriota","Aminicenantia","Aminicenantales","Aminicenantales",NA,NA
+"a4e7426e5f7633bde3e3722422d17bbd","d__Bacteria","Chloroflexi","Anaerolineae","Caldilineales","Caldilineaceae",NA,NA
+"2b26d952ef7feb04bf042aed7ce91bce","d__Bacteria","Chloroflexi","Anaerolineae","Ardenticatenales","Ardenticatenaceae",NA,NA
+"627b4d11869e8568bbd4a9f546f6fc8f","d__Bacteria","Chloroflexi","Anaerolineae","uncultured","uncultured",NA,NA
+"0b356dc2203aff9da20649ad6e23b238","d__Bacteria","Chloroflexi","Anaerolineae","SBR1031","SBR1031",NA,NA
+"d45c3d45ee8d79bccf3553d4cb169bb4","d__Bacteria","Chloroflexi","Anaerolineae","Ardenticatenales","uncultured",NA,NA
+"cff85d063926d1289cf3e5544ac46c51","d__Bacteria","Chloroflexi","Anaerolineae","Unclassified Anaerolineae","Unclassified Anaerolineae",NA,NA
+"6e73f3a335867d70ce0b776efbb93e8e","d__Bacteria","Chloroflexi","Anaerolineae","Anaerolineales","Anaerolineaceae",NA,NA
+"b9ce6633384852d20fa29fecfbd32a03","d__Bacteria","Chloroflexi","Anaerolineae","SBR1031","A4b",NA,NA
+"f25abd6d60dfe9da0cf2bb474be202a2","d__Bacteria","Nitrospirota","Nitrospiria","Nitrospirales","Nitrospiraceae",NA,NA
+"9633b12cdb94fee753175a63a0443359","d__Bacteria","Entotheonellaeota","Entotheonellia","Entotheonellales","Entotheonellaceae",NA,NA
+"7e08b8d750234f1a00ba61b80e863566","d__Bacteria","Chloroflexi","Dehalococcoidia","MSBL5","MSBL5",NA,NA
+"7d16e6b0cc719765799973fea52b70d8","d__Bacteria","Chloroflexi","Dehalococcoidia","SAR202_clade","SAR202_clade",NA,NA
+"6c4b53cf2631369436889e62f160dee7","d__Bacteria","Acetothermia","Acetothermiia","Acetothermiia","Acetothermiia",NA,NA
+"f6ba6956f979b442a249892ca2fec165","d__Bacteria","Deinococcota","Deinococci","Deinococcales","Trueperaceae",NA,NA
+"9e1256788408d0c7061ed41a80bd77f9","d__Bacteria","Chloroflexi","Chloroflexia","Thermomicrobiales","AKYG1722",NA,NA
+"a64abff30e9bd8e307047b668640228a","d__Bacteria","Sumerlaeota","Sumerlaeia","Sumerlaeales","Sumerlaeaceae",NA,NA
+"d39cb22f4a0f4049c7548d93c89dfd8e","d__Bacteria","Nitrospinota","Nitrospinia","Nitrospinales","Nitrospinaceae",NA,NA
+"8f445831909dbddb0c41424233b65afe","d__Bacteria","Desulfobacterota","Desulfuromonadia","PB19","PB19",NA,NA
+"9af34bd5b5965b3701e470c0d0988b76","d__Bacteria","Acidobacteriota","Thermoanaerobaculia","Thermoanaerobaculales","Thermoanaerobaculaceae",NA,NA
+"36bacd1a2937117b49ecd36501d11f04","d__Bacteria","Acidobacteriota","Vicinamibacteria","Subgroup_17","Subgroup_17",NA,NA
+"8c7eb42c6d6c6985b317f0faaed17657","d__Bacteria","Acidobacteriota","Unclassified Acidobacteriota","Unclassified Acidobacteriota","Unclassified Acidobacteriota",NA,NA
+"8052442adb4358203a27a29dbd7829f1","d__Bacteria","Acidobacteriota","Subgroup_18","Subgroup_18","Subgroup_18",NA,NA
+"ce36fad11b6243e4c4df5433ce836de7","d__Bacteria","Calditrichota","Calditrichia","Calditrichales","Calditrichaceae",NA,NA
+"1f10b050b485c6107099df918bea93a5","d__Bacteria","Firmicutes","Bacilli","Unclassified Bacilli","Unclassified Bacilli",NA,NA
+"7eb1c2fe1da9b72c78bd559c075cfb04","d__Bacteria","Firmicutes","Clostridia","Lachnospirales","Lachnospiraceae",NA,NA
+"f693672e25016f2899a6c85aa6e0878f","d__Bacteria","Firmicutes","Clostridia","Clostridia","Hungateiclostridiaceae",NA,NA
+"3b1abb453adfdfc402d8111b360d158e","d__Bacteria","Firmicutes","Clostridia","Clostridiales","Clostridiaceae",NA,NA
+"7976f447f01497ad56b96c426ace6ff5","d__Bacteria","Firmicutes","Clostridia","Clostridiales","Unclassified Clostridiales",NA,NA
+"51d48742d8b38d9e54b81b007b8113d1","d__Bacteria","Firmicutes","Clostridia","Unclassified Clostridia","Unclassified Clostridia",NA,NA
+"b8c11aeaac62eecd2da7284fae4dd659","d__Bacteria","Firmicutes","Clostridia","Peptostreptococcales-Tissierellales","Peptostreptococcales-Tissierellales",NA,NA
+"213449e47f306703365bd16cd6c586fc","d__Bacteria","Firmicutes","Clostridia","Peptostreptococcales-Tissierellales","Peptostreptococcaceae",NA,NA
+"66919789f163610af9c80045cffc7ca6","d__Bacteria","Cyanobacteria","Vampirivibrionia","Obscuribacterales","Obscuribacteraceae",NA,NA
+"d333390db08356e80785f78a597a72e1","d__Bacteria","Cyanobacteria","Vampirivibrionia","Unclassified Vampirivibrionia","Unclassified Vampirivibrionia",NA,NA
+"89cee22825353025d7d6cf2d0693dd18","d__Bacteria","Cyanobacteria","Sericytochromatia","Sericytochromatia","Sericytochromatia",NA,NA
+"6fa1767b661d164710f0eb1ba7bbe818","d__Bacteria","Cyanobacteria","Vampirivibrionia","Caenarcaniphilales","Caenarcaniphilales",NA,NA
+"63571c872ac01b048674e6e1799abb3b","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Phormidiaceae",NA,NA
+"bfa3388bd847c3da6336531ea1541b81","d__Bacteria","Cyanobacteria","Cyanobacteriia","Phormidesmiales","Unclassified Phormidesmiales",NA,NA
+"ce760cb4922591f59233b115ae09348f","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Xenococcaceae",NA,NA
+"f303a0054921b750324599549983d8ce","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Microcystaceae",NA,NA
+"c22bdc4fccef60eb531f2fe34c4d1d59","d__Bacteria","Cyanobacteria","Cyanobacteriia","Unclassified Cyanobacteriia","Unclassified Cyanobacteriia",NA,NA
+"c842ab40fe0fe3e94962adf41617165c","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Desertifilaceae",NA,NA
+"0efbd33f9ab539d97ee90ee3d1c829be","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Coleofasciculaceae",NA,NA
+"7067849d874daa76a54437ca53540d9c","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Nostocaceae",NA,NA
+"505ac6c8ebcf1fb805d32216b4bbfb96","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Prochloraceae",NA,NA
+"e670c2958e4920d46341a88153d720bd","d__Bacteria","Cyanobacteria","Cyanobacteriia","Leptolyngbyales","Leptolyngbyaceae",NA,NA
+"7d82db93ed2be6c7d0c09dc742352950","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Paraspirulinaceae",NA,NA
+"d3af82514960bade66d54cf7fd25e739","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Cyanobacteriaceae",NA,NA
+"2ad496f617fd25dfc3a3151074fff069","d__Bacteria","Cyanobacteria","Cyanobacteriia","Phormidesmiales","Phormidesmiaceae",NA,NA
+"7f402ad7e780595374b103e8e5bd879c","d__Bacteria","Cyanobacteria","Cyanobacteriia","Synechococcales","Synechococcales_Incertae_Sedis",NA,NA
+"572f9ff2148da07e9dcd16640d2dd967","d__Bacteria","Cyanobacteria","Cyanobacteriia","Synechococcales","Cyanobiaceae",NA,NA
+"842fd6d8e0731455744b2deaf2c6de95","d__Bacteria","Cyanobacteria","Cyanobacteriia","Cyanobacteriales","Unclassified Cyanobacteriales",NA,NA
+"a5e6c8a3c406fb561acf0b455a40a377","d__Bacteria","Cyanobacteria","Cyanobacteriia","Thermosynechococcales","Acaryochloridaceae",NA,NA
+"f036b945661a55f79a8b70ac6853c431","d__Bacteria","Margulisbacteria","Margulisbacteria","Margulisbacteria","Margulisbacteria",NA,NA
+"eaa3afc6ec6ae5f062c7f679d67f3a4a","d__Bacteria","Firmicutes","Bacilli","Entomoplasmatales","Entomoplasmatales_Incertae_Sedis",NA,NA
+"afc1ac33417f750b528ccaa72b154807","d__Bacteria","Firmicutes","Bacilli","Entomoplasmatales","Unclassified Entomoplasmatales",NA,NA
+"15439a7ef9a33d7b438bb6d855ce7126","d__Bacteria","Firmicutes","Bacilli","Entomoplasmatales","Spiroplasmataceae",NA,NA
+"f39ddf8cf145af44f0f718f6442252dc","d__Bacteria","Firmicutes","Bacilli","Mycoplasmatales","Mycoplasmataceae",NA,NA
+"844ba14f6177fc9c4d4adbfb21ce5415","d__Bacteria","Firmicutes","Bacilli","Acholeplasmatales","Acholeplasmataceae",NA,NA
+"76a44c940b9f1840e7498560df89334c","d__Bacteria","Firmicutes","Bacilli","Izemoplasmatales","Izemoplasmataceae",NA,NA
+"4f8809fe4a32e75b629a9f053dd03c15","d__Bacteria","Firmicutes","Limnochordia","MBA03","MBA03",NA,NA
+"a740cec84b1d540f9db7210cb5e34ed5","d__Bacteria","LCP-89","LCP-89","LCP-89","LCP-89",NA,NA
+"31a2b3aeb48035466729554713f3ab69","d__Bacteria","Firmicutes","Bacilli","Lactobacillales","Carnobacteriaceae",NA,NA
+"e93287da6aa201442cac1f2f17ced4c7","d__Bacteria","Firmicutes","Unclassified Firmicutes","Unclassified Firmicutes","Unclassified Firmicutes",NA,NA
+"98f45280310b1364c4c0dccc35988844","d__Bacteria","Firmicutes","Bacilli","Erysipelotrichales","Erysipelotrichaceae",NA,NA
+"89bead4003bab32b903841f6cac7d353","d__Bacteria","Firmicutes","Bacilli","Bacillales","Bacillaceae",NA,NA
+"73c434a77d07c20d70f499ca99470a5d","d__Bacteria","Firmicutes","Bacilli","Staphylococcales","Staphylococcaceae",NA,NA
+"4087c8729e0681856714063937f38e5e","d__Bacteria","Firmicutes","Bacilli","Lactobacillales","Lactobacillaceae",NA,NA
+"aca349fe36ac486137864db9eef3392a","d__Bacteria","Firmicutes","Bacilli","Lactobacillales","Streptococcaceae",NA,NA
+"8acfb35d46b577dfccb25e203087452b","d__Bacteria","Actinobacteriota","Acidimicrobiia","Actinomarinales","Actinomarinaceae",NA,NA
+"d472df6001871c1460e02d9b09b66cfa","d__Bacteria","Firmicutes","Negativicutes","Acidaminococcales","Acidaminococcaceae",NA,NA
+"c609e985662805ec8c6e4991c18b65c5","d__Bacteria","Actinobacteriota","Rubrobacteria","Rubrobacterales","Rubrobacteriaceae",NA,NA
+"7ecf684d3957cf1d6ee7cad6cf1828da","d__Bacteria","Actinobacteriota","Acidimicrobiia","Actinomarinales","uncultured",NA,NA
+"8ed2f52702675c09e29242f50f0cb2a7","d__Bacteria","Actinobacteriota","Acidimicrobiia","Microtrichales","Ilumatobacteraceae",NA,NA
+"808605401055cf7ed20cb1ddd1f5e50f","d__Bacteria","Actinobacteriota","Acidimicrobiia","Microtrichales","Iamiaceae",NA,NA
+"0ae63e0fbba590d2aacbd7f8ecdfacb5","d__Bacteria","Actinobacteriota","Acidimicrobiia","Microtrichales","Unclassified Microtrichales",NA,NA
+"8c14a49d61fc452112312f46edbb780b","d__Bacteria","Actinobacteriota","Acidimicrobiia","Microtrichales","Microtrichaceae",NA,NA
+"544fdcf7339e10267fcf5bab3a0fda0f","d__Bacteria","Actinobacteriota","Actinobacteria","Micrococcales","Dermacoccaceae",NA,NA
+"0598f1d065eea89c1fe351818e0dfd64","d__Bacteria","Actinobacteriota","Actinobacteria","Micrococcales","Micrococcaceae",NA,NA
+"cbcc6efe329a1f4b0cf8669c2d6b2345","d__Bacteria","Actinobacteriota","Actinobacteria","Bifidobacteriales","Bifidobacteriaceae",NA,NA
+"9575f9edd2938ac1ac7863cc53caeb19","d__Bacteria","Actinobacteriota","Actinobacteria","Corynebacteriales","Corynebacteriaceae",NA,NA
+"06191e8bd73ae8a43303ba611e498450","d__Bacteria","Actinobacteriota","Actinobacteria","Corynebacteriales","Nocardiaceae",NA,NA
+"31f5a2a0a7e1edfa4204a3438171fe23","d__Bacteria","Actinobacteriota","Actinobacteria","Pseudonocardiales","Pseudonocardiaceae",NA,NA
+"28bcd1daee7db8be911c76c1a84bab82","d__Bacteria","Actinobacteriota","Actinobacteria","Frankiales","Nakamurellaceae",NA,NA
+"bfafc3d5089806d93fb338ee2a5862e3","d__Bacteria","Actinobacteriota","Actinobacteria","Propionibacteriales","Nocardioidaceae",NA,NA
+"b7231eb0c1d0e808851534fd37ed9c46","d__Bacteria","Verrucomicrobiota","Verrucomicrobiae","Methylacidiphilales","Methylacidiphilaceae",NA,NA
+"bce312a197fbf1521d3ec51fdccbf563","d__Bacteria","Verrucomicrobiota","Verrucomicrobiae","Unclassified Verrucomicrobiae","Unclassified Verrucomicrobiae",NA,NA
+"84d58d72725778c8d195a2c1b1706a9d","d__Bacteria","Verrucomicrobiota","Verrucomicrobiae","Pedosphaerales","Pedosphaeraceae",NA,NA
+"bea49454da7eb653c08585bfac0cf44b","d__Bacteria","Verrucomicrobiota","Verrucomicrobiae","Chthoniobacterales","Chthoniobacteraceae",NA,NA
+"0ac54c6826477e9e0698d24cfce4b002","d__Bacteria","Verrucomicrobiota","Verrucomicrobiae","Verrucomicrobiales","DEV007",NA,NA
+"e175f322c5e5cb14092d58f2a3932546","d__Bacteria","Verrucomicrobiota","Verrucomicrobiae","Verrucomicrobiales","Rubritaleaceae",NA,NA
+"9c043b31fd13e24f4b4f7615f52181f4","d__Bacteria","Planctomycetota","BD7-11","BD7-11","BD7-11",NA,NA
+"d16214e14731d0e0656ee3ceb30fda28","d__Bacteria","Verrucomicrobiota","Lentisphaeria","SS1-B-02-17","SS1-B-02-17",NA,NA
+"a8185db77ca6069bcb9eaa924f09e6cc","d__Bacteria","Verrucomicrobiota","Lentisphaeria","Victivallales","Unclassified Victivallales",NA,NA
+"0ee52e2d518e22900261b93c7c0155af","d__Bacteria","Verrucomicrobiota","Lentisphaeria","Unclassified Lentisphaeria","Unclassified Lentisphaeria",NA,NA
+"e0bf608e6629445614dcb358430108ae","d__Bacteria","Verrucomicrobiota","Lentisphaeria","Lentisphaerales","Lentisphaeraceae",NA,NA
+"8f03312fee49b2e736d0a5625b0b99a4","d__Bacteria","Verrucomicrobiota","Chlamydiae","Chlamydiales","cvE6",NA,NA
+"588ca3f4f7eae097761c499b74681d75","d__Bacteria","Verrucomicrobiota","Chlamydiae","Chlamydiales","Simkaniaceae",NA,NA
+"dcc9aac816c8cf6f0787524ed877e229","d__Bacteria","Verrucomicrobiota","Chlamydiae","Chlamydiales","Chlamydiaceae",NA,NA
+"5e3a7d60158347d44920be82b3a2206a","d__Bacteria","Verrucomicrobiota","Chlamydiae","Chlamydiales","Parachlamydiaceae",NA,NA
+"4fcdd5650460079861b830d8bc78045c","d__Bacteria","SAR324_clade(Marine_group_B)","SAR324_clade(Marine_group_B)","SAR324_clade(Marine_group_B)","SAR324_clade(Marine_group_B)",NA,NA
+"80939c455319192ef5d75183020d5a83","d__Bacteria","NB1-j","NB1-j","NB1-j","NB1-j",NA,NA
+"865fb6d54f91eca32f76eaf1efd87159","d__Bacteria","Campilobacterota","Campylobacteria","Campylobacterales","Sulfurimonadaceae",NA,NA
+"ef714a8804728aa95a3cadbf52a82985","d__Bacteria","Campilobacterota","Campylobacteria","Campylobacterales","uncultured",NA,NA
+"e8d37ee906f53a9c3c3083df7cc0ce4f","d__Bacteria","Campilobacterota","Campylobacteria","Campylobacterales","Arcobacteraceae",NA,NA
+"dd2010f7c3aec8d89ce6b914c5aeeba3","d__Bacteria","Campilobacterota","Campylobacteria","Campylobacterales","Sulfurovaceae",NA,NA
+"618ee0add709fa088afc2388383e9a57","d__Bacteria","Campilobacterota","Campylobacteria","Campylobacterales","Unclassified Campylobacterales",NA,NA
+"d118f76dcb8838bb43e2dcc5380224c6","d__Bacteria","Patescibacteria","ABY1","Unclassified ABY1","Unclassified ABY1",NA,NA
+"d15c9e8af26759ab150a1f9a6f4dc3d5","d__Bacteria","Verrucomicrobiota","Verrucomicrobiae","Opitutales","Puniceicoccaceae",NA,NA
+"5c725a99895c8eadfec01a14ed1ab1e6","d__Bacteria","Patescibacteria","Saccharimonadia","Saccharimonadales","Saccharimonadales",NA,NA
+"0b360c5c5d4b3d15084a8a033cdeae5e","d__Bacteria","Dependentiae","Babeliae","Babeliales","Unclassified Babeliales",NA,NA
+"4b39e417ea1b57410e4412e565c5f7a3","d__Bacteria","Marinimicrobia_(SAR406_clade)","Marinimicrobia_(SAR406_clade)","Marinimicrobia_(SAR406_clade)","Marinimicrobia_(SAR406_clade)",NA,NA
+"f0477bc58df35fe54f3c40ad65dd23ae","d__Bacteria","Bacteroidota","Bacteroidia","Chitinophagales","uncultured",NA,NA
+"bfd3f7f9322174b8e0f3e2cc5978e9b8","d__Bacteria","Bacteroidota","Bacteroidia","Chitinophagales","Saprospiraceae",NA,NA
+"2e8f116592aca2cfe5f9d47792ff9f9e","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidales","Marinifilaceae",NA,NA
+"7265ea49ea835b3be04851e57ab6e7e7","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidales","Prolixibacteraceae",NA,NA
+"f5811c64854ac860cb6cc902c2005265","d__Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Crocinitomicaceae",NA,NA
+"2c95378653648ce017222e6641c8e2d1","d__Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Weeksellaceae",NA,NA
+"1fcf7af52ce48206f39a4b7bf0c34c22","d__Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Unclassified Flavobacteriales",NA,NA
+"1e4734aac1403aeed033d8155c602908","d__Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Schleiferiaceae",NA,NA
+"cfe87eddec2c968e4488b218f55d3f2e","d__Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","Cryomorphaceae",NA,NA
+"9e5ca1bd20bd457a1c266d7d0e83c0ec","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidales","Unclassified Bacteroidales",NA,NA
+"bc6c07189b77231f7967eb708a5c99f7","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidales","Marinilabiliaceae",NA,NA
+"16f890c800f98746475ddd097993c6b3","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidales","Rikenellaceae",NA,NA
+"2e6274510b3a65563aa9b1ca43a0ccaa","d__Bacteria","Bacteroidota","Bacteroidia","Sphingobacteriales","Unclassified Sphingobacteriales",NA,NA
+"c4915da4520bb842b0351c501d85c202","d__Bacteria","Bacteroidota","Bacteroidia","Flavobacteriales","NS9_marine_group",NA,NA
+"d2ff82bc924c2fe7a64b349fa0ff2bfb","d__Bacteria","Bacteroidota","Bacteroidia","Sphingobacteriales","NS11-12_marine_group",NA,NA
+"dc05efbad2a788ba7fa36b32dbf2556a","d__Bacteria","Bacteroidota","Bacteroidia","Chitinophagales","Unclassified Chitinophagales",NA,NA
+"62869c70242d27fff6ef6d9a0a4113e1","d__Bacteria","Bacteroidota","Bacteroidia","Chitinophagales","Chitinophagaceae",NA,NA
+"4ca838bacdf5c4d0f4d1f509dd5785c8","d__Bacteria","Bacteroidota","Bacteroidia","Sphingobacteriales","Lentimicrobiaceae",NA,NA
+"67ebf6f080e07fd21acb96fd68c496fc","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidetes_VC2.1_Bac22","Bacteroidetes_VC2.1_Bac22",NA,NA
+"2b2c51d5a6bc24cfc3c7f809d1a72817","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidales","Porphyromonadaceae",NA,NA
+"9b773ccb1531b76004d828c7361c9d3e","d__Bacteria","Bacteroidota","Bacteroidia","Cytophagales","Hymenobacteraceae",NA,NA
+"70da8e2cfba2f615e492afe38254c6e1","d__Bacteria","Bacteroidota","Bacteroidia","Cytophagales","Unclassified Cytophagales",NA,NA
+"4d7decc273fa3f13116d05047a676a6b","d__Bacteria","Bacteroidota","Bacteroidia","Cytophagales","Microscillaceae",NA,NA
+"db9768f3cb70e4bc4c0c09c4b455f7a3","d__Bacteria","Bacteroidota","Bacteroidia","Cytophagales","Amoebophilaceae",NA,NA
+"9f726ddfaf1942cf274d965df8377185","d__Bacteria","Bacteroidota","Bacteroidia","Unclassified Bacteroidia","Unclassified Bacteroidia",NA,NA
+"b39dc703679b75a1faec815dc8a87b66","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidales","Dysgonomonadaceae",NA,NA
+"f31c6a5b90a26c26f10688a28944f0bb","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidales","Bacteroidaceae",NA,NA
+"93685736d1d71f0d1807dac58a9c210c","d__Bacteria","Bacteroidota","Bacteroidia","Bacteroidales","Bacteroidales_UCG-001",NA,NA
+"f1c2771e06f955a84a161b40e788eaea","d__Bacteria","Bacteroidota","Bacteroidia","Cytophagales","Cyclobacteriaceae",NA,NA
+"5afb03f6e45ff89b0e2617d92b307496","d__Bacteria","Bacteroidota","Bacteroidia","Cytophagales","Flammeovirgaceae",NA,NA
+"ff2c6e2b306925bc4e996b8e0527a5e6","d__Bacteria","Planctomycetota","vadinHA49","vadinHA49","vadinHA49",NA,NA
+"e775ccde41f7311f6fbee9efd0e60ba9","d__Bacteria","Verrucomicrobiota","Omnitrophia","Omnitrophales","Omnitrophaceae",NA,NA
+"36c9ba9e5559cdbdf57b01a878c700a4","d__Bacteria","Verrucomicrobiota","Omnitrophia","Omnitrophales","Omnitrophales",NA,NA
+"0cd951b70f6d743db39d0a57e8b49da3","d__Bacteria","Desulfobacterota","Desulfuromonadia","Bradymonadales","Bradymonadales",NA,NA
+"ec32024e75dcd9a46065f4daeb3ffb03","d__Bacteria","Desulfobacterota","Desulfuromonadia","Desulfuromonadia","Unclassified Desulfuromonadia",NA,NA
+"fa1092af6c321a442aa9125bf9b62e33","d__Bacteria","Desulfobacterota","Desulfobulbia","Desulfobulbales","Desulfobulbaceae",NA,NA
+"e342a84f28deca4d35c047cbf9659f1f","d__Bacteria","Desulfobacterota","Desulfobulbia","Desulfobulbales","Desulfocapsaceae",NA,NA
+"b415fc30329e395a74f2836035668e5f","d__Bacteria","Desulfobacterota","Desulfobacteria","Desulfobacterales","Desulfolunaceae",NA,NA
+"8386227f7f540c9ade641eed974249ec","d__Bacteria","Desulfobacterota","Desulfobacteria","Desulfobacterales","Desulfobacteraceae",NA,NA
+"2d410551e3af61144cd8609af63695e7","d__Bacteria","Desulfobacterota","Desulfobacteria","Desulfobacterales","Desulfosarcinaceae",NA,NA
+"33e500c16a4914748177202973eee64f","d__Bacteria","Myxococcota","bacteriap25","bacteriap25","bacteriap25",NA,NA
+"4a2586d748e0fc93ecf9cc14d29040c0","d__Bacteria","Desulfobacterota","Syntrophobacteria","Syntrophobacterales","uncultured",NA,NA
+"21cd6ca705e3222ec914459dcc43026c","d__Bacteria","Bdellovibrionota","Bdellovibrionia","Bdellovibrionales","Bdellovibrionaceae",NA,NA
+"dedca979935f978f2f80013badd3fe81","d__Bacteria","Desulfobacterota","Desulfomonilia","Desulfomonilales","Desulfomonilaceae",NA,NA
+"fad05afa319cb6bb661b8af0cc96f416","d__Bacteria","Myxococcota","Polyangia","Nannocystales","Nannocystaceae",NA,NA
+"34162fc5eb3da03b1e6b5fad9d6b71e9","d__Bacteria","Myxococcota","Polyangia","Haliangiales","Haliangiaceae",NA,NA
+"489755982be6b25500a91762d81daa53","d__Bacteria","Myxococcota","Myxococcia","Myxococcales","Myxococcaceae",NA,NA
+"c8ef23357c44ec22b22f3ddd126c0aaa","d__Bacteria","Myxococcota","Polyangia","Polyangiales","BIrii41",NA,NA
+"61540413b2a67a2df972b7613b9ca915","d__Bacteria","Myxococcota","Polyangia","Polyangiales","Sandaracinaceae",NA,NA
+"881740d4222e254d2c10b8741395c1d7","d__Bacteria","Myxococcota","Polyangia","MidBa8","MidBa8",NA,NA
+"f3879abf758f86d1e0175f5bd73abae2","d__Bacteria","Desulfobacterota","Unclassified Desulfobacterota","Unclassified Desulfobacterota","Unclassified Desulfobacterota",NA,NA
+"4666904df5455daa96da74d1c394eeb7","d__Bacteria","Bdellovibrionota","Oligoflexia","0319-6G20","0319-6G20",NA,NA
+"609258032fab20f6a416a82357243632","d__Bacteria","Sva0485","Sva0485","Sva0485","Sva0485",NA,NA
+"8031c15439c38b6633e82a2843648536","d__Bacteria","Desulfobacterota","Desulfobacteria","Desulfatiglandales","Desulfatiglandaceae",NA,NA
+"4e77263592cccb84d69fdd1c29b50e62","d__Bacteria","Bdellovibrionota","Bdellovibrionia","Bacteriovoracales","Bacteriovoracaceae",NA,NA
+"afb37d318cd6865274f4fea7d338d36b","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rickettsiales","SM2D12",NA,NA
+"46c1934c906af8fea06c63fa181dbfe4","d__Bacteria","Proteobacteria","Gammaproteobacteria","Cellvibrionales","Unclassified Cellvibrionales",NA,NA
+"e06f780a800f42f5a10c418467a6f747","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rickettsiales","Rickettsiaceae",NA,NA
+"0b8b1cdfc9f8b5b08a03a682d3afb6b7","d__Bacteria","Proteobacteria","Alphaproteobacteria","SAR11_clade","Clade_III",NA,NA
+"7051497be569868600ddc91fe2cb4504","d__Bacteria","Proteobacteria","Alphaproteobacteria","SAR11_clade","Clade_II",NA,NA
+"0982e5399f3eac5e2b6f61ec957f3745","d__Bacteria","Proteobacteria","Alphaproteobacteria","SAR11_clade","Clade_I",NA,NA
+"0e5e0696ab4d1375068765aebe507b59","d__Bacteria","Proteobacteria","Alphaproteobacteria","Defluviicoccales","uncultured",NA,NA
+"09c0016339f3558a7309aa9cb55b349b","d__Bacteria","Proteobacteria","Alphaproteobacteria","SAR11_clade","Clade_IV",NA,NA
+"11a84f91189949c7ef89b75b2ac83463","d__Bacteria","Proteobacteria","Gammaproteobacteria","Oceanospirillales","Endozoicomonadaceae",NA,NA
+"760c2a6a4a4aeaf6216308e15e460422","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhizobiales","Rhizobiales_Incertae_Sedis",NA,NA
+"39dbab8aa806746d4a67099e5d2f721f","d__Bacteria","Proteobacteria","Alphaproteobacteria","Kiloniellales","Kiloniellaceae",NA,NA
+"a41b59678c783cb76ac1941c6ae20e4e","d__Bacteria","Proteobacteria","Alphaproteobacteria","AT-s3-44","AT-s3-44",NA,NA
+"65b1be2299fa6f3c3d16b95f154c48f4","d__Bacteria","Proteobacteria","Alphaproteobacteria","Kordiimonadales","Kordiimonadaceae",NA,NA
+"4c22cd599ea583bfbbad1104314d193c","d__Bacteria","Proteobacteria","Alphaproteobacteria","Kordiimonadales","uncultured",NA,NA
+"164eb6f8efa3822f70011dd49f0a8088","d__Bacteria","Proteobacteria","Alphaproteobacteria","Caulobacterales","Parvularculaceae",NA,NA
+"f1f8be2e7ee37b66212ec92414dd1d39","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhodospirillales","Magnetospiraceae",NA,NA
+"3f9ea9d68dda7077babb85bb36ff8ba0","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rickettsiales","S25-593",NA,NA
+"4f1c32a7c473c5453b4cee70cbe77572","d__Bacteria","Proteobacteria","Alphaproteobacteria","Thalassobaculales","Nisaeaceae",NA,NA
+"cbd31f6197cc0c8a33581e0e63640a13","d__Bacteria","Proteobacteria","Alphaproteobacteria","Puniceispirillales","SAR116_clade",NA,NA
+"c0ffacad32a6d2e37f32796ad1ddcb27","d__Bacteria","Proteobacteria","Alphaproteobacteria","Acetobacterales","Acetobacteraceae",NA,NA
+"7ac0dcdc34a4a05e58be9f85ce4adb22","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhizobiales","Rhizobiaceae",NA,NA
+"f91902a1cf52536fbfe7ac1bc129758e","d__Bacteria","Proteobacteria","Alphaproteobacteria","Sphingomonadales","Sphingomonadaceae",NA,NA
+"12c3598d29d94f9c78166848a26f642d","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhizobiales","Xanthobacteraceae",NA,NA
+"4f1dde65d46e121ae48329081f6112e1","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhizobiales","Beijerinckiaceae",NA,NA
+"b84a718b1ed839f59723a07a3fa70adc","d__Bacteria","Proteobacteria","Alphaproteobacteria","Caulobacterales","Caulobacteraceae",NA,NA
+"da4ac5df963b042b9fc4064688bf5515","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhodospirillales","uncultured",NA,NA
+"9aa46547703fb2c1c7666c1d9e551764","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhodospirillales","Rhodospirillaceae",NA,NA
+"59094e6cb36ccaa09060d8f67fd5c7f9","d__Bacteria","Proteobacteria","Alphaproteobacteria","Unclassified Alphaproteobacteria","Unclassified Alphaproteobacteria",NA,NA
+"371ff3f6af66ba2c07137267c7948686","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhodospirillales","Terasakiellaceae",NA,NA
+"2f7eceac769be5cf712cb12ed58adf5d","d__Bacteria","Proteobacteria","Alphaproteobacteria","Caulobacterales","Hyphomonadaceae",NA,NA
+"85243a78ff5fad8d039d37c22157394e","d__Bacteria","Proteobacteria","Alphaproteobacteria","uncultured","uncultured",NA,NA
+"7ab511fb923dbc52eb55bcfccc82345a","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhizobiales","Stappiaceae",NA,NA
+"3ec487f75f09cb9b18300e15112c2e84","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhizobiales","Unclassified Rhizobiales",NA,NA
+"33e579f95184d03b5a7f86e55c2ecc8c","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhizobiales","Hyphomicrobiaceae",NA,NA
+"1be6f85bf16cb6868141805ead2ba94f","d__Bacteria","Proteobacteria","Alphaproteobacteria","Parvibaculales","PS1_clade",NA,NA
+"a3b66a59716b9b3095f41b6b05b205ac","d__Bacteria","Proteobacteria","Alphaproteobacteria","Parvibaculales","OCS116_clade",NA,NA
+"b42266c7a513bb7fbf6278c14d699577","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhizobiales","Methyloligellaceae",NA,NA
+"b365e66c0877d46da62a0da4df818b0f","d__Bacteria","Proteobacteria","Alphaproteobacteria","Rhodobacterales","Rhodobacteraceae",NA,NA
