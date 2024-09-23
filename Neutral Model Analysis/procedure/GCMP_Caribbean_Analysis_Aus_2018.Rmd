@@ -5,6 +5,11 @@ start date: "01/17/2024"
 current date: "04/21/2024"
 output: html_document
 ---
+## set working directory
+``` {r, setup, include=FALSE}
+knitr::opts_knit$set(root.dir = 'C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral Model Analysis')
+
+```
 
 ## Load required libraries. 
 ```{r, message=FALSE, warning=FALSE} 
@@ -148,13 +153,18 @@ write.csv(coral_biom, file ="GCMP24_rarefied_coral.csv")
 ## Calculate Faith's Pd   
 ```{r}
 
+# pull out sample data 
+phyloseq::sample_data(coral.rarefied) %>%  
+    group_by(sample_name_backup, expedition_number,BiologicalMatter) %>%
+  as.data.frame() %>%
+  select(sample_name_backup, expedition_number,BiologicalMatter) -> microbial_faith
+
 #Microbial Phyloseq Pd analysis 
 estimate_pd(coral.rarefied) %>%
-  as.data.frame() %>%
-  mutate('faithpd_avg' = mean(PD),
-            'branch_length_avg' = mean(SR),
-            'Faith_sd' = sd(PD), 
-            'branch_sd' = sd(SR)) -> microbial_faith_pd
+  as.data.frame() -> microbial_faith_pd
+
+microbial_faith$faith_pd <- microbial_faith_pd$PD
+microbial_faith$faith_SR <- microbial_faith_pd$SR
 
 
 # Create data frame from sample data 
@@ -189,9 +199,9 @@ clean_comm <- match.phylo.comm(phy = coral_tree, comm = test_matrix)$comm
 coral_faith_pd <- pd(clean_comm, clean_tree, include.root=TRUE)
 coral_faithpd_reorded <-coral_faith_pd[order(coral_faith_pd$PD, decreasing=TRUE),] 
 
-write.table(microbial_faith_pd, file ="microbial_faith_pd_table.csv", sep = ",",row.names =TRUE, col.names = TRUE)
+write.table(microbial_faith, file ="aus_microbial_faith_pd_table.csv", sep = ",",row.names =TRUE, col.names = TRUE)
 
-write.csv(coral_faithpd_reorded, file ="coralHost_faith_pd_table.csv" ,row.names = TRUE)
+write.csv(coral_faithpd_reorded, file ="aus_coralHost_faith_pd_table.csv" ,row.names = TRUE)
 
 #coral_table <- read.table(file = "../input/coral_expedition_matrix.csv",header=T,comment.char="", row.names=1, sep=",")
 #coral_matrix <-as.matrix(coral_table)

@@ -5,13 +5,9 @@ start date: "01/17/2024"
 current date: "04/21/2024"
 output: html_document
 ---
-
-# First, Set working Directory load library and Import Data into Phyloseq
-```{r warning=FALSE}
-# Command for setting your work directory
-setwd("C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral Model Analysis")
-# Print your working directory
-#getwd() 
+## set working directory
+``` {r, setup, include=FALSE}
+knitr::opts_knit$set(root.dir = 'C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral Model Analysis')
 
 ```
 
@@ -45,12 +41,11 @@ library(picante)
 
 # Import OTU Table Taxonomy and Tree from Qiime2 and import Metadata
 ```{r}
-
 #Import from .qza file into a phyloseq object
 asv <- qza_to_phyloseq(features = "./Atlantic_Pacific_expeditions/input/nomito_table.qza")
 
 #### Import Metadata read.table
-metadata <- read.table(file = "./Atlantic_Pacific_expeditions/input/carib_merged_mapping.csv",header=T,comment.char="", row.names=1, sep=",")
+metadata <- read.table(file = "./Atlantic_Pacific_expeditions/input/carib_miseq_mapping_2024.csv",header=T,comment.char="", row.names=1, sep=",")
 
 ### Import Tree file from biom output tree.nwk
 tree <- read_tree("./Atlantic_Pacific_expeditions/input/tree.nwk")
@@ -155,15 +150,18 @@ write.csv(coral_biom, file ="GCMP24_rarefied_coral.csv")
 ```
 ## Calculate Faith's Pd   
 ```{r}
+# pull out sample data 
+phyloseq::sample_data(coral.rarefied) %>%  
+    group_by(sample_name_backup, expedition_number,BiologicalMatter) %>%
+  as.data.frame() %>%
+  select(sample_name_backup, expedition_number,BiologicalMatter) -> microbial_faith
 
 #Microbial Phyloseq Pd analysis 
 estimate_pd(coral.rarefied) %>%
-  as.data.frame() %>%
-  mutate('faithpd_avg' = mean(PD),
-            'branch_length_avg' = mean(SR),
-            'Faith_sd' = sd(PD), 
-            'branch_sd' = sd(SR)) -> microbial_faith_pd
+  as.data.frame() -> microbial_faith_pd
 
+microbial_faith$faith_pd <- microbial_faith_pd$PD
+microbial_faith$faith_SR <- microbial_faith_pd$SR
 
 # Create data frame from sample data 
 phyloseq::sample_data(coral.rarefied) %>%  
@@ -196,11 +194,10 @@ clean_comm <- match.phylo.comm(phy = coral_tree, comm = test_matrix)$comm
 
 coral_faith_pd <- pd(clean_comm, clean_tree, include.root=TRUE)
 coral_faithpd_reorded <-coral_faith_pd[order(coral_faith_pd$PD, decreasing=TRUE),] 
-write.csv(glom_otu_table, file =taxonomy_file_name ,row.names = FALSE)
 
+write.table(microbial_faith, file ="./carib_microbial_faith_pd_table.csv", sep = ",",col.names = TRUE)
 
-#coral_table <- read.table(file = "../input/coral_expedition_matrix.csv",header=T,comment.char="", row.names=1, sep=",")
-#coral_matrix <-as.matrix(coral_table)
+write.csv(coral_faithpd_reorded, file ="./carib_coralHost_faith_pd_table.csv" ,row.names = TRUE)
 
 ```
 ### Subset Caribbean Phyloseq Objects for Comparative Analysis 
