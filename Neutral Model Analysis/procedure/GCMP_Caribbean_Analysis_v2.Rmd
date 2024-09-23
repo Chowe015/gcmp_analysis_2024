@@ -47,18 +47,18 @@ library(picante)
 ```{r}
 
 #Import from .qza file into a phyloseq object
-asv <- qza_to_phyloseq(features = "../input/carib_silva_merged_table.qza")
+asv <- qza_to_phyloseq(features = "./Atlantic_Pacific_expeditions/input/nomito_table.qza")
 
 #### Import Metadata read.table
-metadata <- read.table(file = "../input/carib_merged_mapping.csv",header=T,comment.char="", row.names=1, sep=",")
+metadata <- read.table(file = "./Atlantic_Pacific_expeditions/input/carib_merged_mapping.csv",header=T,comment.char="", row.names=1, sep=",")
 
 ### Import Tree file from biom output tree.nwk
-tree <- read_tree("../input/tree.nwk")
+tree <- read_tree("./Atlantic_Pacific_expeditions/input/tree.nwk")
 
-coral_tree <-read_tree("../input/huang_roy_tree.newick")
+coral_tree <-read_tree("./Atlantic_Pacific_expeditions/input/huang_roy_tree.newick")
 
 ### Import taxonomy from biom output as .tsv format using read.table
-taxonomy <- read.table(file = "../input/taxonomy.tsv", sep = "\t", header = T ,row.names = 1, )
+taxonomy <- read.table(file = "./Atlantic_Pacific_expeditions/input/taxonomy.tsv", sep = "\t", header = T ,row.names = 1, )
 
 # clean the taxonomy
 
