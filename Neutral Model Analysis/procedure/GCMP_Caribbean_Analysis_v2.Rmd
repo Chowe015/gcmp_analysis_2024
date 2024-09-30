@@ -41,6 +41,8 @@ library(picante)
 
 # Import OTU Table Taxonomy and Tree from Qiime2 and import Metadata
 ```{r}
+setwd('C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral Model Analysis')
+
 #Import from .qza file into a phyloseq object
 asv <- qza_to_phyloseq(features = "./Atlantic_Pacific_expeditions/input/nomito_table.qza")
 
@@ -133,49 +135,55 @@ table(tax_table(coral)[,"Kingdom"])
 coral.rarefied = rarefy_even_depth(coral, rngseed=111, sample.size=1000, replace=F, trimOTUs = TRUE)
 coral.rarefied
 ##Agglomerate taxa to family 
-glom_coral <- tax_glom(coral.rarefied, taxrank = 'Family', NArm = TRUE) ## 444 Samples 
+#glom_coral <- tax_glom(coral.rarefied, taxrank = 'Family', NArm = TRUE) ## 444 Samples 
 
 
 
-phyloseq::otu_table(coral.rarefied)%>%
+#phyloseq::otu_table(coral.rarefied)%>%
         as.data.frame() %>%
         rownames_to_column("id") %>%
         left_join(phyloseq::tax_table(coral.rarefied) %>%
         as.data.frame() %>%
         rownames_to_column("id")) -> coral_biom
         
-write.csv(coral_biom, file ="GCMP24_rarefied_coral.csv")
+#write.csv(coral_biom, file ="GCMP24_rarefied_coral.csv")
 
 
 ```
 ## Calculate Faith's Pd   
 ```{r}
+coral_object <-subset_samples(coral, BiologicalMatter == "Coral Mucus") # all corals without out groups, environmental samples & subset expeditions (i.e, singapore).
+coral_object
+
 # pull out sample data 
-phyloseq::sample_data(coral.rarefied) %>%  
+phyloseq::sample_data(coral_object) %>%  
     group_by(sample_name_backup, expedition_number,BiologicalMatter) %>%
   as.data.frame() %>%
   select(sample_name_backup, expedition_number,BiologicalMatter) -> microbial_faith
 
 #Microbial Phyloseq Pd analysis 
-estimate_pd(coral.rarefied) %>%
+estimate_pd(coral_object) %>%
   as.data.frame() -> microbial_faith_pd
 
 microbial_faith$faith_pd <- microbial_faith_pd$PD
 microbial_faith$faith_SR <- microbial_faith_pd$SR
 
 # Create data frame from sample data 
-phyloseq::sample_data(coral.rarefied) %>%  
-    group_by(expedition_number, BiologicalMatter,Huang_Roy_tree_name) %>%
+phyloseq::sample_data(coral_object) %>%  
+  group_by(expedition_number, BiologicalMatter,Huang_Roy_tree_name) %>%
   as.data.frame() %>%
   select(expedition_number, BiologicalMatter,Huang_Roy_tree_name)-> test_df
+
 # Create a new column titled eco to join expedition and biological matter
 test_df$eco <-paste(test_df$expedition_number,test_df$BiologicalMatter, sep = "_")
+
 #group and count total for each unique group maintaining NA values
 test_df %>% group_by(eco, Huang_Roy_tree_name) %>%  summarise(counts=n()) %>%
   ungroup %>%
   complete(nesting(eco),
            nesting(Huang_Roy_tree_name),
            fill = list(quantity = 0)) -> test_table
+
 # Fill NA with 0
 test_table[is.na(test_table)] <-0
 
@@ -195,11 +203,47 @@ clean_comm <- match.phylo.comm(phy = coral_tree, comm = test_matrix)$comm
 coral_faith_pd <- pd(clean_comm, clean_tree, include.root=TRUE)
 coral_faithpd_reorded <-coral_faith_pd[order(coral_faith_pd$PD, decreasing=TRUE),] 
 
-write.table(microbial_faith, file ="./carib_microbial_faith_pd_table.csv", sep = ",",col.names = TRUE)
+write.table(microbial_faith, file ="./carib_mucus_microbial_faith_pd_table.csv", sep = ",",col.names = TRUE)
 
-write.csv(coral_faithpd_reorded, file ="./carib_coralHost_faith_pd_table.csv" ,row.names = TRUE)
+write.csv(coral_faithpd_reorded, file ="./carib_mucus_Host_faith_pd_table.csv" ,row.names = TRUE)
 
 ```
+
+## Linear regression analysis   
+```{r}
+knitr::opts_knit$set(root.dir = 'C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral Model Analysis')
+remove(results_table)
+results_table <- read.table(file = "./neutral_results_table.csv",header=T,comment.char="",sep=",")
+plot(results_table)
+
+compartment = factor(results_table$Compartment)
+Rsquared = results_table$Rsquared
+faith = results_table$Faith_PD
+n_samples = results_table$n_samples
+region = factor(results_table$Region)
+below = results_table$n_belowMean
+above = results_table$n_aboveMean
+expedition = results_table$expedition
+migration = results_table$m
+
+category_migration_test <- lm(migration ~ compartment+region+n_samples)
+summary(category_migration_test)
+
+category_Rquared_test <- lm(Rsquared ~ compartment+region+n_samples)
+summary(category_Rquared_test)
+
+R2_test <- lm(Rsquared ~ Faith_PD+n_samples+microbial_N, data = results_table)
+summary(R2_test)
+
+migration_test <- lm(m ~ Faith_PD+n_samples+Rsquared, data = results_table)
+summary(migration_test)
+
+sample_expedition <- lm(n_samples ~ expedition+migration)
+summary(sample_expedition)
+
+
+```
+
 ### Subset Caribbean Phyloseq Objects for Comparative Analysis 
 ```{r}
 ## Caribbean dataset rarefication to 2000 per sample for downstream analysis Retained 1,222,000 (22.55%) features in 611 (82.12%) samples at the specifed sampling depth.
