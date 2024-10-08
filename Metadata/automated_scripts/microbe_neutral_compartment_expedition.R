@@ -208,17 +208,17 @@ p_neuM_coral=ggplot(neutral_mod1_w, aes(x=log10(p), y=freq, color = model))+
 
 r <- neutral_mod_w$Rsqr
 m_var <- neutral_mod_w$m
-lb1 <- paste0(r,"\n R^2 Value")
+lb1 <- paste0(r,"\n R2 Value")
 lb2 <- paste0(m_var,"\n migration rate (m):")
 lb3 <- paste0(expedition,"_",biosample,"\n Neutral_Model")
 
-p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=6.5, label=lb1, 
+p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=5.5, label=lb1, 
                                         fontface="bold", color="black",
                                         parse=FALSE) +
-  annotate("text", x = -3.5, y=0.5, size=6.5, label=lb2, 
+  annotate("text", x = -3.5, y=0.5, size=4.5, label=lb2, 
            fontface="bold", color="black",
            parse=FALSE) +
-  annotate("text", x = -3.5, y=0.9, size=6.5, label=lb3, 
+  annotate("text", x = -3.5, y=0.9, size=4.5, label=lb3, 
            fontface="bold", color="black",
            parse=FALSE)
 

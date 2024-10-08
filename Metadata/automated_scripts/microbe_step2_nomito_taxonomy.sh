@@ -7,7 +7,10 @@ read speed
 
 echo filtering rep-seq file using silva extended taxonomy
 
-qiime feature-classifier classify-consensus-vsearch --i-query working_files/rep-seqs.qza --i-reference-reads silva_extended_sequences.qza --i-reference-taxonomy silva_extended_taxonomy.qza \
+qiime feature-classifier classify-consensus-vsearch \
+ --i-query working_files/rep-seqs.qza \
+ --i-reference-reads working_files/silva_extended_sequences.qza \
+ --i-reference-taxonomy working_files/silva_extended_taxonomy.qza \
  --p-threads $speed \
  --o-classification working_files/silva_extended_classification_taxonomy.qza \
  --o-search-results extra/silva_extended_classification_results.qza \
@@ -18,7 +21,7 @@ echo filtering table...
 
 qiime taxa filter-table  \
  --i-table working_files/table.qza \
- --i-taxonomy extra/silva_extended_classification_taxonomy.qza \
+ --i-taxonomy working_files/silva_extended_classification_taxonomy.qza \
  --p-exclude 'mitochondria,chloroplast,eukaryota' \
  --o-filtered-table working_files/nomito_table.qza \
 
@@ -26,7 +29,7 @@ echo filtering rep_seq
 
 qiime taxa filter-seqs \
  --i-sequences working_files/rep-seqs.qza \
- --i-taxonomy extra/silva_extended_classification_taxonomy.qza \
+ --i-taxonomy working_files/silva_extended_classification_taxonomy.qza \
  --p-exclude 'mitochondria,chloroplast,eukaryota' \
 --o-filtered-sequences working_files/nomito_rep-seqs.qza
 

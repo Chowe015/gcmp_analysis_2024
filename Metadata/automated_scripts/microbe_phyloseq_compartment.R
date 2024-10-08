@@ -4,9 +4,8 @@ library(qiime2R)
 library(phyloseq)
 library(tidyverse)
 library(btools)
-library(picante)
 
-sink("PIC_results_log.txt",append=FALSE,split=TRUE)
+sink("Phyloseq_results_log.txt",append=FALSE,split=TRUE)
 
 #Get user input and assign to variables
 args <- commandArgs(trailingOnly=TRUE)
@@ -16,8 +15,8 @@ feature_table_path <-args[1]
 metadata_path <-args[2]
 taxonomy_path <-args[3]
 tree_path <-args[4]
-expedition <-args[5]
-biosample <- args[6]
+biosample <-args[5]
+ 
 
 #Import from .qza file into a phyloseq object
 asv <- qza_to_phyloseq(features = feature_table_path)
@@ -112,7 +111,7 @@ phylo
 
 
 # Subset only corals from database
-subject <-subset_samples(phylo, outgroup == "n" & expedition_number == print(paste(expedition)) & tissue_compartment == print(paste(biosample)))
+subject <-subset_samples(phylo, outgroup == "n" & tissue_compartment == print(paste(biosample)))
 subject
 
 print(paste("Generating Rarefied Coral dataset..."))
@@ -131,7 +130,7 @@ phyloseq::tax_table(rarefied)%>%
 
 paste(print("Printing Rarefied ASV Table"))
 ## Output .csv from the biom file
-taxonomy_file_name <- paste0(expedition,"_",biosample,"_","feature_table_with_taxonomy.csv")
+taxonomy_file_name <- paste0(biosample,"_","feature_table_with_taxonomy.csv")
 write.csv(rare_otu_table, file =taxonomy_file_name, row.names = FALSE)
 
 
@@ -146,7 +145,7 @@ phyloseq::tax_table(glom)%>%
         rownames_to_column("id") -> glom_taxonomy
 
 ## Output .csv from the taxonomy file
-taxonomy_file_name <- paste0(expedition,"_",biosample,"_taxonomy.csv")
+taxonomy_file_name <- paste0(biosample,"_taxonomy.csv")
 write.csv(glom_taxonomy, file =taxonomy_file_name, row.names = FALSE)
 
 print(paste("Generating Agglomerated ASV Table dataset..."))
@@ -156,7 +155,7 @@ phyloseq::otu_table(glom)%>%
 
 ## Output .csv from the otu table file
 
-otu_file_name <- paste0(expedition,"_",biosample,"_feature_table.csv")
+otu_file_name <- paste0(biosample,"_feature_table.csv")
 write.csv(glom_otu_table, file =otu_file_name ,row.names = FALSE)
 
 print(paste("Finished!"))

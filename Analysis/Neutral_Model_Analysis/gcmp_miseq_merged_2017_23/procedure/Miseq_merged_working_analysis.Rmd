@@ -36,7 +36,7 @@ library(picante)
 # Import OTU Table Taxonomy and Tree from Qiime2 and import Metadata
 ```{r}
 ## Set working directory
-knitr::opts_knit$set(root.dir = 'C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral Model Analysis')
+knitr::opts_knit$set(root.dir = 'C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral_Model_Analysis')
 
 #Import from .qza file into a phyloseq object
 asv <- qza_to_phyloseq(features = "../input/merged_table.qza")
@@ -148,7 +148,7 @@ coral.rarefied
 ## Calculate Faith's Pd   
 ```{r}
 
-setwd('C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral Model Analysis')
+setwd('C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral_Model_Analysis')
 
 # pull out sample data 
 phyloseq::sample_data(coral.rarefied) %>%  
