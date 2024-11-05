@@ -1,0 +1,2 @@
+	Threshold
+Potentially_Pathogenic	0.2
