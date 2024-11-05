@@ -1,0 +1,2 @@
+	Threshold
+Contains_Mobile_Elements	0.2

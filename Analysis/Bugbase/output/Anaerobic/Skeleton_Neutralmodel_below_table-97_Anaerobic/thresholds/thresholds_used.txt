@@ -1,0 +1,2 @@
+	Threshold
+Anaerobic	0.001
