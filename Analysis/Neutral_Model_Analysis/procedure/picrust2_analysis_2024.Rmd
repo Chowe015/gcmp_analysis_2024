@@ -1,0 +1,240 @@
+---
+title: "DataFrame_filtering"
+author: "Colin Howe"
+date: "2024-10-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+setwd("C:/Users/Colin Howe/Desktop/R_Command_Line_Practice/merged_miseq_folder")
+
+## color for gcmp corals
+# Mucus  
+"#009197"
+#Tissue 
+"#EC8C5C"
+#Skeleton
+"#BE3B97"
+```
+
+#load libray
+```{r, message=FALSE, warning=FALSE} 
+library(tidyverse)
+library(phyloseq)
+library(BiocManager)
+library(dplyr)
+library(data.table)
+library(readr)
+library(ggpicrust2)
+library(tibble)
+library(ggprism)
+library(patchwork)
+```
+
+#Import data
+```{r}
+
+## The function column includes a period so that it is recognized as a character rather than actual function
+neutral_table <- read.table(file = "./Mucus/Mucus_Neutralmodel.csv", header=T,comment.char="", sep=",", check.names = FALSE)
+
+colnames(neutral_table)[1] <- "taxon"
+select(neutral_table,-c(Genus,Species))
+
+ref_taxonomy <- read.table(file = "./Mucus/M_feature_table_with_taxonomy.csv", header =T, sep = ",", check.names = FALSE) 
+colnames(ref_taxonomy)[1] <- "taxon"
+#metadata <- read.table(file = "gcmp_complete_mapping2024_v1.txt",header=T,comment.char="", sep="\t")
+
+## Import Picrust2 pathway contributions zipped tables
+pathway <- read.table(gzfile("./path_abun_contrib.tsv.gz"), header =T, sep = "\t")
+colnames(pathway)[1] <- "sample_names"
+
+## Import Picrust2 Kegg Ortholog Table
+ko_function <- read.table(gzfile("./pred_metagenome_contrib.tsv.gz"), header =T, sep = "\t")
+colnames(ko_function)[1] <- "sample_names"
+
+# filter Significant ASV family names and model 
+neutral_fam_df <- select(filter(neutral_table, padj <=0.05),Class,Order,Family,model)
+
+# Join dataset from Rarefied taxonomy and Non-neutral ASV
+nonneutral_tax <- inner_join(neutral_fam_df,ref_taxonomy, by = c("Class","Order","Family"))
+
+# Remove taxonomy columns and subset sample ID
+select(nonneutral_tax,-c(Kingdom,Phylum,Class,Order,Family,Genus,Species,model)) %>% 
+  as.matrix() -> list 
+transpose_list <-t(list)
+
+sampleID <- transpose(list, keep.names = "sample_names")
+
+select(pathway, sample_names,function.,taxon) %>% 
+        inner_join(transpose_table, pathway, by = "sample_names") -> test #%>%
+      #select(-c(Kingdom,Phylum,Species)) -> M_non_neutral_path_contrib
+ 
+
+# Join non-neutral table with pathway predictions
+non_neutral_pathway_contrib <- inner_join(pathway,nonneutral_tax, by ="taxon") 
+
+# Join non-neutral table with KO function predictions
+non_neutral_ko_table <- inner_join(ko_function, nonneutral_tax, by ="taxon") 
+
+
+write.table(nonneutral_tax, file = "Mucus_non_neutral_feature_table.tsv", sep = "\t")
+
+write.table(non_neutral_ko_table,gzfile("Tissue_non_neutral_ko_contrib.tsv.gz"), sep = "\t")
+
+write.table(non_neutral_pathway_contrib, gzfile("Mucus_non_neutral_pathway_contrib.tsv.gz"),sep = "\t")
+
+M_non_neutral_path_contrib %>% filter(model == "above") %>% group_by(function.) %>%
+                              summarize(genome_path_count = sum(genome_function_count), 
+                              mean_path_abun = mean(genome_function_count),
+                              genome_path_sd = sd(genome_function_count),
+                              unique_family_count = n_distinct(Family)) -> m_above_path_abund
+
+M_non_neutral_path_contrib %>% filter(model == "above") %>% group_by(Family) %>%
+                              summarize(taxon_path_count = sum(taxon_function_abun), 
+                              tax_path_mean_abun = mean(taxon_function_abun),
+                              tax_path_sd = sd(taxon_function_abun), 
+                              unique_function_count = n_distinct(function.)) -> m_above_family_abund
+
+## Mucus nonneutral microbes below
+M_non_neutral_path_contrib %>% filter(model == "below") %>% group_by(function.) %>%
+                              summarize(genome_path_count = sum(genome_function_count), 
+                              mean_path_abun = mean(genome_function_count),
+                              genome_path_sd = sd(genome_function_count),
+                              unique_family_count = n_distinct(Family)) -> m_below_path_abund
+
+M_non_neutral_path_contrib %>% filter(model == "below") %>% group_by(Family) %>%
+                              summarize(taxon_path_count = sum(taxon_function_abun), 
+                              tax_path_mean_abun = mean(taxon_function_abun),
+                              tax_path_sd = sd(taxon_function_abun), 
+                              unique_function_count = n_distinct(function.)) -> m_below_family_abund
+
+## transform data for downstream analysis in ggpicrust2
+M_non_neutral_path_contrib %>% select(sample,model,function.,genome_function_count) %>%
+                          group_by(sample,function.) %>%
+                          summarize(genome_path_count = sum(genome_function_count), .groups="drop") %>% 
+                          as.data.frame() %>%  
+                          pivot_wider(names_from = sample, values_from = genome_path_count,values_fill = 0 )-> mucus_pathway_abund 
+
+M_non_neutral_ko_contrib %>% select(sample,model,function.,genome_function_count) %>%
+                               group_by(sample,function.) %>%
+                              summarize(genome_path_count = sum(genome_function_count), .groups="drop") %>% as.data.frame() %>% pivot_wider(names_from = sample, values_from = genome_path_count,values_fill = 0 )-> mucus_ko_abund
+
+## Output as tsv files
+write.table(mucus_ko_abund,"mucus_ko_abund.tsv", delim = "\t") 
+write.table(mucus_pathway_abund,"mucus_path_abund.tsv", delim = "\t")
+```
+
+## GGpicrust2 analysis workflow
+```{r}
+
+
+# If you want to analyze KEGG pathway abundance instead of KO within the pathway, turn ko_to_kegg to TRUE.
+# KEGG pathways typically have more explainable descriptions.
+## Import mapping file
+metadata <- read.table(file = "gcmp_complete_mapping2024_v1.txt",header=T,comment.char="", sep="\t")
+
+#Assign column name to inner_join
+colnames(metadata)[1] =as.character("sample")
+
+# Subset Sample ID for non_neutral_microbes
+M_non_neutral_ko_contrib %>% select(sample,model,taxon) %>%  distinct(sample, .keep_all = TRUE)%>% as.data.frame()-> mucus_taxonID
+
+# inner_join tables
+ko_metadata <- inner_join(metadata,mucus_taxonID, by = "sample")
+rename(ko_metadata, sample_name=sample) -> gg_mucus_metadata
+write.table(gg_mucus_metadata,"gg_mucus_metadata.tsv", sep="\t")
+
+# Load necessary data: abundance data and metadata
+mucus_file = read.table(file= "./mucus_ko_abund.tsv", header=T,check.name=FALSE)
+gg_metadata <-read.delim("gg_mucus_metadata.tsv")
+
+# Load KEGG pathway abundance
+kegg_abundance <- ko2kegg_abundance(mucus_file) 
+
+# Perform pathway differential abundance analysis (DAA) using ALDEx2 method
+# Please change group to "your_group_column" if you are not using example dataset
+daa_results_df <- pathway_daa(abundance = kegg_abundance, metadata = gg_mucus_metadata, group = "model", daa_method = "ALDEx2", select = NULL, reference = NULL) 
+
+# Filter results for ALDEx2_Welch's t test method
+# Please check the unique(daa_results_df$method) and choose one
+daa_sub_method_results_df <- daa_results_df[daa_results_df$method == "ALDEx2_Wilcoxon rank test", ]
+
+# Annotate pathway results using KO to KEGG conversion
+daa_annotated_sub_method_results_df <- pathway_annotation(pathway = "KO", daa_results_df = daa_sub_method_results_df, ko_to_kegg = TRUE)
+
+# Generate pathway error bar plot
+# Please change Group to metadata$your_group_column if you are not using example dataset
+p <- pathway_errorbar(abundance = kegg_abundance, daa_results_df = daa_annotated_sub_method_results_df, Group = metadata$Environment, p_values_threshold = 0.05, order = "pathway_class", select = NULL, ko_to_kegg = TRUE, p_value_bar = TRUE, colors = NULL, x_lab = "pathway_name")
+
+# If you want to analyze EC, MetaCyc, and KO without conversions, turn ko_to_kegg to FALSE.
+
+# Load metadata as a tibble
+# data(metadata)
+metadata <- read_delim("path/to/your/metadata.txt", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
+
+# Load KO abundance as a data.frame
+# data(ko_abundance)
+ko_abundance <- read.delim("path/to/your/pred_metagenome_unstrat.tsv")
+
+# Perform pathway DAA using ALDEx2 method
+# Please change column_to_rownames() to the feature column if you are not using example dataset
+# Please change group to "your_group_column" if you are not using example dataset
+daa_results_df <- pathway_daa(abundance = ko_abundance %>% column_to_rownames("#NAME"), metadata = metadata, group = "Environment", daa_method = "ALDEx2", select = NULL, reference = NULL)
+
+# Filter results for ALDEx2_Kruskal-Wallace test method
+daa_sub_method_results_df <- daa_results_df[daa_results_df$method == "ALDEx2_Wilcoxon rank test", ]
+
+# Annotate pathway results without KO to KEGG conversion
+daa_annotated_sub_method_results_df <- pathway_annotation(pathway = "KO", daa_results_df = daa_sub_method_results_df, ko_to_kegg = FALSE)
+
+# Generate pathway error bar plot
+# Please change column_to_rownames() to the feature column
+# Please change Group to metadata$your_group_column if you are not using example dataset
+p <- pathway_errorbar(abundance = ko_abundance %>% column_to_rownames("#NAME"), daa_results_df = daa_annotated_sub_method_results_df, Group = metadata$Environment, p_values_threshold = 0.05, order = "group",
+select = daa_annotated_sub_method_results_df %>% arrange(p_adjust) %>% slice(1:20) %>% dplyr::select(feature) %>% pull(), 
+ko_to_kegg = FALSE, 
+p_value_bar = TRUE, 
+colors = NULL, 
+x_lab = "description")
+
+# Workflow for MetaCyc Pathway and EC
+
+# Load MetaCyc pathway abundance and metadata
+data("metacyc_abundance")
+data("metadata")
+
+# Perform pathway DAA using LinDA method
+# Please change column_to_rownames() to the feature column if you are not using example dataset
+# Please change group to "your_group_column" if you are not using example dataset
+metacyc_daa_results_df <- pathway_daa(abundance = metacyc_abundance %>% column_to_rownames("pathway"), metadata = metadata, group = "Environment", daa_method = "LinDA")
+
+# Annotate MetaCyc pathway results without KO to KEGG conversion
+metacyc_daa_annotated_results_df <- pathway_annotation(pathway = "MetaCyc", daa_results_df = metacyc_daa_results_df, ko_to_kegg = FALSE)
+
+# Generate pathway error bar plot
+# Please change column_to_rownames() to the feature column
+# Please change Group to metadata$your_group_column if you are not using example dataset
+pathway_errorbar(abundance = metacyc_abundance %>% column_to_rownames("pathway"), daa_results_df = metacyc_daa_annotated_results_df, Group = metadata$Environment, ko_to_kegg = FALSE, p_values_threshold = 0.05, order = "group", select = NULL, p_value_bar = TRUE, colors = NULL, x_lab = "description")
+
+# Generate pathway heatmap
+# Please change column_to_rownames() to the feature column if you are not using example dataset
+# Please change group to "your_group_column" if you are not using example dataset
+feature_with_p_0.05 <- metacyc_daa_results_df %>% filter(p_adjust < 0.05)
+pathway_heatmap(abundance = metacyc_abundance %>% filter(pathway %in% feature_with_p_0.05$feature) %>% column_to_rownames("pathway"), metadata = metadata, group = "Environment")
+
+# Generate pathway PCA plot
+# Please change column_to_rownames() to the feature column if you are not using example dataset
+# Please change group to "your_group_column" if you are not using example dataset
+pathway_pca(abundance = metacyc_abundance %>% column_to_rownames("pathway"), metadata = metadata, group = "Environment")
+
+# Run pathway DAA for multiple methods
+# Please change column_to_rownames() to the feature column if you are not using example dataset
+# Please change group to "your_group_column" if you are not using example dataset
+methods <- c("ALDEx2", "DESeq2", "edgeR")
+daa_results_list <- lapply(methods, function(method) {
+  pathway_daa(abundance = metacyc_abundance %>% column_to_rownames("pathway"), metadata = metadata, group = "Environment", daa_method = method)
+})
+
+# Compare results across different methods
+comparison_results <- compare_daa_results(daa_results_list = daa_results_list, method_names = c("ALDEx2_Welch's t test", "ALDEx2_Wilcoxon rank test", "DESeq2", "edgeR"))
+```
