@@ -20,16 +20,16 @@ tax_table()   Taxonomy Table:    [ 85431 taxa by 7 taxonomic ranks ]
 phy_tree()    Phylogenetic Tree: [ 85431 tips and 84927 internal nodes ]
 [1] "M"
 phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 85431 taxa and 325 samples ]
-sample_data() Sample Data:       [ 325 samples by 170 sample variables ]
+otu_table()   OTU Table:         [ 85431 taxa and 322 samples ]
+sample_data() Sample Data:       [ 322 samples by 170 sample variables ]
 tax_table()   Taxonomy Table:    [ 85431 taxa by 7 taxonomic ranks ]
 phy_tree()    Phylogenetic Tree: [ 85431 tips and 84927 internal nodes ]
 [1] "Generating Rarefied Coral dataset..."
 phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 14568 taxa and 300 samples ]
-sample_data() Sample Data:       [ 300 samples by 170 sample variables ]
-tax_table()   Taxonomy Table:    [ 14568 taxa by 7 taxonomic ranks ]
-phy_tree()    Phylogenetic Tree: [ 14568 tips and 14440 internal nodes ]
+otu_table()   OTU Table:         [ 14377 taxa and 298 samples ]
+sample_data() Sample Data:       [ 298 samples by 170 sample variables ]
+tax_table()   Taxonomy Table:    [ 14377 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 14377 tips and 14249 internal nodes ]
 [1] "Calculating Faith Pd for host and microbiome"
 [1] "Dropping taxa from the community because they are not present in the phylogeny:"
  [1] "AGA_Pachyseris_rugosa"   "AGA_Pachyseris_speciosa"
@@ -885,8 +885,14 @@ phy_tree()    Phylogenetic Tree: [ 14568 tips and 14440 internal nodes ]
 [1] "Joining OTU and taxonomy tables from Rarefied Phyloseq object..."
 [1] "Printing Rarefied ASV Table"
 [1] "Printing Rarefied ASV Table"
-[1] "Agglomerate Taxonomy to the Family Level"
 [1] "Joining OTU and taxonomy tables from Agglomerated phyloseq object..."
 [1] "Joining OTU and taxonomy tables from Agglomerated phyloseq object..."
+[1] "Creating new mapping file"
+[1] "Creating new mapping file"
+[1] "Agglomerated Taxonomy to the Family Level"
+[1] "Printing Agglomerated Taxonomy Table"
+[1] "Printing Agglomerated Taxonomy Table"
+[1] "Creating glom mapping file"
+[1] "Creating glom mapping file"
 [1] "Generating Agglomerated ASV Table dataset..."
 [1] "Finished!"

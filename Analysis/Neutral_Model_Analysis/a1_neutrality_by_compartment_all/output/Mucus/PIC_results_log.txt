@@ -3,9 +3,10 @@
 [1] "define errors from start"
 [1] "define errors from start"
 [1] 0
-[1] 163
+[1] 152
 [1] 18
-[1] 427
-[1] "Print Taxonomy Table from Neutral Model"
+[1] 434
+[1] "joining neutral table and ref taxonomy"
+[1] "Writing Neutral Model csv"
 [1] "Creating Neutral Results output files"
 [1] "Finished!"
