@@ -4,7 +4,6 @@ library(qiime2R)
 library(phyloseq)
 library(tidyverse)
 library(btools)
-library(picante)
 
 sink("Phyloseq_results_log.txt",append=FALSE,split=TRUE)
 
@@ -15,8 +14,7 @@ feature_table_path <-args[1]
 metadata_path <-args[2]
 taxonomy_path <-args[3]
 tree_path <-args[4]
-coral_tree_path <-args[5]
-biosample <-args[6]
+biosample <-args[5]
 
 ####Import from .qza file into a phyloseq object
 
@@ -30,8 +28,6 @@ metadata <- read.table(file = metadata_path,header=T, comment.char="",row.names=
 
 print(paste("tree_path",tree_path))
 tree <- read_tree(tree_path)
-
-coral_tree <-read_tree(coral_tree_path)
 
 #### Import taxonomy from biom output as .tsv format using read.table
 
@@ -126,6 +122,12 @@ rarefied
 print(paste("Agglomerated Taxonomy to the Family Level"))
 glom <- tax_glom(rarefied, taxrank = 'Family', NArm = TRUE)
 
+## Output .csv from the joined table
+
+paste(print("Printing Glom ASV & taxononmy Table"))
+rare_file_name <- paste0(biosample,"_","glom_table_taxonomy.csv")
+write.csv(glom_otu_table, file =rare_file_name, row.names = FALSE)
+
 #### create ASV tables by id ** This file will be used in microbe_neutral_compartment.R and picrust2_neutral_table_generator.R
 
 print(paste("Generating Agglomerated ASV Table dataset..."))
@@ -151,7 +153,7 @@ write.csv(glom_taxonomy, file =glom_taxonomy_name, row.names = FALSE)
 #### Subset taxonomy tables ** This table contains non-agglomerated ASV ID which can be used 
 #### for comparative analysis of significant non-neutral microbes. 
 
-## Subset rarefied taxonomy 
+## Subset Rarefied taxonomy 
 paste(print("Subset taxonomy rarefied phyloseq object..."))
 phyloseq::tax_table(rarefied)%>%
   as.data.frame() %>%
@@ -159,7 +161,7 @@ phyloseq::tax_table(rarefied)%>%
 
 ## Output .csv from the rarefied taxonomy file
 rare_file_name <- paste0(biosample,"_rarefied_taxonomy.csv")
-write.csv(rare_taxonomy, file =rare_file_name, row.names = FALSE)
+write.csv(rare_taxonomy, file =taxonomy_file_name, row.names = FALSE)
 
 ## Subset Rarefied otu table 
 paste(print("Subset taxonomy rarefied phyloseq object..."))
@@ -170,7 +172,6 @@ phyloseq::otu_table(rarefied)%>%
 ## Output .csv from the rarefied taxonomy file
 rare_otu_name <- paste0(biosample,"_rarefied_table.csv")
 write.csv(rare_otu_table, file =rare_otu_name, row.names = FALSE)
-
 
 #### Creating metadata file for downstream analysis ** This file is used as a mapping file for comparartive analysis for subset datasets MST. 
 
@@ -195,72 +196,12 @@ phyloseq::sample_data(glom)%>%
 glom_mapping_name <- paste0(biosample,"_glom_metadata.csv")
 write.csv(glom_mapping, file =glom_mapping_name, row.names = FALSE)
 
+##paste(print("Joining OTU and taxonomy tables from agglomerated Phyloseq object..."))
 #### Join asv and taxonomy tables by id **This will be used in microbe_picrust2_neutral_table_generator.R
-paste(print("Joining OTU and taxonomy tables from agglomerated Phyloseq object..."))
-phyloseq::tax_table(rarefied)%>%
-  as.data.frame()%>%
-  rownames_to_column("id")%>%
-  right_join(phyloseq::otu_table(rarefied)%>%
-               as.data.frame()%>%
-               rownames_to_column("id")) -> rare_tax_table
-
-## Output joined rarefied taxonomy and otu table
-rare_tax_name <- paste0(biosample,"_raredied_tax_table.csv")
-write.csv(rare_tax_table, file =rare_tax_name, row.names = FALSE)
-
-########### Calculate Faiths Pd ############
-print(paste("Calculating Faith Pd for host and microbiome from **Rarefied** dataset"))
-
-# pull out sample data 
-phyloseq::sample_data(rarefied) %>%  
-  group_by(sample_name_backup, expedition_number,BiologicalMatter) %>%
-  as.data.frame() %>%
-  select(sample_name_backup, expedition_number,BiologicalMatter) -> microbial_faith
-
-#Microbial Phyloseq Pd analysis 
-estimate_pd(rarefied) %>%
-  as.data.frame() -> microbial_faith_pd
-
-microbial_faith$faith_pd <- microbial_faith_pd$PD
-microbial_faith$faith_SR <- microbial_faith_pd$SR
-
-
-# Create data frame from sample data 
-phyloseq::sample_data(rarefied) %>%  
-  group_by(expedition_number, BiologicalMatter,Huang_Roy_tree_name) %>%
-  as.data.frame() %>%
-  select(expedition_number, BiologicalMatter,Huang_Roy_tree_name)-> test_df
-
-# Create a new column titled eco to join expedition and biological matter
-test_df$eco <-paste(test_df$expedition_number,test_df$BiologicalMatter, sep = "_")
-
-#group and count total for each unique group maintaining NA values
-test_df %>% group_by(eco, Huang_Roy_tree_name) %>%  summarise(counts=n()) %>%
-  ungroup %>%
-  complete(nesting(eco),
-           nesting(Huang_Roy_tree_name),
-           fill = list(quantity = 0)) -> test_table
-# Fill NA with 0
-test_table[is.na(test_table)] <-0
-
-#Build Matrix
-e <- unique(test_table$eco) 
-t <- unique(test_table$Huang_Roy_tree_name) 
-c <- test_table$counts
-
-test_matrix <- matrix(c, nrow = length(e), ncol = length(t), byrow=TRUE)
-rownames(test_matrix) = e
-colnames(test_matrix) = t
-
-# clean data set to match each other
-clean_tree <- match.phylo.comm(phy = coral_tree, comm = test_matrix)$phy
-clean_comm <- match.phylo.comm(phy = coral_tree, comm = test_matrix)$comm
-
-coral_faith_pd <- pd(clean_comm, clean_tree, include.root=TRUE)
-coral_faithpd_reorded <-coral_faith_pd[order(coral_faith_pd$PD, decreasing=TRUE),] 
-
-write.table(microbial_faith, file =paste0(biosample,"_","microbial_faithpd_table.csv"), sep = ",",row.names =TRUE, col.names = TRUE)
-
-write.csv(coral_faithpd_reorded, file =paste0(biosample,"_","Host_faithpd_table.csv") ,row.names = TRUE)
-
+#phyloseq::tax_table(glom)%>%
+#  as.data.frame()%>%
+#  rownames_to_column("id")%>%
+#  right_join(phyloseq::otu_table(glom)%>%
+#               as.data.frame()%>%
+#               rownames_to_column("id")) -> glom_otu_table
 print(paste("Finished!"))

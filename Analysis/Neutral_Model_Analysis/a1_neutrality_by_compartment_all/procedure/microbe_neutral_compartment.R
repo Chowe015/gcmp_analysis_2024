@@ -14,13 +14,14 @@ sink("PIC_results_log.txt",append=FALSE,split=TRUE)
 #Get user input and assign to variables
 args <- commandArgs(trailingOnly=TRUE)
 
-otu_table_path <-args[1]
+glom_table_path <-args[1]
 taxonomy_path <- args[2]
 biosample <- args[3]
 
-otu_table <- read.csv(otu_table_path, row.names=1, check.names=FALSE)
+glom_table <- read.csv(glom_table_path, row.names=1, check.names=FALSE)
 #print(paste("Imported GCMP OTU Table",otu_table))
-taxonomy_table <- read.csv(taxonomy_path, row.names=1, check.name=FALSE)
+glom_taxonomy_table <- read.csv(taxonomy_path, check.name=FALSE)
+
 print(paste("Create Neutral Model Function"))
 sncm.fit <- function(spp, pool=NULL, stats=TRUE, taxon=NULL){
 
@@ -153,10 +154,10 @@ addf = function(freq, pred.upr, pred.lwr) {
   return(model)
 }
 
-print(paste("Run Nuetral Model Function on OTU Table"))
+print(paste("Run Neutral Model Function on OTU Table"))
 ## pull in otu table 
 
-otu_frame = as.data.frame(t(otu_table))
+otu_frame = as.data.frame(t(glom_table))
 
 ## Neutral fit
 neutral_mod_w = sncm.fit(otu_frame)
@@ -174,13 +175,17 @@ neutral_mod1_w %>% mutate(ci.mean = (pred.upr-pred.lwr),
                         SE = (ci.mean/(2*1.96)),
                         zstat = (freq/SE),
 												p_value = (exp(-0.717*zstat-0.416*zstat^2)),
-                        padj = (exp(-0.717*zstat-0.416*zstat^2))*length(neutral_mod1_w$model)) -> neutral_results_padj
+                        padj = (exp(-0.717*zstat-0.416*zstat^2))*length(neutral_mod1_w$model)) %>% as.data.frame() %>%
+                        rownames_to_column("id")-> neutral_results_padj
 
-print(paste("Print Taxonomy Table from Neutral Model"))
+print(paste("joining neutral table and ref taxonomy"))
+## Inner_join feature table with neutral model families
+inner_join(neutral_results_padj,glom_taxonomy_table, by = "id") %>% as.data.frame() -> nonneutral_tax
 
-## Assign Taxonomy to table of significant microbes
-env_taxa = cbind(as(neutral_results_padj, "data.frame"), as(taxonomy_table[rownames(taxonomy_table), ], "matrix"))
-#coral_taxa
+# Print output files
+print(paste("Writing Neutral Model csv"))
+neutral_table_name <- paste0(biosample,"_neutral_model.csv")
+write.csv(nonneutral_tax,neutral_table_name,row.names = FALSE, col.names = TRUE)
 
 #plot neuModel
 p_neuM_coral=ggplot(neutral_mod1_w, aes(x=log10(p), y=freq, color = model))+
@@ -223,9 +228,7 @@ p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=5.5, label
 
 print(paste("Creating Neutral Results output files"))
 
-# Print output files
-neutral_table_name <- paste0(biosample,"_Neutralmodel.csv")
-write.csv(env_taxa,neutral_table_name,row.names = TRUE)
+
 
 ## Print Neutral Model Plot
 neutral_file_name <- paste0(biosample,"_NeutralModel_Plot.pdf")
