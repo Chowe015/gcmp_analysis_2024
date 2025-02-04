@@ -114,7 +114,7 @@ TRAIT=M00176_Sulfur_reduction_sulfate_H2S_
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/${TRAIT}
 for i in *Neutralmodel_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/${TRAIT}_0.6/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.7;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/${TRAIT}/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.7;
     done
 
 TRAIT=M00453_QseC_QseB_quorum_sensing_two_component_regulatory_system_
