@@ -1,0 +1,216 @@
+Comparing M_all vs. T_all 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 1089, p-value = 0.5816
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing M_all vs. S_all 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 1280, p-value = 0.004816
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing T_all vs. M_all 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 927, p-value = 0.5816
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing T_all vs. S_all 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 643, p-value = 0.001961
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing S_all vs. M_all 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 2636, p-value = 0.004816
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing S_all vs. T_all 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 1635, p-value = 0.001961
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing M_above vs. M_neutral 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 497.5, p-value = 0.9814
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing M_above vs. M_below 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 332.5, p-value = 0.09946
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing M_neutral vs. M_above 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 492.5, p-value = 0.9814
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing M_neutral vs. M_below 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 826, p-value = 0.1079
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing M_below vs. M_above 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 163.5, p-value = 0.09946
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing M_below vs. M_neutral 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 1319, p-value = 0.1079
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing T_above vs. T_neutral 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 107, p-value = 0.6378
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing T_above vs. T_below 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 22, p-value = 0.2041
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing T_neutral vs. T_above 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 83, p-value = 0.6378
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing T_neutral vs. T_below 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 225, p-value = 0.217
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing T_below vs. T_above 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 6, p-value = 0.2041
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing T_below vs. T_neutral 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 370, p-value = 0.217
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing S_above vs. S_neutral 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 373, p-value = 0.03996
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing S_above vs. S_below 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 120, p-value = 0.0004692
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing S_neutral vs. S_above 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 155, p-value = 0.03996
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing S_neutral vs. S_below 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 253, p-value = 4.202e-05
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing S_below vs. S_above 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 0, p-value = 0.0004692
+alternative hypothesis: true location shift is not equal to 0
+
+Comparing S_below vs. S_neutral 
+NULL
+
+	Wilcoxon signed rank test with continuity correction
+
+data:  merged_data$value.x[non_equal_pairs] and merged_data$value.y[non_equal_pairs]
+V = 0, p-value = 4.202e-05
+alternative hypothesis: true location shift is not equal to 0
+
