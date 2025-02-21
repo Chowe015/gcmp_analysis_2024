@@ -1,0 +1,12 @@
+[1] "Create Neutral Model Function"
+[1] "Run Neutral Model Function on OTU Table"
+[1] "define errors from start"
+[1] "define errors from start"
+[1] 0
+[1] 205
+[1] 31
+[1] 469
+[1] "joining neutral table and ref taxonomy"
+[1] "Writing Neutral Model csv"
+[1] "Creating Neutral Results output files"
+[1] "Finished!"
