@@ -41,24 +41,21 @@ library(picante)
 
 # Import OTU Table Taxonomy and Tree from Qiime2 and import Metadata
 ```{r}
-setwd('C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral Model Analysis')
+setwd("C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working")
 
 #Import from .qza file into a phyloseq object
-asv <- qza_to_phyloseq(features = "./Atlantic_Pacific_expeditions/input/nomito_table.qza")
+asv <- qza_to_phyloseq(features = "gcmp_qiime_input/merged_table.qza")
 
 #### Import Metadata read.table
-metadata <- read.table(file = "./Atlantic_Pacific_expeditions/input/carib_miseq_mapping_2024.csv",header=T,comment.char="", row.names=1, sep=",")
+metadata <- read.table(file = "gcmp_qiime_input/gcmp_complete_mapping2025.txt",header=T,comment.char="", row.names=1, sep="\t")
 
 ### Import Tree file from biom output tree.nwk
-tree <- read_tree("./Atlantic_Pacific_expeditions/input/tree.nwk")
-
-coral_tree <-read_tree("./Atlantic_Pacific_expeditions/input/huang_roy_tree.newick")
+tree <- read_tree("gcmp_qiime_input/tree.nwk")
 
 ### Import taxonomy from biom output as .tsv format using read.table
-taxonomy <- read.table(file = "./Atlantic_Pacific_expeditions/input/taxonomy.tsv", sep = "\t", header = T ,row.names = 1, )
+taxonomy <- read.table(file = "gcmp_qiime_input/taxonomy.tsv", sep = "\t", header = T ,row.names = 1)
 
 # clean the taxonomy
-
 ##code referenced from Yan Hui: email me@yanh.org github: yanhui09
 tax <- taxonomy %>%
   select(Taxon) %>% 
@@ -108,46 +105,63 @@ tax1 = tax_table(as.matrix(tax.clean))
 SAMPLE <- sample_data(metadata)
 
 # Create Working phyloseq object
-main_coral <- phyloseq(OTU,tax1,SAMPLE,tree)
+main_phylo <- phyloseq(OTU,tax1,SAMPLE,tree)
 
 # visualize tax table
-table(tax_table(main_coral)[,"Kingdom"])
+table(tax_table(main_phylo)[,"Kingdom"])
 
 # remove unknown bacteria or unassigned
-phylo_noking <-main_coral %>%
+phylo_noking <-main_phylo %>%
   phyloseq::subset_taxa(!Kingdom %in% c("Unassigned","Unclassified d__Bacteria","d__Eukaryota")) %>%
   phyloseq::subset_taxa(!Phylum %in% c("Unclassified Unassigned","Unclassified d__Archaea","Unclassified d__Bacteria","Unclassified d__Eukaryota")) %>%
   phyloseq::subset_taxa(!Family %in% c("Mitochondria","Chloroplast"))
 
+# verify present taxa in table
+table(tax_table(phylo_noking)[,"Kingdom"])
+
 # Remove any samples with less than 1 read
-phylo_coral = prune_samples(sample_sums(phylo_noking)>1, phylo_noking)
-phylo_coral
+phylo = prune_samples(sample_sums(phylo_noking)>1, phylo_noking)
+phylo
 
 # Subset only corals from database
-coral <-subset_samples(phylo_coral, sample_type_EMP == "coral" & outgroup == "n" & expedition_number !="E4" & expedition_number!= "E8"& expedition_number !="E9") # all corals without out groups, environmental samples & subset expeditions (i.e, singapore).
-coral
+# Subset only corals from database
+subject <-subset_samples(phylo, outgroup == "n" & tissue_compartment == "M")
+subject
+
+print(paste("Generating Rarefied Coral dataset..."))
+# rarefy to even depth
+rarefied = rarefy_even_depth(subject, rngseed=111, sample.size=1000, replace=F, trimOTUs = TRUE)
+rarefied
+
+paste(print("Joining OTU and taxonomy tables from Rarefied Phyloseq object..."))
+# Join otu and taxonomy tables by id
+#phyloseq::tax_table(rarefied)%>% as.data.frame()%>% rownames_to_column("id")%>% right_join(phyloseq::otu_table(rarefied)%>%        as.data.frame()%>%  rownames_to_column("id")) -> rare_otu_table
+
+#paste(print("Printing Rarefied ASV Table"))
+## Output .csv from the biom file
+#write.csv(rare_otu_table, file ="Caribbean_Mucus_rarefied_table_taxonomy.csv",row.names = FALSE)
 
 
-## Check: 
-table(tax_table(coral)[,"Kingdom"])
-
-# Rarefy data to even depths
-coral.rarefied = rarefy_even_depth(coral, rngseed=111, sample.size=1000, replace=F, trimOTUs = TRUE)
-coral.rarefied
-##Agglomerate taxa to family 
-#glom_coral <- tax_glom(coral.rarefied, taxrank = 'Family', NArm = TRUE) ## 444 Samples 
-
-
-
-#phyloseq::otu_table(coral.rarefied)%>%
+#print(paste("Agglomerate Taxonomy to the Family Level"))
+###Agglomerate taxa to family 
+glom <- tax_glom(rarefied, taxrank = 'Family', NArm = TRUE)
+glom
+# Join otu and taxonomy tables by id
+#paste(print("Joining OTU and taxonomy tables from Agglomerated phyloseq object..."))
+#phyloseq::tax_table(glom)%>%
         as.data.frame() %>%
-        rownames_to_column("id") %>%
-        left_join(phyloseq::tax_table(coral.rarefied) %>%
-        as.data.frame() %>%
-        rownames_to_column("id")) -> coral_biom
-        
-#write.csv(coral_biom, file ="GCMP24_rarefied_coral.csv")
+        rownames_to_column("id") -> glom_taxonomy
 
+## Output .csv from the taxonomy file
+#write.csv(glom_taxonomy, file ="Caribbean_Mucus_agglomerated_taxonomy.csv", row.names = FALSE)
+
+#print(paste("Generating Agglomerated ASV Table dataset..."))
+#phyloseq::otu_table(glom)%>%
+        as.data.frame()%>%
+        rownames_to_column("id") -> glom_otu_table
+
+## Output .csv from the otu table file
+#write.csv(glom_otu_table, file ="Caribbean_Mucus_agglomerated_table.csv",row.names = FALSE)
 
 ```
 ## Calculate Faith's Pd   

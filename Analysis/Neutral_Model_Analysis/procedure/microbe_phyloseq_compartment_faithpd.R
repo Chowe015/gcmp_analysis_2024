@@ -179,42 +179,63 @@ write.table(microbial_faith, file =paste0(biosample,"_","microbial_faithpd_table
 
 write.csv(coral_faithpd_reorded, file =paste0(biosample,"_","Host_faithpd_table.csv") ,row.names = TRUE)
 
-# Join otu and taxonomy tables by id
-paste(print("Joining OTU and taxonomy tables from Rarefied Phyloseq object..."))
-phyloseq::tax_table(rarefied)%>%
-        as.data.frame()%>%
-        rownames_to_column("id")%>%
-        right_join(phyloseq::otu_table(rarefied)%>%
-        as.data.frame()%>%
-        rownames_to_column("id")) -> rare_otu_table
-
-## Output .csv from the biom file
-paste(print("Printing Rarefied ASV Table"))
-taxonomy_file_name <- paste0(biosample,"_","feature_table_with_taxonomy.csv")
-write.csv(rare_otu_table, file =taxonomy_file_name, row.names = FALSE)
-
-##Agglomerate taxa to family 
-print(paste("Agglomerate Taxonomy to the Family Level"))
-glom <- tax_glom(rarefied, taxrank = 'Family', NArm = TRUE)
-
-#3 Join otu and taxonomy tables by id
-paste(print("Joining OTU and taxonomy tables from Agglomerated phyloseq object..."))
-phyloseq::tax_table(glom)%>%
-        as.data.frame() %>%
-        rownames_to_column("id") -> glom_taxonomy
-
-## Output .csv from the taxonomy file
-taxonomy_file_name <- paste0(biosample,"_taxonomy.csv")
-write.csv(glom_taxonomy, file =taxonomy_file_name, row.names = FALSE)
+#### create ASV tables by id ** This file will be used in microbe_neutral_compartment.R and picrust2_neutral_table_generator.R
 
 print(paste("Generating Agglomerated ASV Table dataset..."))
 phyloseq::otu_table(glom)%>%
-        as.data.frame()%>%
-        rownames_to_column("id") -> glom_otu_table
+  as.data.frame()%>%
+  rownames_to_column("id") -> glom_otu_table
 
 ## Output .csv from the otu table file
+glom_otu_name <- paste0(biosample,"_glom_table.csv")
+write.csv(glom_otu_table, file =glom_otu_name ,row.names = FALSE)
 
-otu_file_name <- paste0(biosample,"_feature_table.csv")
-write.csv(glom_otu_table, file =otu_file_name ,row.names = FALSE)
+#### create taxonomy tables by id  ** This 
+
+paste(print("Printing Agglomerated Taxonomy Table"))
+phyloseq::tax_table(glom)%>%
+  as.data.frame() %>%
+  rownames_to_column("id") -> glom_taxonomy
+
+## Output .csv from the taxonomy file
+glom_taxonomy_name <- paste0(biosample,"_glom_taxonomy.csv")
+write.csv(glom_taxonomy, file =glom_taxonomy_name, row.names = FALSE)
+
+#### Creating metadata file for downstream analysis ** This file is used as a mapping file for comparartive analysis for subset datasets MST. 
+
+paste(print("Creating glom mapping file"))
+phyloseq::sample_data(glom)%>%
+  as.data.frame() %>%
+  rownames_to_column("id") -> glom_mapping
+
+## Output .csv from the taxonomy file
+glom_mapping_name <- paste0(biosample,"_glom_metadata.csv")
+write.csv(glom_mapping, file =glom_mapping_name, row.names = FALSE)
+
+#### Subset taxonomy tables ** This table contains non-agglomerated ASV ID which can be used 
+#### for comparative analysis of significant non-neutral microbes. 
+
+## Subset Rarefied taxonomy 
+paste(print("Subset taxonomy rarefied phyloseq object..."))
+phyloseq::tax_table(rarefied)%>%
+  as.data.frame() %>%
+  rownames_to_column("id") -> rare_taxonomy
+
+## Output .csv from the rarefied taxonomy file
+rare_file_name <- paste0(biosample,"_rarefied_taxonomy.csv")
+write.csv(rare_taxonomy, file =taxonomy_file_name, row.names = FALSE)
+
+## Subset Rarefied otu table 
+paste(print("Subset taxonomy rarefied phyloseq object..."))
+phyloseq::otu_table(rarefied)%>%
+  as.data.frame() %>%
+  rownames_to_column("id") -> rare_otu_table
+
+## Output .csv from the rarefied taxonomy file
+rare_otu_name <- paste0(biosample,"_rarefied_table.csv")
+write.csv(rare_otu_table, file =rare_otu_name, row.names = FALSE)
+
+
+
 
 print(paste("Finished!"))
