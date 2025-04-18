@@ -16,8 +16,7 @@ args <- commandArgs(trailingOnly=TRUE)
 
 glom_table_path <-args[1]
 taxonomy_path <- args[2]
-qiime_tax_path <- args[3]
-biosample <- args[4]
+biosample <- args[3]
 
 glom_table <- read.csv(glom_table_path, row.names=1, check.names=FALSE)
 #print(paste("Imported GCMP OTU Table",otu_table))
@@ -188,7 +187,6 @@ print(paste("Writing Neutral Model csv"))
 neutral_table_name <- paste0(biosample,"_neutral_model.csv")
 write.csv(nonneutral_tax,neutral_table_name,row.names = FALSE, col.names = TRUE)
 
-
 #plot neuModel
 p_neuM_coral=ggplot(neutral_mod1_w, aes(x=log10(p), y=freq, color = model))+
   geom_point(shape=19, alpha=0.7, size=2.5)+
@@ -238,23 +236,22 @@ ggsave(p_neuM_coral1, filename=neutral_file_name)
 
 ##Generate taxonomic bar graph
 
-many_col <- c("#A6CEE3", "#33A02C","#E7298A","#FDBF6F", "#B2DF8A", "#1F78B4","#E31A1C","#6A3D9A", "#FF7F00", "#FB9A99", "#CAB2D6","#B15928","#1B9E77", "#D95F02", "#FFFF99", "#7570B3","#666666" ,"#66A61E", "#E6AB02","#A6761D","black", "#377EB8", "#4DAF4A" ,"#FF7F00"
-              ,"#984EA3", "#FFFF33", "#A65628","#1B9E77", "#F781BF" ,"#D53E4F",
-              "#F46D43", "#FDAE61", "#FEE08B","#E6F598","#ABDDA4","#3288BD","cyan1","#66C2A5","#E69F00", "#56B4E9","#999999",
-              "#F0E442","#0072B2","#D55E00","red3","yellow","skyblue","cyan3","deeppink","coral4","#A6CEE3","darkkhaki",
-              "brown1","chocolate","darkorchid2","#FF7F00","#66A61E","#FDBF6F", "#FB9A99", "#CAB2D6",  "#B15928","#1B9E77",
-              "#D95F02", "#FFFF99","#E7298A", "#7570B3","#666666" , "#E6AB02", "brown3","#A6761D", "#377EB8", "#4DAF4A" ,"#984EA3",
-              "#FFFF33","#FF7F00","black")
-
+many_col <- c("#A6CEE3", "#33A02C","#E7298A","#FDBF6F", "#B2DF8A", "#1F78B4","#E31A1C","#6A3D9A", "#FF7F00", "#FB9A99", "#CAB2D6",
+              "#B15928","#1B9E77", "#D95F02", "#FFFF99", "#7570B3","#666666" ,"#66A61E", "#E6AB02","#A6761D","black", "#377EB8",
+              "#4DAF4A" ,"#FF7F00","#984EA3", "#FFFF33", "#A65628","#1B9E77", "#F781BF" ,"#D53E4F","#F46D43", "#FDAE61", "#FEE08B",
+              "#E6F598","#ABDDA4","#3288BD","cyan1","#66C2A5","#E69F00", "#56B4E9","#999999","#F0E442","#0072B2","#D55E00","red3",
+              "yellow","skyblue","cyan3","deeppink","coral4","#A6CEE3","darkkhaki","brown1","chocolate","darkorchid2","#FF7F00",
+              "#66A61E","#FDBF6F", "#FB9A99", "#CAB2D6",  "#B15928","#1B9E77","#D95F02", "#FFFF99","#E7298A", "#7570B3","#666666",
+              "#E6AB02", "brown3","#A6761D", "#377EB8", "#4DAF4A" ,"#984EA3","#FFFF33","#FF7F00","black")
 tax_rank <- nonneutral_tax %>%
   mutate(model = factor(model, 
-                            levels=c("above","neutral","below")),
+                        levels=c("above","neutral","below")),
          Phylum = factor(Phylum),
          Phylum = fct_reorder(Phylum, p, .desc=TRUE))
 
 neutral_bar <- ggplot(data = tax_rank, aes(x = model, y = p, fill = Phylum)) +
   geom_bar(stat = "identity", position="stack")  + theme_classic() +
-  labs( x=" Phylum", y="average relative abundance (p)") +  scale_fill_manual(name=NULL, values = c(many_col)) 
+  labs( x=" Phylum", y="average relative abundance (p)") +  scale_fill_manual(name=NULL, values = c(many_col))
 
 print(paste("Creating Neutral Bargraph output files"))
 neutral_bar_name <- paste0(biosample,"_neutral_barplot.pdf")
