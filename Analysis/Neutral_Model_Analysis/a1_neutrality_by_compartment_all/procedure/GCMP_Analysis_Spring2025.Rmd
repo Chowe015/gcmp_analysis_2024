@@ -9,7 +9,7 @@ output: html_document
 # First, Set working Directory load library and Import Data into Phyloseq
 ```{r}
 # Command for setting your work directory
-knitr::opts_knit$set(root.dir ='/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/Global GCMP Neutral Analysis 2024/full_gcmp_input')
+knitr::opts_knit$set("C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Analysis/Neutral_Model_Analysis/a1_neutrality_by_compartment_all")
                  
 # Print your working directory
 
@@ -37,16 +37,17 @@ library(microbiomeMarker)
 library(paletteer)
 library(RColorBrewer)
 library(ggsignif)
+library(ANCOMBC)
+library(MiscMetabar)
 ```
 
 # Import OTU Table Taxonomy and Tree from Qiime2 and import Metadata
 ```{r}
-
 #Import from .qza file into a phyloseq object
-asv <- qza_to_phyloseq(features = "gcmp_qiime_input/merged_table.qza")
+asv <- qza_to_phyloseq(features = "./gcmp_qiime_input/merged_table.qza")
 
 #### Import Metadata read.table
-metadata <- read.table(file = "gcmp_qiime_input/gcmp_complete_mapping2025.txt",header=T,comment.char="", row.names=1, sep="\t")
+metadata <- read.table(file = "./gcmp_qiime_input/gcmp_complete_mapping2025.txt",header=T,comment.char="", row.names=1, sep="\t")
 
 ### Import Tree file from biom output tree.nwk
 tree <- read_tree("gcmp_qiime_input/tree.nwk")
@@ -124,7 +125,7 @@ phylo
 
 # Subset only corals from database
 # Subset only corals from database
-subject <-subset_samples(phylo, outgroup == "n" & tissue_compartment == "S")
+subject <-subset_samples(phylo, outgroup == "n" & tissue_compartment == "M")
 subject
 
 print(paste("Generating Rarefied Coral dataset..."))
@@ -311,16 +312,6 @@ length(which(neutral_results_padj$model == "neutral_significant"))
 neutral_results_padj$model <- factor(neutral_results_padj$model, 
                              levels = c("above", "neutral", "below","neutral_significant"))
 
-## Assign Taxonomy to table of significant microbes
-phyloseq::tax_table(glom)%>%
-  as.data.frame() %>%
-  rownames_to_column("id") -> glom_tax
-
-inner_join(neutral_results_padj,glom_tax, by = "id") %>% as.data.frame() -> nonneutral_tax
-
-#coral_taxa
-write.csv(nonneutral_tax,"Merged Skeleton Neutral Taxonomy table.csv",row.names = TRUE)
-
 ################# seawater ####################
 set.seed(111)
 ###seawater communities
@@ -353,13 +344,13 @@ mod1_w_seawater$model <- factor(mod1_w_seawater$model,
 ## Plot Neutral Model
 ```{r}
 #plot neuModel
-p_neuM_coral=ggplot(tissue_table, aes(x=log10(p), y=freq, color = model))+
+p_neuM_coral=ggplot(neutral_results_padj, aes(x=log10(p_abundance), y=freq, color = model))+
   geom_point(shape=19, alpha=0.7, size=2.5)+
-  geom_line(aes(x=log10(p), y=freq.pred),
+  geom_line(aes(x=log10(p_abundance), y=freq.pred),
             color="blue",linetype="solid",linewidth=1)+
-  geom_line(aes(x=log10(p), y=pred.lwr),
+  geom_line(aes(x=log10(p_abundance), y=pred.lwr),
             color="blue",linetype="dashed",linewidth=1)+
-  geom_line(aes(x=log10(p), y=pred.upr),
+  geom_line(aes(x=log10(p_abundance), y=pred.upr),
             color="blue",linetype="dashed",linewidth=1)+
     scale_colour_manual(name="OTUs",
                       values=c("#E41A1C", "#999999", "#FF7F00","purple"),
@@ -444,8 +435,12 @@ ggsave(" Caribbean_Mucus Neutral Model Plot.jpg", p_neuM_coral1, width = 20, hei
 
 ```
 
-## Neutral Phyloseq Object      
+## Psudo Tables 
 ```{r}
+above_mucus = select(filter(nonneutral_tax, model == "above"), id,p_abundance,freq,padj,Phylum,Class,Order,Family,model) %>%
+  mutate(compartment_neutrality = paste("mucus", model, sep = '_') )
+
+
 ## Subset glom OTU table
 phyloseq::otu_table(glom)%>%
         as.data.frame()%>%
@@ -456,35 +451,103 @@ phyloseq::tax_table(glom)%>%
         as.data.frame()%>%
         rownames_to_column("id") -> glom_otu_tax
 
-## I need to create a metadata file for these samples using the neutral_fam_df as the new metadata. The sampleID can be the ASV names and 
+## Subset glom tax table
+phyloseq::sample_data(glom)%>%
+        as.data.frame() -> glom_metadata
 
-
-# Select and filter significant taxa and important categories 
-neutral_fam_df <- select(filter(nonneutral_tax, padj <=0.05),id,Kingdom,Phylum,Class,Order,Family,model,padj)
-
-inner_join(nonneutral_tax,glom_otu_table, by = "id") -> neutral_table_tax
-
-nonneutral_tax
 #subset otu table based on neutral results
-neutral_table <-subset(glom_otu_table, id  %in%  neutral_fam_df$id)
+above_mucus_table <-subset(glom_otu_table, id  %in%  above_mucus$id)
+colnames(above_mucus_table) <- paste(colnames(above_mucus_table), "above", sep = "_")
+above_mucus_tax 
 
-#subset taxonomy table based on neutral results
-neutral_tax <- subset(glom_otu_tax, id  %in%  neutral_fam_df$id)# & Family %in% neutral_fam_df$Family)
+```
+## Neutral Phyloseq Object      
+```{r}
 
-#subset Metadata based on neutral results
-neutral_sample_name <- colnames(neutral_table)
-neutral_meta <-subset(glom_metadata,sample_name_backup %in% neutral_sample_name)
-neutral_metadata <- sample_data(neutral_fam_df)
+
+## ancombc analysis
+library(ANCOMBC)
+
+
+## Merging psudo_sample tables taxonomy and mapping files across compartments
+#Mucus
+mucus_table <-read.csv("./Mucus/Mucus_combinded_table.csv", row.names=1, check.names=FALSE)
+mucus_tax <-read.csv("./Mucus/Mucus_qiime_neutral_taxonomy.csv", row.names=1, check.names=FALSE)
+mucus_mapping <-read.csv("./Mucus/Mucus_qiime_neutral_mapping.csv", row.names=1, check.names=FALSE)
+
+#Tissue
+Tissue_table <-read.csv("./Tissue/Tissue_combinded_table.csv", row.names=1, check.names=FALSE)
+Tissue_tax <-read.csv("./Tissue/Tissue_qiime_neutral_taxonomy.csv", row.names=1, check.names=FALSE)
+Tissue_mapping <-read.csv("./Tissue/Tissue_qiime_neutral_mapping.csv", row.names=1, check.names=FALSE)
+
+#Skeleton
+Skeleton_table <-read.csv("./Skeleton/Skeleton_combinded_table.csv", row.names=1, check.names=FALSE)
+Skeleton_tax <-read.csv("./Skeleton/Skeleton_qiime_neutral_taxonomy.csv", row.names=1, check.names=FALSE)
+Skeleton_mapping <-read.csv("./Skeleton/Skeleton_qiime_neutral_mapping.csv", row.names=1, check.names=FALSE)
+
+## format import files 
+mucus_table[is.na(mucus_table)] <-0
+
+## Filter row artifacts
+m_map <-mucus_mapping[-c(1,2,3),]
+t_map <-Tissue_mapping[-c(1,2,3),]
+s_map <-Skeleton_mapping[-c(1,2,3),]
 
 # create matrix format for OTU and taxonomy table
-OTU2 <- otu_table(data.matrix(neutral_table, rownames.force = NA), taxa_are_rows = TRUE)
-tax2 = tax_table(as.matrix(neutral_tax))
+MOTU <- otu_table(as.matrix(mucus_table), taxa_are_rows = TRUE)
+Mtax1 = tax_table(as.matrix(mucus_tax))
+
+
+
+## Filter row artifacts
+m_map <-mucus_mapping[-c(1,2,3),]
+t_map <-Tissue_mapping[-c(1,2,3),]
+s_map <-Skeleton_mapping[-c(1,2,3),]
+
+# Create new column with compartment and neutrality
+m_map %>% mutate(compartment_neutrality  = paste(compartment, model, sep = '_')) -> skeleton_map
+t_map %>% mutate(compartment_neutrality  = paste(compartment, model, sep = '_')) -> tissue_map
+s_map %>% mutate(compartment_neutrality  = paste(compartment, model, sep = '_')) -> mucus_map
+
+
+
+# Set metadata
+MSAMPLE <- sample_data(mucus_map)
 
 # Create Working phyloseq object
-neutral_phylo <- phyloseq(OTU2,tax2,neutral_metadata)
+mucus_phylo <- phyloseq(MOTU,Mtax1,MSAMPLE,tree)
+mucus_phylo
+clean_mucus <- prune_taxa(taxa_sums(mucus_phylo)>1,mucus_phylo)
 
-neutral_phylo
 
+## Merge OTU Tables across compartments
+merge(mucus_table,Tissue_table, by=0, all=T)%>% 
+  merge(Skeleton_table) -> test_table 
+
+test_table[is.na(test_table)] <-0
+
+colnames(merged_tax)[1] <- ""
+
+## Merge Taxonomy files 
+merge(mucus_tax,Tissue_tax, by=0, all=T) %>% 
+  merge(Skeleton_tax) -> test_tax 
+colnames(test_tax)
+## coalesce taxonomy columnss
+merged_tax <- test_tax %>% mutate(
+                              Taxon = coalesce(Taxon.x,Taxon.y),
+                              Consensus = coalesce(Consensus.x,Consensus.y)) %>%
+                              select(Row.names,Taxon,Consensus)
+colnames(merged_tax)[1] <- ""
+
+## Merge each mapping file
+merge(mucus_map,tissue_map, by=0, all=T) %>% 
+  merge(skeleton_map) -> merge_map 
+
+## Coalesce colummns
+merge_map %>% mutate(compartment = coalesce(compartment.x,compartment.y),
+                     model = coalesce(model.x,model.y),
+                     compartment_neutrality = coalesce(compartment_neutrality.x, compartment_neutrality.y)) %>% 
+                    select(Row.names,model,compartment,compartment_neutrality)-> combined_map
 
 ```
 
@@ -594,9 +657,10 @@ write.csv(coral_faithpd_reorded, file ="./carib_mucus_Host_faith_pd_table.csv" ,
 ##import neutral Model results tables
 
 tissue_table <- read.table(file ="gcmp_qiime_input/Tissue_neutral_model.csv",header=T,comment.char="", row.names=1, sep=",")
-mucus_table <- read.table(file ="gcmp_qiime_input/Mucus_nuetral_model.csv",header=T,comment.char="", row.names=1, sep=",")
-skeleton_table <- read.table(file ="gcmp_qiime_input/Skeleton_nuetral_model.csv",header=T,comment.char="", row.names=1, sep=",")
+mucus_table <- read.table(file ="gcmp_qiime_input/Mucus_neutral_model.csv",header=T,comment.char="", row.names=1, sep=",")
+skeleton_table <- read.table(file ="gcmp_qiime_input/Skeleton_neutral_model.csv",header=T,comment.char="", row.names=1, sep=",")
 combined_table <- read.table(file ="gcmp_qiime_input/combined_neutral_table.csv",header=T,comment.char="", row.names=1, sep=",")
+
 sig_tissue <-filter(tissue_table, padj <=0.05)
 sig_skeleton <-filter(skeleton_table, padj <=0.05)
 sig_mucus <-filter(mucus_table, padj <=0.05)
@@ -637,32 +701,14 @@ skeleton_bar <- ggplot(data = sig_skeleton, aes(x = model, y = p, fill = Phylum)
 
 # Calculate DISTANCE MATRICES
 ```{r}
-## Flavobacteriaceae & Cyclobacteriaceae seems to be the most frequent and abundant between Pamana east & West
-## Found Across Ofav samples in Colombia E5: Order: Halanaerobiales Family: Halanaerobiaceae
-## Lastly, I looked at Endozoicomonadaceae
-## Colombia Neutral Model shows Actinomarinaceae high relative abundance but low frequency
+## Mucus
 
-carib <-subset_samples(phylo_coral, ocean_area == "Caribbean" & coral_group == "yes")
-flavo <- subset_taxa(colombia, Family=="Actinomarinaceae")
-flavo_prune = prune_samples(sample_sums(flavo)>1, flavo)
-
-#glom_flavo <-tax_glom(flavo, taxrank = 'Genus', NArm = TRUE)
-
-## Complex Corals 
-bray_flavo = phyloseq::distance(flavo_prune, method="bray")
-uni_flavo = phyloseq::distance(flavo_prune, method="unifrac")
-wuni_flavo= phyloseq::distance(flavo_prune, method="wUnifrac")
+bray_muc = phyloseq::distance(clean_mucus, method="bray")
+uni_muc = phyloseq::distance(clean_mucus, method="unifrac")
+wuni_muc= phyloseq::distance(clean_mucus, method="wUnifrac")
 
 # Create data frame for downstream analysis
-flavo_dd <- data.frame(sample_data(flavo))
-
-## Robust Corals 
-bray_robust = phyloseq::distance(robust.rarefied, method="bray")
-uni_robust = phyloseq::distance(robust.rarefied, method="unifrac")
-wuni_robust = phyloseq::distance(robust.rarefied, method="wUnifrac")
-
-# Create data frame for downstream analysis
-rob_df <- data.frame(sample_data(robust.rarefied))
+muc_df <- data.frame(sample_data(clean_mucus))
 
 
 ```
@@ -670,11 +716,11 @@ rob_df <- data.frame(sample_data(robust.rarefied))
 # Ordination from Distance Matrix and PCoA Plots 
 ```{r}
 ##Calculate the PCoA on Complex Corals
-rt.pcoa = ordinate(flavo, method="PCoA", distance=uni_flavo)
+rt.pcoa = ordinate(mucus_phylo, method="PCoA", distance=uni_muc)
 # Set variables to zero for subsequent changes
 #Ofra
 pcoa<-0
-pcoa <- plot_ordination(flavo, rt.pcoa,  shape = "BiologicalMatter",color="family")+  geom_point(size=3) + theme_bw() + theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse(level = 0.95,type = "norm",aes(group=family))+ theme(legend.text=element_text(size=12)) + theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold"))) # title =expression(paste(italic(" Orbicella spp")," Bray-Curtis Distance PCoA across Depth")) scale_color_manual(values=c("#E31A1C","#1F78B4"))+
+pcoa <- plot_ordination(mucus_phylo, rt.pcoa ,color="model")+  geom_point(size=3) + theme_bw() + theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse(level = 0.95,type = "norm",aes(group=model))+ theme(legend.text=element_text(size=12)) + theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold"))) # title =expression(paste(italic(" Orbicella spp")," Bray-Curtis Distance PCoA across Depth")) scale_color_manual(values=c("#E31A1C","#1F78B4"))+
                       
 
 ```
@@ -695,14 +741,14 @@ complex_diversity_compartment <- plot_richness(complex, x="family", color = "Gen
 ```{r}
 
 #env material include mucus, tissue and skeleton, and outgroups without eDNA
-distance_methods <-c("bray_coral","wuni_coral","uni_coral")
+distance_methods <-c("bray_muc","wuni_muc","uni_muc")
 set.seed(129)
 
 # This is what is called a for loop.        
 for (i in distance_methods){ 
-  form <- as.formula(paste(i,"country_region+family+BiologicalMatter+sequence_run", sep="~"))
+  form <- as.formula(paste(i,"model", sep="~"))
   print(form)
- adonis2(form, data=coral_df)-> result
+ adonis2(form, data=muc_df)-> result
  print(result)
 }
  
@@ -744,6 +790,52 @@ dend %>% set("leaves_pch", 15) %>%
   hang.dendrogram(hang_height = -0.002) %>% # hang level
   plot(main = "Caribbean Actinomarinaceae Dendrogram",
   horiz =  FALSE,  nodePar = list(cex = 0.01))
+
+
+```
+## Parking lot
+```{r}
+## Subset glom OTU table
+phyloseq::otu_table(glom)%>%
+        as.data.frame()%>%
+        rownames_to_column("id") -> glom_otu_table
+
+## Subset glom tax table
+phyloseq::tax_table(glom)%>%
+        as.data.frame()%>%
+        rownames_to_column("id") -> glom_otu_tax
+
+## Subset glom tax table
+phyloseq::sample_data(glom)%>%
+        as.data.frame() -> glom_metadata
+
+# Connnect taxonomy information to neutral  model results
+inner_join(neutral_results_padj,glom_tax, by = "id") %>% as.data.frame() -> nonneutral_tax
+
+
+#subset otu table based on neutral results
+neutral_table <-subset(glom_otu_table, id  %in%  neutral_fam_df$id)
+
+#subset taxonomy table based on neutral results
+neutral_tax <- subset(glom_otu_tax, id  %in%  neutral_fam_df$id)# & Family %in% neutral_fam_df$Family)
+
+#subset Metadata based on neutral results
+neutral_sample_name <- colnames(neutral_table)
+neutral_meta <-subset(glom_metadata,sample_name_backup %in% neutral_sample_name)
+neutral_metadata <- sample_data(neutral_meta)
+
+## This approch helps transpose the data without adding numbers as colummn id
+test_table <- setNames(data.frame(t(glom_otu_table[,-1])),glom_otu_table[,1])
+
+# create matrix format for OTU and taxonomy table
+OTU2 <- otu_table(data.matrix(test_table, rownames.force = NA), taxa_are_rows = TRUE)
+tax2 = tax_table(as.matrix(neutral_tax))
+
+# Create Working phyloseq object
+neutral_phylo <- phyloseq(OTU2,tax2,neutral_metadata)
+
+neutral_phylo
+
 
 
 ```
