@@ -26,7 +26,7 @@ glom_table <- read.table(glom_table_path, sep = "\t",header = TRUE,row.names=1,c
 #import taxonomy
 glom_tax <- read.table(taxonomy_path, sep = "\t",header = TRUE,check.name=FALSE)
 # import mapping file
-glom_mapping <-read.table(metadata_path, sep = "\t",header = TRUE,check.name=FALSE)
+glom_mapping <-read.table(metadata_path, sep = ",",header = TRUE,check.name=FALSE)
 
 ## Testing different import tools
 #glom_table <- read.table("./Mucus/M_glom_table.tsv", sep = "\t",header = TRUE,row.names=1,check.name=FALSE)
@@ -201,7 +201,7 @@ write.table(neutral_results_padj,neutral_table_name,row.names = FALSE,sep="\t", 
 
 ############################### create compartment pseudo table outputs #########################
 print(paste("Writing Above and Below Pseudo tables"))
-glom_table2 <-read.table("./Mucus/M_glom_table.tsv", sep = "\t",header = TRUE,check.name=FALSE)
+glom_table2 <-read.table(glom_table_path, sep = "\t",header = TRUE,check.name=FALSE)
 
 # Subset Taxonomy and join with neutral model results
 neutral = c("above","below")
@@ -210,7 +210,7 @@ for (b in neutral){
   inner_join(neutral_results_padj,glom_tax, by = "id") -> non_neutral_tax
   
   ## Subset ASV from each model and significance 
-  sig_neutral_tax = select(filter(non_neutral_tax, model == "above" & padj <=0.05),id,p_abundance,freq,padj,Phylum,Class,Order,Family,model)
+  sig_neutral_tax = select(filter(non_neutral_tax, model == b & padj <=0.05),id,p_abundance,freq,padj,Phylum,Class,Order,Family,model)
   
   #subset otu table based on neutral results and rename column names
   neutral_table <-subset(glom_table2, id  %in%  sig_neutral_tax$id)
