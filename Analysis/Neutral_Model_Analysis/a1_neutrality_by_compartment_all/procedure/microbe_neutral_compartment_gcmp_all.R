@@ -19,26 +19,21 @@ taxonomy_path <- args[2]
 metadata_path <-args[3]
 biosample <- args[4]
 
-#glom_table <-read.csv("./Mucus/M_glom_table.csv", row.names=1, check.names=FALSE)
-#glom_tax <-read.csv("./Mucus/M_glom_taxonomy.csv", check.names=FALSE)
-#glom_mapping <-read.csv("./Mucus/M_glom_metadata.csv", check.names=FALSE)
-#biosample = "mucus"
-#glom_table <-read.table("./Mucus/M_glom_table.tsv", sep = "\t",header = TRUE,row.names=1,check.name=FALSE)
 
 #print(paste("Imported GCMP OTU Table"))
 ## import table 
-glom_table <- read.table("./Mucus/M_glom_table.tsv", sep = "\t",header = TRUE,row.names=1,check.name=FALSE)
+glom_table <- read.table(glom_table_path, sep = "\t",header = TRUE,row.names=1,check.name=FALSE)
 #import taxonomy
-glom_tax <- read.table("./Mucus/M_glom_taxonomy.tsv", sep = "\t",header = TRUE,check.name=FALSE)
+glom_tax <- read.table(taxonomy_path, sep = "\t",header = TRUE,check.name=FALSE)
 # import mapping file
-glom_mapping <-read.table("./Mucus/M_glom_metadata.csv", sep = ",",header = TRUE,check.name=FALSE)
-biosample = "mucus"
-## import table 
-#glom_table <- read.table(glom_table_path, sep = "\t",header = TRUE,row.names=1,check.name=FALSE)
+glom_mapping <-read.table(metadata_path, sep = "\t",header = TRUE,check.name=FALSE)
+
+## Testing different import tools
+#glom_table <- read.table("./Mucus/M_glom_table.tsv", sep = "\t",header = TRUE,row.names=1,check.name=FALSE)
 #import taxonomy
-#glom_tax <- read.table(taxonomy_path, sep = "\t",header = TRUE,check.name=FALSE)
+#glom_tax <- read.table("./Mucus/M_glom_taxonomy.tsv", sep = "\t",header = TRUE,check.name=FALSE)
 # import mapping file
-#glom_mapping <-read.table(metadata_path, sep = "\t",header = TRUE,check.name=FALSE)
+#glom_mapping <-read.table("./Mucus/M_glom_metadata.csv", sep = ",",header = TRUE,check.name=FALSE)
 
 
 print(paste("Create Neutral Model Function"))
