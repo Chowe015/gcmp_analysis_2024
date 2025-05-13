@@ -8,6 +8,7 @@ library(tidyverse)
 library(minpack.lm)
 library(Hmisc)
 library(stats4)
+library(biomformat)
 
 sink("PIC_results_log.txt",append=FALSE,split=TRUE)
 
@@ -188,7 +189,8 @@ neutral_mod1_w %>% mutate(ci.mean = (pred.upr-pred.lwr),
                         SE = (ci.mean/(2*1.96)),
                         zstat = (freq/SE),
 												p_value = (exp(-0.717*zstat-0.416*zstat^2)),
-                        padj = (exp(-0.717*zstat-0.416*zstat^2))*length(neutral_mod1_w$model)) %>% as.data.frame() %>% rownames_to_column("id")-> neutral_results_padj
+                        padj = (exp(-0.717*zstat-0.416*zstat^2))*length(neutral_mod1_w$model)) %>%
+                        as.data.frame() %>% rownames_to_column("id")-> neutral_results_padj
 
 print(paste("joining neutral table and ref taxonomy"))
 ## Inner_join feature table with neutral model families
@@ -197,7 +199,7 @@ inner_join(glom_tax,neutral_results_padj, by = "id") %>% as.data.frame() -> nonn
 # Print output files
 print(paste("Writing Neutral Model tsv"))
 neutral_table_name <- paste0(biosample,"_neutral_model.tsv")
-write.table(neutral_results_padj,neutral_table_name,row.names = FALSE,sep="\t", col.names = TRUE)
+write.table(nonneutral_tax,neutral_table_name,row.names = FALSE,sep="\t", col.names = TRUE)
 
 ############################### create compartment pseudo table outputs #########################
 print(paste("Writing Above and Below Pseudo tables"))
@@ -216,16 +218,17 @@ for (b in neutral){
   neutral_table <-subset(glom_table2, id  %in%  sig_neutral_tax$id)
   l = length(neutral_table)
   colnames(neutral_table)[2:l] <- paste(colnames(neutral_table)[2:l], b, sep = "_")
-  
+ colnames(neutral_table)[1] <- "id" 
   ## Create new columns for the metadata data
-  glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table)[2:l]), 
-                                compartment_neutraility = paste(biosample, b, sep = '_'),
-                                compartment = paste (biosample),
-                                neutraility = paste(b)) %>% 
+  glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table)[2:l]),
+                          compartment_neutraility = paste(biosample,b, sep = '_'),
+                          compartment = paste (biosample),
+                          neutraility = paste(b)) %>% 
+    select(psuedo_sample_name,sample_name_backup, host_scientific_name,expedition_number,political_area,ocean_area,compartment_neutraility,compartment,neutraility) %>% 
     as.data.frame() -> glom_metadata
   
   ## Subset significant results with taxonomy to retain only significant taxonomy
-  subset_tax <- subset(glom_tax, id %in% sig_neutral_tax$id) 
+  #subset_tax <- subset(glom_tax, id %in% sig_neutral_tax$id) 
   
   psuedo_table_name <- paste0(biosample,"_",b,"_table.tsv")
   (write.table(neutral_table, file =psuedo_table_name,sep="\t", row.names = FALSE))
@@ -233,142 +236,88 @@ for (b in neutral){
   psuedo_map_name <- paste0(biosample,"_",b,"_metadata.csv")
   (write.table(glom_metadata, file =psuedo_map_name,sep=",", row.names = FALSE))
   
-  psuedo_tax_name <- paste0(biosample,"_",b,"_taxonomy.tsv")
-  (write.table(subset_tax, file =psuedo_tax_name,sep="\t", row.names = FALSE))
+  #psuedo_tax_name <- paste0(biosample,"_",b,"_taxonomy.tsv")
+  #(write.table(subset_tax, file =psuedo_tax_name,sep="\t", row.names = FALSE))
 }
 
 ########### Redo for neutral without filtering for  significant padj ########
+print(paste("Writing non-significant taxa table"))
+## Subset ASV from each model and signifcance 
+sig_neutral_ref = select(filter(non_neutral_tax, model == "neutral" & padj >=0.05),id,p_abundance,freq,padj,Phylum,Class,Order,Family,model)
 
-print(paste("Writing Neutral Pseudo tables"))
 #subset otu table based on neutral results and rename column names
-neutral_table <-subset(glom_table2, id  %in%  sig_neutral_tax$id)
-l = length(neutral_table)
-colnames(neutral_table)[2:l] <- paste(colnames(neutral_table)[2:l], "neutral", sep = "_")
+neutral_table_test <-subset(glom_table2, id  %in%  sig_neutral_ref$id)
+l = length(neutral_table_test)
+colnames(neutral_table_test)[2:l] <- paste(colnames(neutral_table_test)[2:l], "neutral", sep = "_")
+colnames(neutral_table_test)[1] <- "id"
 
-################# So Here I am trying to merge only significant taxa instead of all taxa and I'm using the metadata for all taxa so I 
-## need to figure out how to prune the metadata for only above taxa. 
 ## Create new columns for the metadata data
-glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table)[2:l]), 
-                        compartment_neutraility = paste(biosample, "neutral", sep = '_'),
-                        compartment = paste (biosample),
-                        neutraility = paste("neutral")) %>% 
-  as.data.frame() -> glom_metadata
+glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table)[2:l]),
+                            compartment_neutraility = paste(biosample,"neutral", sep = '_'),
+                            compartment = paste (biosample),
+                            neutraility = paste("neutral")) %>% 
+  select(psuedo_sample_name,sample_name_backup, host_scientific_name,expedition_number,political_area,ocean_area,compartment_neutraility,compartment,neutraility) %>% 
+  as.data.frame() -> neutral_glom_metadata
 
 ## Subset significant results with taxonomy to retain only significant taxonomy
-subset_tax <- subset(glom_tax, id %in% sig_neutral_tax$id) 
+#subset_tax <- subset(glom_tax, id %in% sig_neutral_tax$id) 
 
 ## Output the tables for downstream analysis 
 psuedo_table_name <- paste0(biosample,"_","neutral_table.tsv")
-(write.table(neutral_table, file =psuedo_table_name, sep="\t",row.names = FALSE))
+(write.table(neutral_table_test, file =psuedo_table_name, sep="\t",row.names = FALSE))
 
-psuedo_map_name <- paste0(biosample,"_","neutral_metadata.csv")
-(write.table(glom_metadata, file =psuedo_map_name,sep=",", row.names = FALSE))
-
-psuedo_tax_name <- paste0(biosample,"_","neutral_taxonomy.tsv")
-(write.table(subset_tax, file =psuedo_tax_name,sep="\t", row.names = FALSE))
+psuedo_map_name <- paste0(biosample,"_","neutral_metadata.csv")  ## Remember to combined mapping files in Excel
+(write.table(neutral_glom_metadata, file =psuedo_map_name,sep=",", row.names = FALSE))
 
 ################### Merge OTU Tables across neutrality ####################################
 ## Import Tables
-
 above_import = paste0(biosample,"_above_table.tsv")
 below_import = paste0(biosample,"_below_table.tsv")
 neutral_import = paste0(biosample,"_neutral_table.tsv")
-## Import Taxonomy
-above_tax_import = paste0(biosample,"_above_taxonomy.tsv")
-below_tax_import = paste0(biosample,"_below_taxonomy.tsv")
-neutral_tax_import = paste0(biosample,"_neutral_taxonomy.tsv")
-
-## Import Mapping Files
-above_map_import = paste0(biosample,"_above_metadata.csv")
-below_map_import = paste0(biosample,"_below_metadata.csv")
-neutral_map_import = paste0(biosample,"_neutral_metadata.csv")
 
 above_table <- read.table(above_import,header = TRUE,sep="\t", check.names=FALSE)
 neutral_table <- read.table(neutral_import,header = TRUE,sep="\t", check.names=FALSE)
 below_table <- read.table(below_import,header = TRUE,sep="\t", check.names=FALSE)
 
-above_taxa <- read.table(above_tax_import,header = TRUE,row.names=1,sep="\t", check.names=FALSE)
-neutral_taxa <- read.table(neutral_tax_import,header = TRUE,row.names=1,sep="\t",check.names=FALSE)
-below_taxa<- read.table(below_tax_import,header = TRUE,row.names=1, sep="\t",check.names=FALSE)
-
-above_meta <- read.table(above_map_import,header = TRUE,sep=",", check.names=FALSE)
-neutral_meta <- read.table(neutral_map_import,header = TRUE,sep=",",check.names=FALSE)
-below_meta <- read.table(below_map_import,header = TRUE,sep=",", check.names=FALSE)
-
 ## 1) Merge Tables first 
-merge(above_table,neutral_table, by=0, all=T)%>% 
-  merge(below_table) -> merge_table 
+merge(above_table, below_table, by=0,all=T) -> merge_table
 
-## Assign all NA as 0
-merge_table[is.na(merge_table)] <-0
+merge_table %>% mutate(id = coalesce(id.x,id.y)) %>% 
+  relocate(id) %>%  
+  select(!c(id.x,id.y,Row.names))-> merge_test
+merge_test[is.na(merge_test)] <-0
 
-## Rename the first column name to blank
-merge_tab = subset(merge_table, select=-(Row.names))
-colnames(merge_tab)[1] <- "id"
+merge(merge_test,neutral_table_test,by=0,all=T) -> full_table
+full_table %>% mutate(id = coalesce(id.x,id.y)) %>% 
+  relocate(id) %>%  
+  select(!c(id.x,id.y,Row.names))-> full_table
+full_table[is.na(full_table)] <-0
 
 ## Print output files
 print(paste("Writing Combined Psudo_table across compartments"))
 psudo_table_name <- paste0(biosample,"_combined_psudo_table.tsv")
-write.table(merge_tab, file=psudo_table_name, sep="\t",row.names = FALSE)
+write.table(full_table, file=psudo_table_name, sep="\t",row.names = FALSE)
+
+## Print biom output files
+#print(paste("Converting data frame into Biom files"))
+# create biom table
+#biom_table <-make_biom(full_table)
+#assign biom table name
+#biom_name <- paste0(biosample,"_psudo_feature_table.biom")
+#Write biom table output
+#write_biom(biom_table,biom_file = biom_name)
 
 ## 2) Merge Taxonomy files 
-merge(above_taxa,below_taxa, by=0, all=T) %>% 
-  merge(neutral_taxa) -> merge_tax 
-
-## coalesce taxonomy columns
-merge_tax %>% mutate(
-  Kingdom = coalesce(Kingdom.x,Kingdom.y,Kingdom),
-  Phylum = coalesce(Phylum.x,Phylum.y,Phylum),
-  Class = coalesce(Class.x,Class.y,Class),
-  Order = coalesce(Order.x,Order.y,Order),
-  Family = coalesce(Family.x,Family.y,Family)) %>%
-  select(Row.names,Kingdom,Phylum,Class,Order,Family)-> combined_tax
-
-## Rename the First column name to blank
-colnames(combined_tax)[1] <- ""
-
+tax2_import = paste0("./taxonomy.tsv")
+taxonomy2 <-glom_tax <- read.table(tax2_import, sep = "\t",header = TRUE,check.name=FALSE)
+colnames(taxonomy2)[1] <-"id"
+neutral_tax <-subset(taxonomy2, id  %in%  full_table$id)
+colnames(neutral_tax)[1] <-"Feature ID"
 # Print output files
-print(paste("Writing Combined Psudo_taxonomy across compartments"))
-psudo_tax_name <- paste0(biosample,"_combined_psudo_tax.tsv")
-write.table(combined_tax,psudo_tax_name, sep= "\t", row.names = FALSE)
-
-## 3) Merging Mapping Files
-## Filter row artifacts
-above_meta %>% select(sample_name_backup, expedition_number,host_scientific_name) %>% as.data.frame() -> above_map
-neutral_meta %>% select(sample_name_backup, expedition_number,host_scientific_name) %>% as.data.frame() -> neutral_map
-below_meta %>% select(sample_name_backup, expedition_number,host_scientific_name) %>% as.data.frame() -> below_map
-
-above_map$model <- "above"
-below_map$model <- "below"
-neutral_map$model <- "neutral"
-
-above_map$compartment <- biosample
-below_map$compartment <- biosample
-neutral_map$compartment <- biosample
-
-## Create new column with compartment and neutrality
-above_map %>% mutate(pseudo_sampleID = paste(sample_name_backup,model,sep= '_'),
-                     compartment_neutrality  = paste(compartment, model, sep = '_')) %>% 
-                       select(!sample_name_backup) -> above_mapping
-
-below_map %>% mutate(pseudo_sampleID = paste(sample_name_backup,model,sep= '_'),
-                     compartment_neutrality  = paste(compartment, model, sep = '_')) %>% 
-  select(!sample_name_backup) -> below_mapping
-
-neutral_map %>% mutate(pseudo_sampleID = paste(sample_name_backup,model,sep= '_'),
-                       compartment_neutrality  = paste(compartment, model, sep = '_')) %>% 
-  select(!sample_name_backup) -> neutral_mapping
-
-print(paste("Writing Combined Psudo_mapping across compartments"))
-map_above_name <- paste0(biosample,"_above_mapping.csv")
-write.csv(above_mapping, file =map_above_name, sep=",",row.names = FALSE)
-
-map_below_name <- paste0(biosample,"_below_mapping.csv")
-write.csv(below_mapping, file=map_below_name, sep=",",row.names = FALSE)
-
-map_neutral_name <- paste0(biosample,"_neutral_mapping.csv")
-write.csv(neutral_mapping, file =map_neutral_name,sep=",", row.names = FALSE)
-
+print(paste("Writing Psudo_taxonomy across compartments"))
+psudo_tax_name <- paste0(biosample,"_psudo_tax.tsv")
+write.table(neutral_tax,psudo_tax_name, sep= "\t", row.names = FALSE)
+print(paste("Remeber to join",biosample,"mapping files in excel"))
 
 #################### plot neuModel ################################
 p_neuM_coral=ggplot(neutral_mod1_w, aes(x=log10(p_abundance), y=freq, color = model))+
