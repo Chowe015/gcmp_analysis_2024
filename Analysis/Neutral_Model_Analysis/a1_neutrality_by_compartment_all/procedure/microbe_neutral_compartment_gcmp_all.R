@@ -34,7 +34,7 @@ glom_mapping <-read.table(metadata_path, sep = ",",header = TRUE,check.name=FALS
 #import taxonomy
 #glom_tax <- read.table("./Mucus/M_glom_taxonomy.tsv", sep = "\t",header = TRUE,check.name=FALSE)
 # import mapping file
-#glom_mapping <-read.table("./Mucus/M_glom_metadata.csv", sep = ",",header = TRUE,check.name=FALSE)
+#glom_mapping <-read.table("./Mucus/M_glom_metadata", sep = "\t",header = TRUE,check.name=FALSE)
 
 
 print(paste("Create Neutral Model Function"))
@@ -221,10 +221,10 @@ for (b in neutral){
  colnames(neutral_table)[1] <- "id" 
   ## Create new columns for the metadata data
   glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table)[2:l]),
-                          compartment_neutraility = paste(biosample,b, sep = '_'),
+                          compartment_neutrality = paste(biosample,b, sep = '_'),
                           compartment = paste (biosample),
-                          neutraility = paste(b)) %>% 
-    select(psuedo_sample_name,sample_name_backup, host_scientific_name,expedition_number,political_area,ocean_area,compartment_neutraility,compartment,neutraility) %>% 
+                          neutrality = paste(b)) %>% 
+    select(psuedo_sample_name,sample_name_backup, host_scientific_name,expedition_number,political_area,ocean_area,compartment_neutrality,compartment,neutrality) %>% 
     as.data.frame() -> glom_metadata
   
   ## Subset significant results with taxonomy to retain only significant taxonomy
@@ -233,8 +233,8 @@ for (b in neutral){
   psuedo_table_name <- paste0(biosample,"_",b,"_table.tsv")
   (write.table(neutral_table, file =psuedo_table_name,sep="\t", row.names = FALSE))
   
-  psuedo_map_name <- paste0(biosample,"_",b,"_metadata.csv")
-  (write.table(glom_metadata, file =psuedo_map_name,sep=",", row.names = FALSE))
+  psuedo_map_name <- paste0(biosample,"_",b,"_metadata.txt")
+  (write.table(glom_metadata, file =psuedo_map_name,sep="\t", row.names = FALSE))
   
   #psuedo_tax_name <- paste0(biosample,"_",b,"_taxonomy.tsv")
   #(write.table(subset_tax, file =psuedo_tax_name,sep="\t", row.names = FALSE))
@@ -252,11 +252,11 @@ colnames(neutral_table_test)[2:l] <- paste(colnames(neutral_table_test)[2:l], "n
 colnames(neutral_table_test)[1] <- "id"
 
 ## Create new columns for the metadata data
-glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table)[2:l]),
-                            compartment_neutraility = paste(biosample,"neutral", sep = '_'),
+glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table_test)[2:l]),
+                            compartment_neutrality = paste(biosample,"neutral", sep = '_'),
                             compartment = paste (biosample),
-                            neutraility = paste("neutral")) %>% 
-  select(psuedo_sample_name,sample_name_backup, host_scientific_name,expedition_number,political_area,ocean_area,compartment_neutraility,compartment,neutraility) %>% 
+                            neutrality = paste("neutral")) %>% 
+  select(psuedo_sample_name,sample_name_backup, host_scientific_name,expedition_number,political_area,ocean_area,compartment_neutrality,compartment,neutrality) %>% 
   as.data.frame() -> neutral_glom_metadata
 
 ## Subset significant results with taxonomy to retain only significant taxonomy
@@ -266,8 +266,8 @@ glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table)[2:l])
 psuedo_table_name <- paste0(biosample,"_","neutral_table.tsv")
 (write.table(neutral_table_test, file =psuedo_table_name, sep="\t",row.names = FALSE))
 
-psuedo_map_name <- paste0(biosample,"_","neutral_metadata.csv")  ## Remember to combined mapping files in Excel
-(write.table(neutral_glom_metadata, file =psuedo_map_name,sep=",", row.names = FALSE))
+psuedo_map_name <- paste0(biosample,"_","neutral_metadata.txt")  ## Remember to combined mapping files in Excel
+(write.table(neutral_glom_metadata, file =psuedo_map_name,sep="\t", row.names = FALSE))
 
 ################### Merge OTU Tables across neutrality ####################################
 ## Import Tables
