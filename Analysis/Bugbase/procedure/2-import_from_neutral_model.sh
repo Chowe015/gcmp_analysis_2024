@@ -2,6 +2,7 @@
 
 # Request an interactive allocation.
 salloc -N 1 -n 20 --mem-per-cpu=250 -t 12:00:00
+salloc --account=mum55_1gc5gb --partition=sla-prio --gpus=1 -t 24:00:00
 
 # Load R module
 module load r
@@ -10,28 +11,28 @@ module load r
 cd /storage/home/yvl6147/scratch/GCMP/scripts
 
 Rscript 1-split_neutral_model_outputs.R \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Mucus_Neutralmodel.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Mucus_Neutralmodel_below.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Mucus_Neutralmodel_neutral.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Mucus_Neutralmodel_above.csv
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Mucus_neutral_model.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Mucus_neutral_model_below.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Mucus_neutral_model_neutral.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Mucus_neutral_model_above.csv
 
 Rscript 1-split_neutral_model_outputs.R \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Tissue_Neutralmodel.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Tissue_Neutralmodel_below.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Tissue_Neutralmodel_neutral.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Tissue_Neutralmodel_above.csv
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Tissue_neutral_model.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Tissue_neutral_model_below.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Tissue_neutral_model_neutral.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Tissue_neutral_model_above.csv
 
 Rscript 1-split_neutral_model_outputs.R \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Skeleton_Neutralmodel.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Skeleton_Neutralmodel_below.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Skeleton_Neutralmodel_neutral.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Skeleton_Neutralmodel_above.csv
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Skeleton_neutral_model.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Skeleton_neutral_model_below.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Skeleton_neutral_model_neutral.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Skeleton_neutral_model_above.csv
 
 Rscript 1-split_neutral_model_outputs.R \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/all_compart_Neutralmodel.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/all_compart_Neutralmodel_below.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/all_compart_Neutralmodel_neutral.csv \
-    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/all_compart_Neutralmodel_above.csv
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Combined_neutral_model.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Combined_neutral_model_below.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Combined_neutral_model_neutral.csv \
+    /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All/Combined_neutral_model_above.csv
 
 # Activate qiime2 environment
 conda activate qiime2
@@ -47,6 +48,7 @@ for i in *.csv;
     done
 
 # Import split MST feature tables as Qiime2 artefacts.
+cd /storage/home/yvl6147/scratch/GCMP/data/nomito
 
 ### Convert csv to tsv
 sed 's/,/\t/g' M_feature_table.csv > M_feature_table.tsv
@@ -147,7 +149,7 @@ cd /storage/home/yvl6147/scratch/GCMP/data
 mkdir Bugbase_input/rep-seqs/all_compart
 mkdir Bugbase_input/feature-table/all_compart
 cd /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All
-for i in all_compart_*_seqIDs.txt;
+for i in Combined_neutral_model_*_seqIDs.txt;
     do
         qiime feature-table filter-seqs \
             --i-data /storage/home/yvl6147/scratch/GCMP/data/nomito/merged_rep-seqs.qza \
