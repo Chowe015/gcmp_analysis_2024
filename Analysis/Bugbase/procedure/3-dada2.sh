@@ -13,8 +13,8 @@ for i in *.qza;
         qiime vsearch cluster-features-closed-reference \
             --i-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/Mucus/$i \
             --i-sequences $i \
-            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes/gg_97_otus.qza \
-            --p-perc-identity 0.97 \
+            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes_ref/gg_97_otus.qza \
+            --p-perc-identity 0.87 \
             --o-clustered-table /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/table-97.qza \
             --o-unmatched-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/unmatched.qza \
             --o-clustered-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/clustered-features.qza;
@@ -27,8 +27,8 @@ for i in *.qza;
         qiime vsearch cluster-features-closed-reference \
             --i-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/Tissue/$i \
             --i-sequences $i \
-            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes/gg_97_otus.qza \
-            --p-perc-identity 0.97 \
+            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes_ref/gg_97_otus.qza \
+            --p-perc-identity 0.87 \
             --o-clustered-table /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/table-97.qza \
             --o-unmatched-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/unmatched.qza \
             --o-clustered-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/clustered-features.qza;
@@ -41,8 +41,8 @@ for i in *.qza;
         qiime vsearch cluster-features-closed-reference \
             --i-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/Skeleton/$i \
             --i-sequences $i \
-            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes/gg_97_otus.qza \
-            --p-perc-identity 0.97 \
+            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes_ref/gg_97_otus.qza \
+            --p-perc-identity 0.87 \
             --o-clustered-table /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/table-97.qza \
             --o-unmatched-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/unmatched.qza \
             --o-clustered-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/clustered-features.qza;
@@ -81,7 +81,7 @@ for i in *_biom/;
         biom add-metadata \
             -i ${i}feature-table.biom \
             -o ${i}final-table-with-taxonomy.biom \
-            --observation-metadata-fp ../Greengenes/97_otu_taxonomy.txt \
+            --observation-metadata-fp ../Greengenes_ref/97_otu_taxonomy.txt \
             --sc-separated taxonomy;
     done
 

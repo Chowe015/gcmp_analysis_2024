@@ -1,2 +1,0 @@
-	Threshold
-Forms_Biofilms	0.2

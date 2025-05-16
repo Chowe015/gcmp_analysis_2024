@@ -1,2 +1,0 @@
-	Threshold
-Facultatively_Anaerobic	0.001
