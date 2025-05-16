@@ -1,2 +1,0 @@
-	0.2
-Contains_Mobile_Elements	10.8678602172536

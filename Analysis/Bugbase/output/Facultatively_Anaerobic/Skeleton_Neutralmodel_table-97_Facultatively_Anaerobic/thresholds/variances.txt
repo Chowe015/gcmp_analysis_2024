@@ -1,2 +1,0 @@
-	0.001
-Facultatively_Anaerobic	2.00500411175397
