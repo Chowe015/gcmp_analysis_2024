@@ -1,2 +1,0 @@
-	Threshold
-Stress_Tolerant	0.6

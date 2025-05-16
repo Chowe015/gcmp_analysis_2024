@@ -1,2 +1,0 @@
-	Threshold
-Aerobic	0.001

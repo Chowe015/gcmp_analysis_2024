@@ -1,2 +1,0 @@
-	Threshold
-Gram_Negative	0.001

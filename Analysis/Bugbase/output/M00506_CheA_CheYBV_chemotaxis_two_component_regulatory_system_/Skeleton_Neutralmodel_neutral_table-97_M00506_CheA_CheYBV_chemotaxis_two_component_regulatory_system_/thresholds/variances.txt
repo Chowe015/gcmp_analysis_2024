@@ -1,2 +1,0 @@
-	0.9
-M00506_CheA_CheYBV_chemotaxis_two_component_regulatory_system_	2.30090537716737
