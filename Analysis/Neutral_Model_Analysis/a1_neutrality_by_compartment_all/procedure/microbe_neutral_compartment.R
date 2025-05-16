@@ -226,13 +226,31 @@ p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=5.5, label
            fontface="bold", color="black",
            parse=FALSE)
 
-print(paste("Creating Neutral Results output files"))
 
 
 
+print(paste("Creating Neutral Figure pdf files"))
 ## Print Neutral Model Plot
-neutral_file_name <- paste0(biosample,"_NeutralModel_Plot.pdf")
+neutral_file_name <- paste0(biosample,"_Neutral_barplot.pdf")
 ggsave(p_neuM_coral1, filename=neutral_file_name)
+
+##Generate taxonomic bar graph
+
+many_col <- c("#A6CEE3", "#33A02C","#E7298A","#FDBF6F", "#B2DF8A", "#1F78B4","#E31A1C","#6A3D9A", "#FF7F00", "#FB9A99", "#CAB2D6","#B15928","#1B9E77", "#D95F02", "#FFFF99", "#7570B3","#666666" ,"#66A61E", "#E6AB02","#A6761D","black",               "#377EB8", "#4DAF4A" ,"#FF7F00","#984EA3", "#FFFF33", "#A65628","#1B9E77", "#F781BF" ,"#D53E4F",
+              "#F46D43", "#FDAE61", "#FEE08B","#E6F598","#ABDDA4","#3288BD","cyan1","#66C2A5","#E69F00", "#56B4E9","#999999",
+              "#F0E442","#0072B2","#D55E00","red3","yellow","skyblue","cyan3","deeppink","coral4","#A6CEE3","white","darkkhaki",
+              "brown1","chocolate","darkorchid2","#FF7F00","#66A61E","#FDBF6F", "#FB9A99", "#CAB2D6",  "#B15928","#1B9E77",
+              "#D95F02", "#FFFF99","#E7298A", "#7570B3","#666666" , "#E6AB02", "brown3","#A6761D", "#377EB8", "#4DAF4A" ,"#984EA3",
+              "#FFFF33","#FF7F00","black")
+
+
+neutral_bar <- ggplot(data = nonneutral_tax, aes(x = model, y = p, fill = Phylum)) +
+  geom_bar(stat = "identity", position="fill")  +
+  labs( x=" Phylum", y="average relative abundance (p)") +  scale_fill_manual(name=NULL, values = c(many_col)) 
+
+print(paste("Creating Neutral Bargraph output files"))
+neutral_bar_name <- paste0(biosample,"_neutral_barplot.pdf")
+ggsave(neutral_bar, filename=neutral_bar_name, width = 20, height = 10, dpi= 600)
 
 print(paste("Finished!"))
 

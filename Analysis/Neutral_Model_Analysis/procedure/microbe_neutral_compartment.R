@@ -14,13 +14,15 @@ sink("PIC_results_log.txt",append=FALSE,split=TRUE)
 #Get user input and assign to variables
 args <- commandArgs(trailingOnly=TRUE)
 
-otu_table_path <-args[1]
+glom_table_path <-args[1]
 taxonomy_path <- args[2]
-biosample <- args[3]
+qiime_tax_path <- args[3]
+biosample <- args[4]
 
-otu_table <- read.csv(otu_table_path, row.names=1, check.names=FALSE)
+glom_table <- read.csv(glom_table_path, row.names=1, check.names=FALSE)
 #print(paste("Imported GCMP OTU Table",otu_table))
-taxonomy_table <- read.csv(taxonomy_path, row.names=1, check.name=FALSE)
+glom_taxonomy_table <- read.csv(taxonomy_path, check.name=FALSE)
+
 print(paste("Create Neutral Model Function"))
 sncm.fit <- function(spp, pool=NULL, stats=TRUE, taxon=NULL){
 
@@ -153,10 +155,10 @@ addf = function(freq, pred.upr, pred.lwr) {
   return(model)
 }
 
-print(paste("Run Nuetral Model Function on OTU Table"))
+print(paste("Run Neutral Model Function on OTU Table"))
 ## pull in otu table 
 
-otu_frame = as.data.frame(t(otu_table))
+otu_frame = as.data.frame(t(glom_table))
 
 ## Neutral fit
 neutral_mod_w = sncm.fit(otu_frame)
@@ -174,13 +176,18 @@ neutral_mod1_w %>% mutate(ci.mean = (pred.upr-pred.lwr),
                         SE = (ci.mean/(2*1.96)),
                         zstat = (freq/SE),
 												p_value = (exp(-0.717*zstat-0.416*zstat^2)),
-                        padj = (exp(-0.717*zstat-0.416*zstat^2))*length(neutral_mod1_w$model)) -> neutral_results_padj
+                        padj = (exp(-0.717*zstat-0.416*zstat^2))*length(neutral_mod1_w$model)) %>% as.data.frame() %>%
+                        rownames_to_column("id")-> neutral_results_padj
 
-print(paste("Print Taxonomy Table from Neutral Model"))
+print(paste("joining neutral table and ref taxonomy"))
+## Inner_join feature table with neutral model families
+inner_join(neutral_results_padj,glom_taxonomy_table, by = "id") %>% as.data.frame() -> nonneutral_tax
 
-## Assign Taxonomy to table of significant microbes
-env_taxa = cbind(as(neutral_results_padj, "data.frame"), as(taxonomy_table[rownames(taxonomy_table), ], "matrix"))
-#coral_taxa
+# Print output files
+print(paste("Writing Neutral Model csv"))
+neutral_table_name <- paste0(biosample,"_neutral_model.csv")
+write.csv(nonneutral_tax,neutral_table_name,row.names = FALSE, col.names = TRUE)
+
 
 #plot neuModel
 p_neuM_coral=ggplot(neutral_mod1_w, aes(x=log10(p), y=freq, color = model))+
@@ -221,15 +228,37 @@ p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=5.5, label
            fontface="bold", color="black",
            parse=FALSE)
 
-print(paste("Creating Neutral Results output files"))
 
-# Print output files
-neutral_table_name <- paste0(biosample,"_Neutralmodel.csv")
-write.csv(env_taxa,neutral_table_name,row.names = TRUE)
 
+
+print(paste("Creating Neutral Figure pdf files"))
 ## Print Neutral Model Plot
-neutral_file_name <- paste0(biosample,"_NeutralModel_Plot.pdf")
+neutral_file_name <- paste0(biosample,"_Neutral_model.pdf")
 ggsave(p_neuM_coral1, filename=neutral_file_name)
+
+##Generate taxonomic bar graph
+
+many_col <- c("#A6CEE3", "#33A02C","#E7298A","#FDBF6F", "#B2DF8A", "#1F78B4","#E31A1C","#6A3D9A", "#FF7F00", "#FB9A99", "#CAB2D6","#B15928","#1B9E77", "#D95F02", "#FFFF99", "#7570B3","#666666" ,"#66A61E", "#E6AB02","#A6761D","black", "#377EB8", "#4DAF4A" ,"#FF7F00"
+              ,"#984EA3", "#FFFF33", "#A65628","#1B9E77", "#F781BF" ,"#D53E4F",
+              "#F46D43", "#FDAE61", "#FEE08B","#E6F598","#ABDDA4","#3288BD","cyan1","#66C2A5","#E69F00", "#56B4E9","#999999",
+              "#F0E442","#0072B2","#D55E00","red3","yellow","skyblue","cyan3","deeppink","coral4","#A6CEE3","darkkhaki",
+              "brown1","chocolate","darkorchid2","#FF7F00","#66A61E","#FDBF6F", "#FB9A99", "#CAB2D6",  "#B15928","#1B9E77",
+              "#D95F02", "#FFFF99","#E7298A", "#7570B3","#666666" , "#E6AB02", "brown3","#A6761D", "#377EB8", "#4DAF4A" ,"#984EA3",
+              "#FFFF33","#FF7F00","black")
+
+tax_rank <- nonneutral_tax %>%
+  mutate(model = factor(model, 
+                            levels=c("above","neutral","below")),
+         Phylum = factor(Phylum),
+         Phylum = fct_reorder(Phylum, p, .desc=TRUE))
+
+neutral_bar <- ggplot(data = tax_rank, aes(x = model, y = p, fill = Phylum)) +
+  geom_bar(stat = "identity", position="stack")  + theme_classic() +
+  labs( x=" Phylum", y="average relative abundance (p)") +  scale_fill_manual(name=NULL, values = c(many_col)) 
+
+print(paste("Creating Neutral Bargraph output files"))
+neutral_bar_name <- paste0(biosample,"_neutral_barplot.pdf")
+ggsave(neutral_bar, filename=neutral_bar_name, width = 20, height = 10, dpi= 600)
 
 print(paste("Finished!"))
 

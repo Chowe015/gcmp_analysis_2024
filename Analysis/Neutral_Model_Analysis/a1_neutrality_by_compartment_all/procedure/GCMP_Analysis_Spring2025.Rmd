@@ -1,0 +1,841 @@
+---
+title: "Global Coral Microbiome Project: Statistical Analysis and Modelling Workflow 2024"
+authors: "Colin Howe, Sofia Roitman"
+start date: "01/17/2024"
+current date: "03/29/2024"
+output: html_document
+---
+
+# First, Set working Directory load library and Import Data into Phyloseq
+```{r}
+# Command for setting your work directory
+knitr::opts_knit$set("C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Analysis/Neutral_Model_Analysis/a1_neutrality_by_compartment_all")
+                 
+# Print your working directory
+
+```
+
+## Load required libraries. 
+```{r, message=FALSE, warning=FALSE} 
+library(BiocManager)
+library(phyloseq)
+library(dplyr)
+library(qiime2R)
+library(DESeq2)
+library(ComplexHeatmap)
+library(ade4)
+library(vegan)
+library(tidyverse)
+library(ggplot2)
+library(microbiome)
+library(dendextend)
+library(gplots)
+library(tidyr)
+library(RVAideMemoire)
+library(ape)
+library(microbiomeMarker)
+library(paletteer)
+library(RColorBrewer)
+library(ggsignif)
+library(ANCOMBC)
+library(MiscMetabar)
+```
+
+# Import OTU Table Taxonomy and Tree from Qiime2 and import Metadata
+```{r}
+#Import from .qza file into a phyloseq object
+asv <- qza_to_phyloseq(features = "./gcmp_qiime_input/merged_table.qza")
+
+#### Import Metadata read.table
+metadata <- read.table(file = "./gcmp_qiime_input/gcmp_complete_mapping2025.txt",header=T,comment.char="", row.names=1, sep="\t")
+
+### Import Tree file from biom output tree.nwk
+tree <- read_tree("gcmp_qiime_input/tree.nwk")
+
+### Import taxonomy from biom output as .tsv format using read.table
+taxonomy <- read.table(file = "gcmp_qiime_input/taxonomy.tsv", sep = "\t", header = T ,row.names = 1)
+
+# clean the taxonomy
+##code referenced from Yan Hui: email me@yanh.org github: yanhui09
+tax <- taxonomy %>%
+  select(Taxon) %>% 
+  separate(Taxon, c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"), "; ")
+
+tax.clean <- data.frame(row.names = row.names(tax),
+                        Kingdom = str_replace(tax[,1], "k__",""),
+                        Phylum = str_replace(tax[,2], "p__",""),
+                        Class = str_replace(tax[,3], "c__",""),
+                        Order = str_replace(tax[,4], "o__",""),
+                        Family = str_replace(tax[,5], "f__",""),
+                        Genus = str_replace(tax[,6], "g__",""),
+                        Species = str_replace(tax[,7], "s__",""),
+                        stringsAsFactors = FALSE)
+
+tax.clean[is.na(tax.clean)] <- ""
+tax.clean[tax.clean=="__"] <- ""
+
+for (i in 1:nrow(tax.clean)){
+  if (tax.clean[i,7] != ""){
+    tax.clean$Species[i] <- paste(tax.clean$Genus[i], tax.clean$Species[i], sep = " ")
+  } else if (tax.clean[i,2] == ""){
+    kingdom <- paste("Unclassified", tax.clean[i,1], sep = " ")
+    tax.clean[i, 2:7] <- kingdom
+  } else if (tax.clean[i,3] == ""){
+    phylum <- paste("Unclassified", tax.clean[i,2], sep = " ")
+    tax.clean[i, 3:7] <- phylum
+  } else if (tax.clean[i,4] == ""){
+    class <- paste("Unclassified", tax.clean[i,3], sep = " ")
+    tax.clean[i, 4:7] <- class
+  } else if (tax.clean[i,5] == ""){
+    order <- paste("Unclassified", tax.clean[i,4], sep = " ")
+    tax.clean[i, 5:7] <- order
+  } else if (tax.clean[i,6] == ""){
+    family <- paste("Unclassified", tax.clean[i,5], sep = " ")
+    tax.clean[i, 6:7] <- family
+  } else if (tax.clean[i,7] == ""){
+    tax.clean$Species[i] <- paste("Unclassified ",tax.clean$Genus[i], sep = " ")
+  }
+}
+
+# create matrix format for OTU and taxonomy table
+OTU <- otu_table(as.matrix(asv), taxa_are_rows = TRUE)
+tax1 = tax_table(as.matrix(tax.clean))
+
+# Set metadata
+SAMPLE <- sample_data(metadata)
+
+# Create Working phyloseq object
+main_phylo <- phyloseq(OTU,tax1,SAMPLE,tree)
+
+# visualize tax table
+table(tax_table(main_phylo)[,"Kingdom"])
+
+# remove unknown bacteria or unassigned
+phylo_noking <-main_phylo %>%
+  phyloseq::subset_taxa(!Kingdom %in% c("Unassigned","Unclassified d__Bacteria","d__Eukaryota")) %>%
+  phyloseq::subset_taxa(!Phylum %in% c("Unclassified Unassigned","Unclassified d__Archaea","Unclassified d__Bacteria","Unclassified d__Eukaryota")) %>%
+  phyloseq::subset_taxa(!Family %in% c("Mitochondria","Chloroplast"))
+
+# verify present taxa in table
+table(tax_table(phylo_noking)[,"Kingdom"])
+
+# Remove any samples with less than 1 read
+phylo = prune_samples(sample_sums(phylo_noking)>1, phylo_noking)
+phylo
+
+# Subset only corals from database
+# Subset only corals from database
+subject <-subset_samples(phylo, outgroup == "n" & tissue_compartment == "M")
+subject
+
+print(paste("Generating Rarefied Coral dataset..."))
+# rarefy to even depth
+rarefied = rarefy_even_depth(subject, rngseed=111, sample.size=1000, replace=F, trimOTUs = TRUE)
+rarefied
+
+###Agglomerate taxa to family 
+glom <- tax_glom(rarefied, taxrank = 'Family', NArm = TRUE)
+glom
+
+```
+
+#Bruns et al. 2016 Neutral Model functions
+```{r}
+################define sncm.fit############
+sncm.fit <- function(spp, pool=NULL, stats=TRUE, taxon=NULL){
+	require(minpack.lm)
+	require(Hmisc)
+	require(stats4)
+	
+	options(warn=-1)
+
+	#Calculate the number of individuals per community
+	N <- mean(apply(spp, 1, sum))
+	
+	#Calculate the average relative abundance of each taxa across communities
+	if(is.null(pool)){
+		p.m <- apply(spp, 2, mean)
+		p.m <- p.m[p.m != 0]
+		p <- p.m/N
+	} else {
+		p.m <- apply(pool, 2, mean)
+		p.m <- p.m[p.m != 0]
+		p <- p.m/N
+	}
+
+#Calculate the occurrence frequency of each taxa across communities
+spp.bi <- 1*(spp>0)
+freq <- apply(spp.bi, 2, mean)
+freq <- freq[freq != 0]
+#Combine
+C <- merge(p, freq, by=0)
+C <- C[order(C[,2]),]
+C <- as.data.frame(C)
+C.0 <- C[!(apply(C, 1, function(y) any(y == 0))),] #Removes rows with any zero (absent in either source pool or local communities)
+p <- C.0[,2]
+freq <- C.0[,3]
+names(p) <- C.0[,1]
+names(freq) <- C.0[,1]
+
+#Calculate the limit of detection
+d = 1/N
+
+##Fit model parameter m (or Nm) using Non-linear least squares (NLS)
+m.fit <- nlsLM(freq ~ pbeta(d, N*m*p, N*m*(1-p), lower.tail=FALSE), start=list(m=0.1))
+m.ci <- confint(m.fit, 'm', level=0.95)
+	
+##Fit neutral model parameter m (or Nm) using Maximum likelihood estimation (MLE)
+sncm.LL <- function(m, sigma){
+	R = freq - pbeta(d, N*m*p, N*m*(1-p), lower.tail=FALSE)
+	R = dnorm(R, 0, sigma)
+	-sum(log(R))
+}
+	
+m.mle <- mle(sncm.LL, start=list(m=0.1, sigma=0.1), nobs=length(p),"Nelder-Mead")
+
+##Calculate Akaike's Information Criterion (AIC)
+aic.fit <- AIC(m.mle, k=2)
+bic.fit <- BIC(m.mle)
+
+##Calculate goodness-of-fit (R-squared and Root Mean Squared Error)
+freq.pred <- pbeta(d, N*coef(m.fit)*p, N*coef(m.fit)*(1-p), lower.tail=FALSE)
+Rsqr <- 1 - (sum((freq - freq.pred)^2))/(sum((freq - mean(freq))^2))
+RMSE <- sqrt(sum((freq-freq.pred)^2)/(length(freq)-1))
+	
+pred.ci <- binconf(freq.pred*nrow(spp), nrow(spp), alpha=0.01, method="wilson", return.df=TRUE)
+	
+##Calculate AIC for binomial model
+bino.LL <- function(mu, sigma){
+R = freq - pbinom(d, N, p, lower.tail=FALSE)
+R = dnorm(R, mu, sigma)
+-sum(log(R))
+	}
+bino.mle <- mle(bino.LL, start=list(mu=0, sigma=0.1), nobs=length(p))
+	
+aic.bino <- AIC(bino.mle, k=2)
+bic.bino <- BIC(bino.mle)
+	
+##Goodness of fit for binomial model
+bino.pred <- pbinom(d, N, p, lower.tail=FALSE)
+Rsqr.bino <- 1 - (sum((freq - bino.pred)^2))/(sum((freq - mean(freq))^2))
+RMSE.bino <- sqrt(sum((freq - bino.pred)^2)/(length(freq) - 1))
+
+bino.pred.ci <- binconf(bino.pred*nrow(spp), nrow(spp), alpha=0.05, method="wilson", return.df=TRUE)
+	
+##Calculate AIC for Poisson model
+pois.LL <- function(mu, sigma){
+	R = freq - ppois(d, N*p, lower.tail=FALSE)
+	R = dnorm(R, mu, sigma)
+	-sum(log(R))
+}
+pois.mle <- mle(pois.LL, start=list(mu=0, sigma=0.1), nobs=length(p))
+	
+aic.pois <- AIC(pois.mle, k=2)
+bic.pois <- BIC(pois.mle)
+	
+##Goodness of fit for Poisson model
+pois.pred <- ppois(d, N*p, lower.tail=FALSE)
+Rsqr.pois <- 1 - (sum((freq - pois.pred)^2))/(sum((freq - mean(freq))^2))
+RMSE.pois <- sqrt(sum((freq - pois.pred)^2)/(length(freq) - 1))
+
+pois.pred.ci <- binconf(pois.pred*nrow(spp), nrow(spp), alpha=0.05, method="wilson", return.df=TRUE)
+
+##Results
+	if(stats==TRUE){
+		fitstats <- data.frame(m=numeric(), m.ci=numeric(), m.mle=numeric(), maxLL=numeric(), binoLL=numeric(), poisLL=numeric(), Rsqr=numeric(), Rsqr.bino=numeric(), Rsqr.pois=numeric(), RMSE=numeric(), RMSE.bino=numeric(), RMSE.pois=numeric(), AIC=numeric(), BIC=numeric(), AIC.bino=numeric(), BIC.bino=numeric(), AIC.pois=numeric(), BIC.pois=numeric(), N=numeric(), Samples=numeric(), Richness=numeric(), Detect=numeric())
+		fitstats[1,] <- c(coef(m.fit), coef(m.fit)-m.ci[1], m.mle@coef['m'], m.mle@details$value, bino.mle@details$value, pois.mle@details$value, Rsqr, Rsqr.bino, Rsqr.pois, RMSE, RMSE.bino, RMSE.pois, aic.fit, bic.fit, aic.bino, bic.bino, aic.pois, bic.pois, N, nrow(spp), length(p), d)
+		return(fitstats)
+	} else {
+	A <- cbind(p, freq, freq.pred, pred.ci[,2:3], bino.pred, bino.pred.ci[,2:3])
+	A <- as.data.frame(A)
+		colnames(A) <- c('p_abundance', 'freq', 'freq.pred', 'pred.lwr', 'pred.upr', 'bino.pred', 'bino.lwr', 'bino.upr')
+		if(is.null(taxon)){
+			B <- A[order(A[,1]),]
+		} else {
+			B <- merge(A, taxon, by=0, all=TRUE)
+			row.names(B) <- B[,1]
+			B <- B[,-1]
+			B <- B[order(B[,1]),]
+		}
+		return(B)
+	}
+}
+##Identify above, below and neutral OTUs 
+
+addf = function(freq, pred.upr, pred.lwr, padj) {
+  if(freq > pred.upr){
+    model = "above"
+  }
+  else if(freq < pred.lwr){
+    model = "below"
+  }
+  else if(pred.upr >= freq & freq >= pred.lwr & padj < 0.05){
+    model = "neutral_significant"
+  }
+  else if(pred.upr >= freq & freq >= pred.lwr){
+    model = "neutral"
+  }
+  return(model)
+}
+```
+
+## Neutral Model test
+```{r}
+###coral communities
+set.seed(111)
+coral <- prune_taxa(taxa_sums(glom) > 0, glom)
+coral
+otu_coral = as.data.frame(t(otu_table(coral)))
+
+## Neutral fit
+mod_w_coral = sncm.fit(otu_coral)
+mod1_w_coral = sncm.fit(otu_coral,stats = F)
+
+min(sample_sums(glom))
+
+mod1_w_coral %>% mutate(ci.mean = (pred.upr-pred.lwr)/2,
+                        SE = (ci.mean/(1.96)),
+                        zstat = (freq/SE),
+                        p_value = 2*pnorm(-abs(zstat)),
+                        #p_value = (exp(-0.717*zstat-0.416*zstat^2)),
+                        padj = p.adjust(p_value, method = "bonferroni", n=length(mod1_w_coral$freq))) %>% as.data.frame() %>%
+                        rownames_to_column("id")-> neutral_results_padj
+                        #padj = (exp(-0.717*zstat-0.416*zstat^2))*length(mod1_w_coral$model)) -> neutral_results_padj
+
+neutral_results_padj$model = mapply(addf, neutral_results_padj$freq, neutral_results_padj$pred.upr, neutral_results_padj$pred.lwr, neutral_results_padj$padj)  
+
+length(which(neutral_results_padj$model == "above"))
+length(which(neutral_results_padj$model == "below"))
+length(which(neutral_results_padj$model == "neutral"))
+length(which(neutral_results_padj$model == "neutral_significant"))
+
+neutral_results_padj$model <- factor(neutral_results_padj$model, 
+                             levels = c("above", "neutral", "below","neutral_significant"))
+
+################# seawater ####################
+set.seed(111)
+###seawater communities
+#seawater <- subset_samples(physeq2, SampleType == "seawater")
+seawater <- prune_taxa(taxa_sums(glom_col) >0, glom_col)
+seawater
+
+otu_seawater = as.data.frame(t(otu_table(seawater)))
+
+mod_w_seawater = sncm.fit(otu_seawater)
+mod1_w_seawater = sncm.fit(otu_seawater,stats = F)
+
+
+mod1_w_seawater$model = mapply(addf, mod1_w_seawater$freq, mod1_w_seawater$pred.upr, mod1_w_seawater$pred.lwr)  
+length(which(mod1_w_seawater$model == "above"))
+length(which(mod1_w_seawater$model == "below"))
+length(which(mod1_w_seawater$model == "neutral"))
+
+mod1_w_seawater$model <- factor(mod1_w_seawater$model, 
+                                levels = c("above", "neutral", "below"))
+
+## Assign Taxonomy to table of significant microbes
+#env_taxa = cbind(as(mod1_w_seawater, "data.frame"), as(tax_table(glom_col12)[rownames(mod1_w_seawater), ], "matrix"))
+
+#write.csv(env_taxa,"Colombia E12 Samples Neutral Taxonomy table.csv",row.names = TRUE)
+
+
+```
+
+## Plot Neutral Model
+```{r}
+#plot neuModel
+p_neuM_coral=ggplot(neutral_results_padj, aes(x=log10(p_abundance), y=freq, color = model))+
+  geom_point(shape=19, alpha=0.7, size=2.5)+
+  geom_line(aes(x=log10(p_abundance), y=freq.pred),
+            color="blue",linetype="solid",linewidth=1)+
+  geom_line(aes(x=log10(p_abundance), y=pred.lwr),
+            color="blue",linetype="dashed",linewidth=1)+
+  geom_line(aes(x=log10(p_abundance), y=pred.upr),
+            color="blue",linetype="dashed",linewidth=1)+
+    scale_colour_manual(name="OTUs",
+                      values=c("#E41A1C", "#999999", "#FF7F00","purple"),
+                      breaks=c("above", "neutral", "below","neutral_significant"),
+                      labels=c("Over-represented", "Neutrally-distributed", "Under-represented","Significant_low_weight"))+
+  xlab("Log10 (Mean Relative abundance)") + ylab("Occurance frequency")+
+  theme_bw() +
+  theme(axis.title.x = element_text(face="bold", size=15),
+        axis.title.y = element_text(face="bold", size=15),
+        axis.text.x = element_text(colour = "black", size=12),
+        axis.text.y = element_text(colour = "black", size=12), 
+        legend.title = element_text(size=11.5, face = "bold"),
+        legend.text = element_text(size=11.5),
+        legend.position="none")
+
+#expedition <-"E5"
+biosample <-"Skeleton"
+r <- round(mod_w_coral$Rsqr,3)
+m_var <- round(mod_w_coral$m,3)
+lb1 <- paste0("R_squared",":",r)
+lb2 <- paste0("migration_rate (m):",m_var)
+lb3 <- paste0(biosample,"_Neutral_Model")#expedition,"_",
+
+p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=6.5, label=lb1, 
+                                        fontface="bold", color="black",
+                                        parse=TRUE) +
+  annotate("text", x = -3.5, y=0.6, size=6.5, label=lb2, 
+           fontface="bold", color="black",
+           parse=TRUE) +
+  annotate("text", x = -3.5, y=0.9, size=6.5, label=lb3, 
+           fontface="bold", color="black",
+           parse=FALSE)
+
+#ggsave("Tissue_sig_neutral_model_plot.jpg", p_neuM_coral1, width = 20, height = 10, dpi= 600)
+
+############ Seawater PLot #############
+#plot neuModel
+p_neuM_seawater=ggplot(mod1_w_seawater, aes(x=log10(p), y=freq, color = model))+
+  geom_point(shape=19, alpha=0.7, size=2.5)+
+  geom_line(aes(x=log10(p), y=freq.pred),
+            color="blue",linetype="solid",size=1)+
+  geom_line(aes(x=log10(p), y=pred.lwr),
+            color="blue",linetype="dashed",size=1)+
+  geom_line(aes(x=log10(p), y=pred.upr),
+            color="blue",linetype="dashed",size=1)+
+  scale_colour_manual(name="OTUs",
+                      values=c("#E41A1C", "#999999", "#FF7F00"),
+                      breaks=c("above", "neutral", "below"),
+                      labels=c("Over-represented", "Neutrally-distributed", "Under-represented"))+
+  xlab("Log10 (Mean Relative abundance)") + ylab("Occurance frequency")+
+  theme_bw() +
+  theme(axis.title.x = element_text(face="bold", size=15),
+        axis.title.y = element_text(face="bold", size=15),
+        axis.text.x = element_text(colour = "black", size=12),
+        axis.text.y = element_text(colour = "black", size=12), 
+        legend.title = element_text(size=11.5, face = "bold"),
+        legend.text = element_text(size=11.5),
+        legend.position="none")#http://127.0.0.1:24155/graphics/plot_zoom_png?width=1762&height=934
+
+ev1 <- mod_w_seawater$Rsqr
+ev2 <- mod_w_seawater$m
+ev3 <- expression(paste("Colombia E2 & E12 \n Coral Samples"))
+
+p_neuM_seawater1 = p_neuM_seawater + annotate("text", x = -3.5, y=0.7, size=6.5, label=ev1, 
+                                              fontface="bold", color="black",
+                                              parse=TRUE) +
+annotate("text", x = -3.5, y=0.6, size=6.5, label=ev2, 
+           fontface="bold", color="black",
+           parse=TRUE) +
+annotate("text", x = -3.5, y=0.9, size=5.5, label=ev3, 
+           fontface="bold", color="black",
+           parse=TRUE)
+
+getwd()
+
+mp_ncm = ggdraw() +
+  draw_plot(p_neuM_coral1, x = 0.01, y = 0.1, width = 0.49, height = 0.8) + 
+  draw_plot(p_neuM_seawater1, x = 0.51, y = 0.1, width = 0.49, height = 0.8) 
+mp_ncm
+ggsave(" Caribbean_Mucus Neutral Model Plot.jpg", p_neuM_coral1, width = 20, height = 10, dpi= 600)
+
+
+```
+
+## Psudo Tables 
+```{r}
+above_mucus = select(filter(nonneutral_tax, model == "above"), id,p_abundance,freq,padj,Phylum,Class,Order,Family,model) %>%
+  mutate(compartment_neutrality = paste("mucus", model, sep = '_') )
+
+
+## Subset glom OTU table
+phyloseq::otu_table(glom)%>%
+        as.data.frame()%>%
+        rownames_to_column("id") -> glom_otu_table
+
+## Subset glom tax table
+phyloseq::tax_table(glom)%>%
+        as.data.frame()%>%
+        rownames_to_column("id") -> glom_otu_tax
+
+## Subset glom tax table
+phyloseq::sample_data(glom)%>%
+        as.data.frame() -> glom_metadata
+
+#subset otu table based on neutral results
+above_mucus_table <-subset(glom_otu_table, id  %in%  above_mucus$id)
+colnames(above_mucus_table) <- paste(colnames(above_mucus_table), "above", sep = "_")
+above_mucus_tax 
+
+```
+## Neutral Phyloseq Object      
+```{r}
+
+
+## ancombc analysis
+library(ANCOMBC)
+
+
+## Merging psudo_sample tables taxonomy and mapping files across compartments
+#Mucus
+mucus_table <-read.csv("./Mucus/Mucus_combinded_table.csv", row.names=1, check.names=FALSE)
+mucus_tax <-read.csv("./Mucus/Mucus_qiime_neutral_taxonomy.csv", row.names=1, check.names=FALSE)
+mucus_mapping <-read.csv("./Mucus/Mucus_qiime_neutral_mapping.csv", row.names=1, check.names=FALSE)
+
+#Tissue
+Tissue_table <-read.csv("./Tissue/Tissue_combinded_table.csv", row.names=1, check.names=FALSE)
+Tissue_tax <-read.csv("./Tissue/Tissue_qiime_neutral_taxonomy.csv", row.names=1, check.names=FALSE)
+Tissue_mapping <-read.csv("./Tissue/Tissue_qiime_neutral_mapping.csv", row.names=1, check.names=FALSE)
+
+#Skeleton
+Skeleton_table <-read.csv("./Skeleton/Skeleton_combinded_table.csv", row.names=1, check.names=FALSE)
+Skeleton_tax <-read.csv("./Skeleton/Skeleton_qiime_neutral_taxonomy.csv", row.names=1, check.names=FALSE)
+Skeleton_mapping <-read.csv("./Skeleton/Skeleton_qiime_neutral_mapping.csv", row.names=1, check.names=FALSE)
+
+## format import files 
+mucus_table[is.na(mucus_table)] <-0
+
+## Filter row artifacts
+m_map <-mucus_mapping[-c(1,2,3),]
+t_map <-Tissue_mapping[-c(1,2,3),]
+s_map <-Skeleton_mapping[-c(1,2,3),]
+
+# create matrix format for OTU and taxonomy table
+MOTU <- otu_table(as.matrix(mucus_table), taxa_are_rows = TRUE)
+Mtax1 = tax_table(as.matrix(mucus_tax))
+
+
+
+## Filter row artifacts
+m_map <-mucus_mapping[-c(1,2,3),]
+t_map <-Tissue_mapping[-c(1,2,3),]
+s_map <-Skeleton_mapping[-c(1,2,3),]
+
+# Create new column with compartment and neutrality
+m_map %>% mutate(compartment_neutrality  = paste(compartment, model, sep = '_')) -> skeleton_map
+t_map %>% mutate(compartment_neutrality  = paste(compartment, model, sep = '_')) -> tissue_map
+s_map %>% mutate(compartment_neutrality  = paste(compartment, model, sep = '_')) -> mucus_map
+
+
+
+# Set metadata
+MSAMPLE <- sample_data(mucus_map)
+
+# Create Working phyloseq object
+mucus_phylo <- phyloseq(MOTU,Mtax1,MSAMPLE,tree)
+mucus_phylo
+clean_mucus <- prune_taxa(taxa_sums(mucus_phylo)>1,mucus_phylo)
+
+
+## Merge OTU Tables across compartments
+merge(mucus_table,Tissue_table, by=0, all=T)%>% 
+  merge(Skeleton_table) -> test_table 
+
+test_table[is.na(test_table)] <-0
+
+colnames(merged_tax)[1] <- ""
+
+## Merge Taxonomy files 
+merge(mucus_tax,Tissue_tax, by=0, all=T) %>% 
+  merge(Skeleton_tax) -> test_tax 
+colnames(test_tax)
+## coalesce taxonomy columnss
+merged_tax <- test_tax %>% mutate(
+                              Taxon = coalesce(Taxon.x,Taxon.y),
+                              Consensus = coalesce(Consensus.x,Consensus.y)) %>%
+                              select(Row.names,Taxon,Consensus)
+colnames(merged_tax)[1] <- ""
+
+## Merge each mapping file
+merge(mucus_map,tissue_map, by=0, all=T) %>% 
+  merge(skeleton_map) -> merge_map 
+
+## Coalesce colummns
+merge_map %>% mutate(compartment = coalesce(compartment.x,compartment.y),
+                     model = coalesce(model.x,model.y),
+                     compartment_neutrality = coalesce(compartment_neutrality.x, compartment_neutrality.y)) %>% 
+                    select(Row.names,model,compartment,compartment_neutrality)-> combined_map
+
+```
+
+## Linear regression analysis
+```{r}
+knitr::opts_knit$set(root.dir = 'C:/Users/Colin Howe/Desktop/PSU Doctoral Program/GCMP_Working/gcmp_analysis_2024/Neutral Model Analysis')
+remove(results_table)
+results_table <- read.table(file = "gcmp_qiime_input/neutral_results_table.csv",header=T,comment.char="",sep=",")
+
+compartment = results_table$Compartment
+as.character(compartment)
+ocean = results_table$Ocean
+region = results_table$Region
+Rsquared = results_table$R2
+faith = results_table$Faith.PD
+faithsr = results_table$Faiths.SR
+n_samples = results_table$n_samples
+region = factor(results_table$Region)
+below = results_table$n_belowMean
+above = results_table$n_aboveMean
+expedition = results_table$expedition
+migration = results_table$m
+
+category_migration_test <- lm(migration ~ compartment+region+faith+faithsr+ocean)
+summary(category_migration_test)
+
+category_Rquared_test <- lm(Rsquared ~ compartment+region+faith+faithsr+ocean)
+summary(category_Rquared_test) 
+
+
+## Plot Linear regression
+faith_m_coe <- paste0("fatihpd_pvalue:\n",round(category_migration_test$coefficients[7],7))
+
+lm_plot = plot(faith,migration, pch = 16, cex=1.3, col="#009197", main = "Migration and Coral Faith Pd", xlab = "Coral Species Diversity (faith Pd)", ylab ="migration (m)") + text(x=1500, y=.07, label = faith_m_coe) + abline(lm(migration ~ faith), col="#EC8C5C") 
+
+#write.table(migration_regression_results,file="migration_regression_results.txt", sep = "\t",row.names = TRUE)
+#write.table(Rsquared_regression_results,file="R2_regression_results.txt", sep = "\t",row.names = TRUE)
+
+##  Compartment Boxplot with R2 
+coral_color =c("#009197","#EC8C5C","#8E3B97")
+
+testp <- ggplot(results_table, aes(y=Rsquared, x=compartment)) + geom_boxplot(aes(color=compartment)) + theme_classic() + geom_point(aes(color=compartment)) +labs(xlab="R2", ylab="Coral Compartments", title ="Compartment Model Fit") + theme(plot.title = element_text(hjust = 0.5)) + scale_color_manual(values=c("#009197","#EC8C5C","#8E3B97")) + geom_signif(comparisons = list(c("Mucus", "Tissue"), c("Mucus", "Skeleton"),c("Tissue", "Skeleton")), y_position = c(.85,1, .75))
+
+```
+
+## Faith Pd  Analysis
+```{r}
+coral_object <-subset_samples(coral, BiologicalMatter == "Coral Mucus") # all corals without out groups, environmental samples & subset expeditions (i.e, singapore).
+coral_object
+
+# pull out sample data 
+phyloseq::sample_data(coral_object) %>%  
+    group_by(sample_name_backup, expedition_number,BiologicalMatter) %>%
+  as.data.frame() %>%
+  select(sample_name_backup, expedition_number,BiologicalMatter) -> microbial_faith
+
+#Microbial Phyloseq Pd analysis 
+estimate_pd(coral_object) %>%
+  as.data.frame() -> microbial_faith_pd
+
+microbial_faith$faith_pd <- microbial_faith_pd$PD
+microbial_faith$faith_SR <- microbial_faith_pd$SR
+
+# Create data frame from sample data 
+phyloseq::sample_data(coral_object) %>%  
+  group_by(expedition_number, BiologicalMatter,Huang_Roy_tree_name) %>%
+  as.data.frame() %>%
+  select(expedition_number, BiologicalMatter,Huang_Roy_tree_name)-> test_df
+
+# Create a new column titled eco to join expedition and biological matter
+test_df$eco <-paste(test_df$expedition_number,test_df$BiologicalMatter, sep = "_")
+
+#group and count total for each unique group maintaining NA values
+test_df %>% group_by(eco, Huang_Roy_tree_name) %>%  summarise(counts=n()) %>%
+  ungroup %>%
+  complete(nesting(eco),
+           nesting(Huang_Roy_tree_name),
+           fill = list(quantity = 0)) -> test_table
+
+# Fill NA with 0
+test_table[is.na(test_table)] <-0
+
+#Build Matrix
+e <- unique(test_table$eco) 
+t <- unique(test_table$Huang_Roy_tree_name) 
+c <- test_table$counts
+
+test_matrix <- matrix(c, nrow = length(e), ncol = length(t), byrow=TRUE)
+rownames(test_matrix) = e
+colnames(test_matrix) = t
+
+# clean data set to match each other
+clean_tree <- match.phylo.comm(phy = coral_tree, comm = test_matrix)$phy
+clean_comm <- match.phylo.comm(phy = coral_tree, comm = test_matrix)$comm
+
+coral_faith_pd <- pd(clean_comm, clean_tree, include.root=TRUE)
+coral_faithpd_reorded <-coral_faith_pd[order(coral_faith_pd$PD, decreasing=TRUE),] 
+
+write.table(microbial_faith, file ="./carib_mucus_microbial_faith_pd_table.csv", sep = ",",col.names = TRUE)
+
+write.csv(coral_faithpd_reorded, file ="./carib_mucus_Host_faith_pd_table.csv" ,row.names = TRUE)
+```
+
+# BAR PLOTS: Coral Compartments
+```{r}
+
+##import neutral Model results tables
+
+tissue_table <- read.table(file ="gcmp_qiime_input/Tissue_neutral_model.csv",header=T,comment.char="", row.names=1, sep=",")
+mucus_table <- read.table(file ="gcmp_qiime_input/Mucus_neutral_model.csv",header=T,comment.char="", row.names=1, sep=",")
+skeleton_table <- read.table(file ="gcmp_qiime_input/Skeleton_neutral_model.csv",header=T,comment.char="", row.names=1, sep=",")
+combined_table <- read.table(file ="gcmp_qiime_input/combined_neutral_table.csv",header=T,comment.char="", row.names=1, sep=",")
+
+sig_tissue <-filter(tissue_table, padj <=0.05)
+sig_skeleton <-filter(skeleton_table, padj <=0.05)
+sig_mucus <-filter(mucus_table, padj <=0.05)
+sig_combined <-filter(combined_table, padj <=0.05)
+filter(sig_combined, Phylum == "Proteobacteria") %>%
+            mutate(Order= factor(Order),
+                   Order= fct_reorder(Order,p, .desc = FALSE)) -> protobacteria
+
+
+
+many_col <- c("#A6CEE3", "#33A02C","#E7298A","#FDBF6F", "#B2DF8A", "#1F78B4","#E31A1C","#6A3D9A", "#FF7F00","#1B9E77","#B15928", "#FB9A99", "#CAB2D6", "#377EB8","#D95F02", "#7570B3","#FFFF99","#666666" ,"#66A61E", "#E6AB02","#A6761D","black", "#CAB2D6",  "#B15928","#FFFF99", "#D95F02", "#E7298A", "#7570B3","#666666" , "#E6AB02", "brown3","#A6761D", "#377EB8", "#4DAF4A" ,"#984EA3", "#FFFF33","#FF7F00","cyan3", "#4DAF4A" ,"#FF7F00","#984EA3", "#A65628","#1B9E77", "#F781BF", "#F46D43","#ABDDA4", "#FDAE61","black", "#FEE08B","#E6F598","#3288BD","deeppink","#66C2A5","cyan1","red3", "#E69F00","#56B4E9","#999999","#F0E442","#0072B2","#D55E00","#D53E4F","yellow","skyblue","coral4","#A6CEE3","white","darkkhaki","brown1","#FFFF33","chocolate","darkorchid2","#FF7F00","#1B9E77","#66A61E","#FDBF6F", "#FB9A99","#A6CEE3", "#33A02C","#E7298A","#FDBF6F", "#B2DF8A", "#1F78B4","#E31A1C","#6A3D9A", "#FF7F00","#1B9E77","#B15928", "#FB9A99", "#CAB2D6", "#377EB8","#D95F02", "#7570B3","#FFFF99","#666666" ,"#66A61E", "#E6AB02")
+
+
+proto_bar <- ggplot(data = protobacteria, aes(x = model, y = p, fill = Order)) +
+         geom_bar(stat = "identity", position="stack") + 
+  facet_wrap(~sample_type, scales= "free_x", nrow=1) +
+  labs( x=" family", y="average relative abundance (p)") + guides(fill = guide_legend(title = "Order"))+ ggtitle("Non-Neutral Proteobacteria Bargraph") + scale_fill_manual(name=NULL, values = c(many_col)) 
+
+
+all_bar <- ggplot(data = sig_combined, aes(x = model, y = p, fill = Phylum)) +
+         geom_bar(stat = "identity", position="stack") + 
+  facet_wrap(~sample_type, scales= "free_x", nrow=1) +
+  labs( x=" family", y="average relative abundance (p)") + ggtitle("Compartment Neutral Bargraph") + scale_fill_manual(name=NULL, values = c(many_col)) 
+
+mucus_bar <- ggplot(data = sig_mucus, aes(x = model, y = p, fill = Phylum)) +
+         geom_bar(stat = "identity", position="stack") + 
+  labs( x=" family", y="average relative abundance (p)") + ggtitle("Mucus Neutral Bargraph") + scale_fill_manual(name=NULL, values = c(many_col)) 
+
+tissue_bar <- ggplot(data = sig_tissue, aes(x = model, y = p, fill = Phylum)) +
+         geom_bar(stat = "identity", position="stack")  +
+  labs( x=" family", y="average relative abundance (p)") + ggtitle("Tissue Neutral Bargraph") +  scale_fill_manual(name=NULL, values = c(many_col)) 
+
+skeleton_bar <- ggplot(data = sig_skeleton, aes(x = model, y = p, fill = Phylum)) +
+         geom_bar(stat = "identity", position="stack")  +
+  labs( x=" family", y="average relative abundance (p)") + ggtitle("Skeleton Neutral Bargraph") +  scale_fill_manual(name=NULL, values = c(many_col)) 
+
+```
+
+# Calculate DISTANCE MATRICES
+```{r}
+## Mucus
+
+bray_muc = phyloseq::distance(clean_mucus, method="bray")
+uni_muc = phyloseq::distance(clean_mucus, method="unifrac")
+wuni_muc= phyloseq::distance(clean_mucus, method="wUnifrac")
+
+# Create data frame for downstream analysis
+muc_df <- data.frame(sample_data(clean_mucus))
+
+
+```
+
+# Ordination from Distance Matrix and PCoA Plots 
+```{r}
+##Calculate the PCoA on Complex Corals
+rt.pcoa = ordinate(mucus_phylo, method="PCoA", distance=uni_muc)
+# Set variables to zero for subsequent changes
+#Ofra
+pcoa<-0
+pcoa <- plot_ordination(mucus_phylo, rt.pcoa ,color="model")+  geom_point(size=3) + theme_bw() + theme(plot.title = element_text(hjust = 0.5)) + stat_ellipse(level = 0.95,type = "norm",aes(group=model))+ theme(legend.text=element_text(size=12)) + theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold"))) # title =expression(paste(italic(" Orbicella spp")," Bray-Curtis Distance PCoA across Depth")) scale_color_manual(values=c("#E31A1C","#1F78B4"))+
+                      
+
+```
+
+# Alpha Diversity BoxPlots Compartments & Family
+```{r, boxplots}
+###Once we have our sub_samples rarefied we can start with some diversity analysis  and visualization
+### Alpha Diversity ** you can make multiple diversity box plots by switch x for sample variables
+
+complex_diversity_compartment <- plot_richness(complex, x="family", color = "Genus", title = "Merulinidae Diversity Across compartment", measures = c("Shannon","Observed"),)+
+  geom_boxplot() +
+  theme_classic() +
+  theme(strip.background = element_blank(), plot.title = element_text(hjust = 0.5), axis.text.x.bottom = element_text(angle = -90))
+ 
+```
+
+## 1. PERMANOVAs Analysis
+```{r}
+
+#env material include mucus, tissue and skeleton, and outgroups without eDNA
+distance_methods <-c("bray_muc","wuni_muc","uni_muc")
+set.seed(129)
+
+# This is what is called a for loop.        
+for (i in distance_methods){ 
+  form <- as.formula(paste(i,"model", sep="~"))
+  print(form)
+ adonis2(form, data=muc_df)-> result
+ print(result)
+}
+ 
+
+## Post-hoc comparison between Coral Compartments and Location
+bray_coral_pairwise <-pairwise.perm.manova(bray_coral, coral_df$country_region,nperm=1000) 
+uni_coral_pairwise <-pairwise.perm.manova(uni_coral,coral_df$biological_matter,nperm=1000)
+wuni_coral_pairwise <-pairwise.perm.manova(wuni_coral,coral_df$biological_matter,nperm=1000)
+uni_all_com_post <-pairwise.perm.manova(uni_all,all_out_df$political_area,nperm=1000)
+uni_all_bio_post <-pairwise.perm.manova(uni_all,all_out_df$biological_matter,nperm=1000)
+
+```
+
+# Hclutering
+```{r}
+## Use Distance matricies created above
+
+# run hclust command
+hc_complex_muc <- hclust(wuni_flavo, method = "ward.D2")
+
+# Get Tree tip label names 
+coral_family <- flavo_dd$BiologicalMatter
+
+# Add tip labels to hclust object
+hc_complex_muc$labels <- coral_family
+
+## Create the Dendrogram
+dend <- as.dendrogram(hc_complex_muc)
+
+#dend <- color_branches(dend, k=9)
+
+
+## clean up plot
+dend %>% set("leaves_pch", 15) %>% 
+  set("leaves_cex", 0.5) %>% # adjust the leave shape size
+  set("labels_cex",1.0) %>% # adjust the leave label size
+  color_branches(dend, k=4) %>%
+  set("labels_col", k=4) %>%
+  hang.dendrogram(hang_height = -0.002) %>% # hang level
+  plot(main = "Caribbean Actinomarinaceae Dendrogram",
+  horiz =  FALSE,  nodePar = list(cex = 0.01))
+
+
+```
+## Parking lot
+```{r}
+## Subset glom OTU table
+phyloseq::otu_table(glom)%>%
+        as.data.frame()%>%
+        rownames_to_column("id") -> glom_otu_table
+
+## Subset glom tax table
+phyloseq::tax_table(glom)%>%
+        as.data.frame()%>%
+        rownames_to_column("id") -> glom_otu_tax
+
+## Subset glom tax table
+phyloseq::sample_data(glom)%>%
+        as.data.frame() -> glom_metadata
+
+# Connnect taxonomy information to neutral  model results
+inner_join(neutral_results_padj,glom_tax, by = "id") %>% as.data.frame() -> nonneutral_tax
+
+
+#subset otu table based on neutral results
+neutral_table <-subset(glom_otu_table, id  %in%  neutral_fam_df$id)
+
+#subset taxonomy table based on neutral results
+neutral_tax <- subset(glom_otu_tax, id  %in%  neutral_fam_df$id)# & Family %in% neutral_fam_df$Family)
+
+#subset Metadata based on neutral results
+neutral_sample_name <- colnames(neutral_table)
+neutral_meta <-subset(glom_metadata,sample_name_backup %in% neutral_sample_name)
+neutral_metadata <- sample_data(neutral_meta)
+
+## This approch helps transpose the data without adding numbers as colummn id
+test_table <- setNames(data.frame(t(glom_otu_table[,-1])),glom_otu_table[,1])
+
+# create matrix format for OTU and taxonomy table
+OTU2 <- otu_table(data.matrix(test_table, rownames.force = NA), taxa_are_rows = TRUE)
+tax2 = tax_table(as.matrix(neutral_tax))
+
+# Create Working phyloseq object
+neutral_phylo <- phyloseq(OTU2,tax2,neutral_metadata)
+
+neutral_phylo
+
+
+
+```
