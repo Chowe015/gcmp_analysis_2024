@@ -23,7 +23,7 @@ biosample <-args[4]
 
 #### Read neutral table input
 neutral_results <- read.table(neutral_results_path, header=T, sep="\t", check.names = FALSE)
-neutral_results <- read.table("./Mucus/Mucus_neutral_model.tsv", header=T, sep="\t", check.names = FALSE)
+#neutral_results <- read.table("./Mucus/Mucus_neutral_model.tsv", header=T, sep="\t", check.names = FALSE)
 
 ## Write neutral tax table
 #neutral_tax_table_name <- paste0(biosample,"all_neutral_tax_table.csv")
@@ -31,7 +31,7 @@ neutral_results <- read.table("./Mucus/Mucus_neutral_model.tsv", header=T, sep="
 
 ## Filter for significant families
 print(paste("Filtering Significant ASV from Neutral Table"))
-filter(neutral_results, padj <= 0.05) %>% select(c(id,padj,Phylum,Class,Order,Family,model)) -> sig_neutral_table
+#filter(neutral_results, padj <= 0.05) %>% select(c(id,padj,Phylum,Class,Order,Family,model)) -> sig_neutral_table
 
 print(paste("Importing KO and Kegg contribution tables"))
 pathway <- read.table(gzfile(pathway_path), header =T, sep = "\t")#,check.names = FALSE)
@@ -42,7 +42,7 @@ colnames(pathway)[which(names(pathway)== "taxon")] <- "id"
 
 #### Inner_join feature table with significant microbial families 
 print(paste("joining neutral table and ref taxonomy"))
-non_neutral_path_contrib <- inner_join(pathway,sig_neutral_table, by = "id")
+non_neutral_path_contrib <- inner_join(pathway,neutral_results, by = "id")
 
 neutral_pathway_name <- paste0(biosample,"_neutral_pathway_contrib.tsv.gz")
 write.table(non_neutral_path_contrib, gzfile(neutral_pathway_name),sep= "\t")

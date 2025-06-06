@@ -7,7 +7,7 @@ library(RColorBrewer)
 library(tidyverse)
 library(minpack.lm)
 library(Hmisc)
-library(stats4)
+library(bbmle)
 library(biomformat)
 
 sink("PIC_results_log.txt",append=FALSE,split=TRUE)
@@ -30,11 +30,11 @@ glom_tax <- read.table(taxonomy_path, sep = "\t",header = TRUE,check.name=FALSE)
 glom_mapping <-read.table(metadata_path, sep = ",",header = TRUE,check.name=FALSE)
 
 ## Testing different import tools
-#glom_table <- read.table("./Mucus/M_glom_table.tsv", sep = "\t",header = TRUE,row.names=1,check.name=FALSE)
-#import taxonomy
-#glom_tax <- read.table("./Mucus/M_glom_taxonomy.tsv", sep = "\t",header = TRUE,check.name=FALSE)
+#glom_table <- read.table("./Tissue/T_glom_table.tsv", sep = "\t",header = TRUE,row.names=1,check.name=FALSE)
+##import taxonomy
+#glom_tax <- read.table("./Tissue/T_glom_taxonomy.tsv", sep = "\t",header = TRUE,check.name=FALSE)
 # import mapping file
-#glom_mapping <-read.table("./Mucus/M_glom_metadata", sep = "\t",header = TRUE,check.name=FALSE)
+#glom_mapping <-read.table("./Tissue/T_glom_metadata.csv", sep = ",",header = TRUE,check.name=FALSE)
 
 
 print(paste("Create Neutral Model Function"))
@@ -85,7 +85,7 @@ sncm.LL <- function(m, sigma){
 	-sum(log(R))
 }
 	
-m.mle <- mle(sncm.LL, start=list(m=0.1, sigma=0.1), nobs=length(p),"Nelder-Mead")
+m.mle <- mle2(sncm.LL, start=list(m=0.1, sigma=0.1), nobs=length(p),method="Nelder-Mead")
 
 ##Calculate Akaike's Information Criterion (AIC)
 aic.fit <- AIC(m.mle, k=2)
@@ -104,7 +104,7 @@ R = freq - pbinom(d, N, p, lower.tail=FALSE)
 R = dnorm(R, mu, sigma)
 -sum(log(R))
 	}
-bino.mle <- mle(bino.LL, start=list(mu=0, sigma=0.1), nobs=length(p))
+bino.mle <- mle2(bino.LL, start=list(mu=0, sigma=0.1), nobs=length(p))
 	
 aic.bino <- AIC(bino.mle, k=2)
 bic.bino <- BIC(bino.mle)
@@ -122,7 +122,7 @@ pois.LL <- function(mu, sigma){
 	R = dnorm(R, mu, sigma)
 	-sum(log(R))
 }
-pois.mle <- mle(pois.LL, start=list(mu=0, sigma=0.1), nobs=length(p))
+pois.mle <- mle(pois.LL, start=list(mu=0, sigma=0.1), nobs=length(p),method="Nelder-Mead")
 	
 aic.pois <- AIC(pois.mle, k=2)
 bic.pois <- BIC(pois.mle)
@@ -204,7 +204,7 @@ write.table(nonneutral_tax,neutral_table_name,row.names = FALSE,sep="\t", col.na
 ############################### create compartment pseudo table outputs #########################
 print(paste("Writing Above and Below Pseudo tables"))
 glom_table2 <-read.table(glom_table_path, sep = "\t",header = TRUE,check.name=FALSE)
-
+#glom_table2 <-read.table("./Tissue/T_glom_table.tsv", sep = "\t",header = TRUE,check.name=FALSE)
 # Subset Taxonomy and join with neutral model results
 neutral = c("above","below")
 for (b in neutral){
@@ -247,12 +247,12 @@ sig_neutral_ref = select(filter(non_neutral_tax, model == "neutral" & padj >=0.0
 
 #subset otu table based on neutral results and rename column names
 neutral_table_test <-subset(glom_table2, id  %in%  sig_neutral_ref$id)
-l = length(neutral_table_test)
-colnames(neutral_table_test)[2:l] <- paste(colnames(neutral_table_test)[2:l], "neutral", sep = "_")
+la = length(neutral_table_test)
+colnames(neutral_table_test)[2:la] <- paste(colnames(neutral_table_test)[2:la], "neutral", sep = "_")
 colnames(neutral_table_test)[1] <- "id"
 
 ## Create new columns for the metadata data
-glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table_test)[2:l]),
+glom_mapping %>% mutate(psuedo_sample_name = paste(colnames(neutral_table_test)[2:la]),
                             compartment_neutrality = paste(biosample,"neutral", sep = '_'),
                             compartment = paste (biosample),
                             neutrality = paste("neutral")) %>% 
@@ -280,32 +280,24 @@ neutral_table <- read.table(neutral_import,header = TRUE,sep="\t", check.names=F
 below_table <- read.table(below_import,header = TRUE,sep="\t", check.names=FALSE)
 
 ## 1) Merge Tables first 
-merge(above_table, below_table, by=0,all=T) -> merge_table
+full_join(above_table, below_table, by ="id") -> merge_table
 
-merge_table %>% mutate(id = coalesce(id.x,id.y)) %>% 
-  relocate(id) %>%  
-  select(!c(id.x,id.y,Row.names))-> merge_test
-merge_test[is.na(merge_test)] <-0
+#merge_table %>% mutate(id = coalesce(id.x,id.y)) %>% 
+#  relocate(id) %>%  
+#  select(!c(id.x,id.y,Row.names))-> merge_test
+merge_table[is.na(merge_table)] <-0
 
-merge(merge_test,neutral_table_test,by=0,all=T) -> full_table
-full_table %>% mutate(id = coalesce(id.x,id.y)) %>% 
-  relocate(id) %>%  
-  select(!c(id.x,id.y,Row.names))-> full_table
+full_join(merge_table,neutral_table, by ="id") -> full_table
+#full_table %>% mutate(id = coalesce(id.x,id.y)) %>% 
+#  relocate(id) %>%  
+#  select(!c(id.x,id.y,Row.names))-> full_table
 full_table[is.na(full_table)] <-0
 
 ## Print output files
 print(paste("Writing Combined Psudo_table across compartments"))
 psudo_table_name <- paste0(biosample,"_combined_psudo_table.tsv")
 write.table(full_table, file=psudo_table_name, sep="\t",row.names = FALSE)
-
-## Print biom output files
-#print(paste("Converting data frame into Biom files"))
-# create biom table
-#biom_table <-make_biom(full_table)
-#assign biom table name
-#biom_name <- paste0(biosample,"_psudo_feature_table.biom")
-#Write biom table output
-#write_biom(biom_table,biom_file = biom_name)
+write.table(merge_table,file="merged_test_table.tsv", sep="\t",row.names=FALSE)
 
 ## 2) Merge Taxonomy files 
 tax2_import = paste0("./taxonomy.tsv")
@@ -360,7 +352,7 @@ p_neuM_coral1 = p_neuM_coral + annotate("text", x = -3.5, y=0.7, size=5.5, label
 
 print(paste("Creating Neutral Figure pdf files"))
 ## Print Neutral Model Plot
-neutral_file_name <- paste0(biosample,"_neutral_model.pdf")
+neutral_file_name <- paste0(biosample,"_neutral_model_Plot.pdf")
 ggsave(p_neuM_coral1, filename=neutral_file_name)
 
 ##################### Generate taxonomic bar graph #########################################
