@@ -595,13 +595,58 @@ subset_phylo <- subset_samples(funk_phylo, neutrality!=("neutral"))
 subset_phylo
 
 ######################## ancom analysis ##############################################
+# comparison between Neutral and non-neutral taxa
 set.seed(111)
-output = ancombc2(data = subset_phylo, tax_level = "Phylum",
+output = ancombc2(data = funk_phylo, tax_level = "Phylum",
                   fix_formula = "neutrality", p_adj_method = "holm", pseudo_sens = TRUE,
                   group = "neutrality", struc_zero = TRUE, neg_lb = TRUE,
-                  alpha = 0.05)
+                  alpha = 0.05,pairwise = TRUE)
 ## Pull out results
-res = output$res
+res = output$res_pair
+
+
+df_fig_neutral = res %>%
+    dplyr::filter(diff_neutralityabove == 1 | 
+                    diff_neutralitybelow == 1) %>%
+    dplyr::mutate(lfc1 = ifelse(diff_neutralityabove == 1, 
+                                round(lfc_neutralityabove, 2), 0),
+                  lfc2 = ifelse(diff_neutralitybelow == 1, 
+                                round(lfc_neutralitybelow, 2), 0),
+                  lfc3 = ifelse(diff_neutralityabove_neutralitybelow == 1, 
+                                round(lfc_neutralityabove_neutralitybelow, 2), 0)) %>%
+    tidyr::pivot_longer(cols = lfc1:lfc3, 
+                        names_to = "group", values_to = "value") %>%
+    dplyr::arrange(taxon) 
+
+
+## Assign variable names 
+df_fig_neutral$group = recode(df_fig_neutral$group, 
+                          `lfc1` = "Above - Neutral",
+                          `lfc2` = "Below - Neutral",
+                          `lfc3` = "Above- Below")
+df_fig_neutral$group = factor(df_fig_neutral$group, 
+                          levels = c("Above - Neutral",
+                                     "Below - Neutral",
+                                     "Above- Below"))
+
+## set figure range 
+lo = floor(min(df_fig_neutral$value))
+up = ceiling(max(df_fig_neutral$value))
+mid = (lo + up)/2
+
+## Build Heatmap
+fig_neutral = df_fig_neutral %>%
+  ggplot(aes(x = group, y = taxon, fill = value)) + 
+  geom_tile(color = "black") +
+  scale_fill_gradient2(low = "#006CD1", high = "#994F00", mid = "white", 
+                       na.value = "white", midpoint = mid, limit = c(lo, up),
+                       name = NULL) +
+  geom_text(aes(group, taxon, label = value, color = "black"), size = 4) +
+  scale_color_identity(guide = "none") +
+  labs(x = NULL, y = NULL, title = "Mucus Pairwise Log fold changes in Predicted Functional Pathways betwee Neutral and Non-Neutral taxa") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+fig_neutral
 
 ## Subset significant functions
 da_taxa <- output$res %>% filter(diff_neutralitybelow == TRUE ) %>%
