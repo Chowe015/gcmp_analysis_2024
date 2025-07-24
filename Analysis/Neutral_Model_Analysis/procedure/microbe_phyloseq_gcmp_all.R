@@ -1,5 +1,4 @@
 #Loading Required libraries
-
 library(qiime2R)
 library(phyloseq)
 library(tidyverse)
@@ -13,8 +12,8 @@ library(minpack.lm)
 library(Hmisc)
 library(stats4)
 
-sink("Phyloseq_neutral_results_log.txt",append=FALSE,split=TRUE)
 
+#Step 1: Import qiime2 tables, mapping, taxonomy, tree and coral phylogeny across mucus tissue and skeleton
 #Get user input and assign to variables
 args <- commandArgs(trailingOnly=TRUE)
 feature_table_path <-args[1]
@@ -22,6 +21,9 @@ metadata_path <-args[2]
 taxonomy_path <-args[3]
 tree_path <-args[4]
 coral_tree_path <-args[5]
+
+sink_name = paste0("GCMP_","Phyloseq_Faith_PD_log.txt")
+sink(sink_name,append=FALSE,split=TRUE)
 
 ####Import from .qza file into a phyloseq object
 
@@ -135,7 +137,7 @@ rarefied
 
 print(paste("Agglomerated Taxonomy to the Family Level"))
 glom <- tax_glom(rarefied, taxrank = 'Family', NArm = TRUE)
-
+glom
 #### create ASV tables by id ** This file will be used in microbe_neutral_compartment.R and picrust2_neutral_table_generator.R
 
 print(paste("Generating Agglomerated ASV Table dataset..."))
@@ -143,20 +145,29 @@ phyloseq::otu_table(glom)%>%
   as.data.frame()%>%
   rownames_to_column("id") -> glom_otu_table
 
-## Output .csv from the otu table file
-glom_otu_name <- paste0(i,"_glom_table.csv")
-write.csv(glom_otu_table, file =glom_otu_name ,row.names = FALSE)
+## Output .tsv from the otu table file
+glom_otu_name <- paste0(i,"_glom_table.tsv")
+write.table(glom_otu_table, file =glom_otu_name ,sep = "\t",row.names = FALSE)
 
 #### create taxonomy tables by id  ** This 
 
 paste(print("Printing Agglomerated Taxonomy Table"))
 phyloseq::tax_table(glom)%>%
   as.data.frame() %>%
-  rownames_to_column("id") -> glom_taxonomy
+  rownames_to_column("id") %>%
+  select(-c("Genus","Species"))-> glom_taxonomy
+
+## Output .tsv from the taxonomy file
+glom_taxonomy_name <- paste0(i,"_glom_taxonomy.tsv")
+write.table(glom_taxonomy, file =glom_taxonomy_name,sep = "\t", row.names = FALSE)
+
+paste(print("Creating glom mapping file"))
+phyloseq::sample_data(glom)%>%
+  as.data.frame() -> glom_mapping
 
 ## Output .csv from the taxonomy file
-glom_taxonomy_name <- paste0(i,"_glom_taxonomy.csv")
-write.csv(glom_taxonomy, file =glom_taxonomy_name, row.names = FALSE)
+glom_mapping_name <- paste0(i,"_glom_metadata.csv")
+write.table(glom_mapping, file =glom_mapping_name,sep = ",", row.names = FALSE)
 
 #### Subset taxonomy tables ** This table contains non-agglomerated ASV ID which can be used 
 #### for comparative analysis of significant non-neutral microbes. 
@@ -167,9 +178,9 @@ write.csv(glom_taxonomy, file =glom_taxonomy_name, row.names = FALSE)
 #  as.data.frame() %>%
 #  rownames_to_column("id") -> rare_taxonomy
 
-## Output .csv from the rarefied taxonomy file
-#rare_file_name <- paste0(i,"_rarefied_taxonomy.csv")
-#write.csv(rare_taxonomy, file =rare_file_name, row.names = FALSE)
+## Output .tsv from the rarefied taxonomy file
+#rare_file_name <- paste0(i,"_rarefied_taxonomy.tsv")
+#write.table(rare_taxonomy, file =rare_file_name, sep = ",",row.names = FALSE)
 
 ## Subset Rarefied otu table 
 #paste(print("Subset taxonomy rarefied phyloseq object..."))
@@ -177,33 +188,9 @@ write.csv(glom_taxonomy, file =glom_taxonomy_name, row.names = FALSE)
 #  as.data.frame() %>%
 #  rownames_to_column("id") -> rare_otu_table
 
-## Output .csv from the rarefied taxonomy file
-#rare_otu_name <- paste0(i,"_rarefied_table.csv")
-#write.csv(rare_otu_table, file =rare_otu_name, row.names = FALSE)
-
-
-#### Creating metadata file for downstream analysis ** This file is used as a mapping file for comparartive analysis for subset datasets MST. 
-
-#paste(print("Creating new subset mapping file verify samples are all from correct compartment"))
-#phyloseq::sample_data(glom)%>%
-#  as.data.frame() %>%
-#  rownames_to_column("id") -> sampleID_table
-
-## Output .csv from the taxonomy file
-#sample_file_name <- paste0(i,"_glom_metadata.csv")
-#write.csv(sampleID_table, file =sample_file_name, row.names = FALSE)
-
-
-#### Creating metadata file for downstream analysis
-
-#paste(print("Creating glom mapping file"))
-#phyloseq::sample_data(glom)%>%
-#  as.data.frame() %>%
-#  rownames_to_column("id") -> glom_mapping
-
-## Output .csv from the taxonomy file
-#glom_mapping_name <- paste0(i,"_glom_metadata.csv")
-#write.csv(glom_mapping, file =glom_mapping_name, row.names = FALSE)
+## Output .tsv from the rarefied taxonomy file
+#rare_otu_name <- paste0(i,"_rarefied_table.tsv")
+#write.table(rare_otu_table, file =rare_otu_name, sep = ",",row.names = FALSE)
 
 #### Join asv and taxonomy tables by id **This will be used in microbe_picrust2_neutral_table_generator.R
 #paste(print("Joining OTU and taxonomy tables from agglomerated Phyloseq object..."))
@@ -215,8 +202,8 @@ write.csv(glom_taxonomy, file =glom_taxonomy_name, row.names = FALSE)
 #               rownames_to_column("id")) -> rare_tax_table
 
 ## Output joined rarefied taxonomy and otu table
-#rare_tax_name <- paste0(i,"_raredied_tax_table.csv")
-#write.csv(rare_tax_table, file =rare_tax_name, row.names = FALSE)
+#rare_tax_name <- paste0(i,"_raredied_tax_table.tsv")
+#write.table(rare_tax_table, file =rare_tax_name, sep = ",",row.names = FALSE)
 
 
 
@@ -225,7 +212,7 @@ print(paste("Calculating Faith Pd for host and microbiome from **Rarefied** data
 ## pull out sample data 
 phyloseq::sample_data(rarefied) %>%  
   group_by(sample_name_backup, expedition_number,BiologicalMatter) %>%
-  as.data.frame() %>%
+ as.data.frame() %>%
   select(sample_name_backup, expedition_number,BiologicalMatter) -> microbial_faith
 
 ## Microbial Phyloseq Pd analysis 
@@ -250,7 +237,7 @@ test_df %>% group_by(eco, Huang_Roy_tree_name) %>%  summarise(counts=n()) %>%
   ungroup %>%
   complete(nesting(eco),
            nesting(Huang_Roy_tree_name),
-           fill = list(quantity = 0)) -> test_table
+          fill = list(quantity = 0)) -> test_table
 ## Fill NA with 0
 test_table[is.na(test_table)] <-0
 
@@ -270,9 +257,9 @@ clean_comm <- match.phylo.comm(phy = coral_tree, comm = test_matrix)$comm
 coral_faith_pd <- pd(clean_comm, clean_tree, include.root=TRUE)
 coral_faithpd_reorded <-coral_faith_pd[order(coral_faith_pd$PD, decreasing=TRUE),] 
 
-write.table(microbial_faith, file =paste0(i,"_","microbial_faithpd_table.csv"), sep = ",",row.names =TRUE, col.names = TRUE)
+write.table(microbial_faith, file =paste0(i,"_","microbial_faithpd_table.tsv"), sep = ",",row.names =TRUE, col.names = TRUE)
 
-write.csv(coral_faithpd_reorded, file =paste0(i,"_","Host_faithpd_table.csv") ,row.names = TRUE)
+write.table(coral_faithpd_reorded, file =paste0(i,"_","Host_faithpd_table.tsv") ,row.names = TRUE)
 }
 
 print(paste("Finished!"))
