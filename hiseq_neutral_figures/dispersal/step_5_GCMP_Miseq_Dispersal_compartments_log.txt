@@ -1,0 +1,26 @@
+[1] "feature_table .\\feature_table_decon_all_1000.qza"
+[1] "Loading Taxonomy text files from path: .\\taxonomy.tsv"
+[1] "Loading metadata files from path: .\\GCMP_EMP_map_r29.txt"
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 51852 taxa and 1094 samples ]
+sample_data() Sample Data:       [ 1094 samples by 170 sample variables ]
+tax_table()   Taxonomy Table:    [ 51852 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 51852 tips and 51810 internal nodes ]
+
+   Archaea   Bacteria Unassigned 
+      3063      45967       2822 
+
+ Archaea Bacteria 
+    3063    45967 
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 49030 taxa and 965 samples ]
+sample_data() Sample Data:       [ 965 samples by 170 sample variables ]
+tax_table()   Taxonomy Table:    [ 49030 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 49030 tips and 49029 internal nodes ]
+[1] "Agglomerating taxa to the Family level"
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 1007 taxa and 965 samples ]
+sample_data() Sample Data:       [ 965 samples by 170 sample variables ]
+tax_table()   Taxonomy Table:    [ 1007 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 1007 tips and 1006 internal nodes ]
+[1] "Create Neutral Model Function"
