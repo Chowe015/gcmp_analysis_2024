@@ -14,7 +14,7 @@ library(vegan)
 library(rstatix)
 
 
-
+## Step 4 compare combined psudo tables to make comaprison between above, below and neutral taxa
 #Get user input and assign to variables
 args <- commandArgs(trailingOnly=TRUE)
 feature_table_path <-args[1]
@@ -22,6 +22,8 @@ metadata_path <-args[2]
 taxonomy_path <-args[3]
 tree_path <-args[4]
 biosample <-args[5]
+
+
 sink_name = paste0(biosample," ","Neutral_community_comparative_analysis_log.txt")
 sink(sink_name,append=FALSE,split=TRUE)
 ####Import from .qza file into a phyloseq object
@@ -110,6 +112,36 @@ phylo = prune_samples(sample_sums(main_phylo)>1, main_phylo)
 table(tax_table(phylo)[,"Kingdom"])
 phylo
 
+## Alpha Diversity Comparative Analysis and Boxplots
+## Asssign metadata
+sample_data(phylo) %>% as.data.frame() -> sample_meta
+
+## Estimate Richness 
+estimate_richness(phylo, measures= c("Observed","Shannon")) %>% as.data.frame() -> alpha
+alpha$sample_name_backup <- sample_meta$sample_name_backup
+alpha$neutrality <- sample_meta$neutrality
+alpha$expedition_number <- sample_meta$expedition_number
+
+#kruskal Wallis Test
+krust_test <- kruskal.test(alpha$Shannon ~ neutrality,data=alpha )
+krust_test
+
+#Wilcox pairwise test
+pairwise_result <- pairwise.wilcox.test(alpha$Shannon,alpha$neutrality, p.adjust.method="BH")
+pairwise_result
+
+## subset alpha results table
+alpha %>% filter(neutrality=="above") %>% as.data.frame () -> above_alpha
+alpha %>% filter(neutrality=="below") %>% as.data.frame () -> below_alpha
+alpha %>% filter(neutrality=="neutral") %>% as.data.frame () -> neutral_alpha
+
+## Print the median observed abundance
+print(paste(biosample,"Median above microbes ==",median(above_alpha$Observed)))
+print(paste(biosample,"Median below microbes ==",median(below_alpha$Observed)))
+print(paste(biosample,"Median neutral microbes ==",median(neutral_alpha$Observed)))
+
+
+## Plot alpha diversity Plot
 print(paste("plotting richness alpha diversity scores"))
 compare = list(c("below","above"),c("below","neutral"),c("above","neutral"))
 
@@ -120,15 +152,14 @@ scale_color_manual(values=c("#E41A1C","#FF7F00","#999999")) + coord_cartesian(yl
 theme(strip.background = element_blank(), plot.title = element_text(hjust = 0.5), axis.text.x.bottom = element_text(angle = -90)) +
 stat_compare_means(method= "wilcox.test",comparisons = compare, symnum.args=list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, Inf), symbols = c("****", "***", "**", "*", "ns")))
 
-
-print(paste("Creating Neutral alpha diversity Box Plots"))
 ## Print Neutral Model Plot
+print(paste("Creating Neutral alpha diversity Box Plots"))
 alpha_name <-paste0(biosample,"_Alpha_Diversity_Boxplot.pdf")
 ggsave(alpha_plot, filename=alpha_name)
 
-
-print("Calculating distance matrices for downstream analysis")
 # Calculate DISTANCE MATRICES
+print("Calculating distance matrices for downstream analysis")
+
 bray_dis = phyloseq::distance(phylo, method="bray")
 uni_dis = phyloseq::distance(phylo, method="unifrac")
 wuni_dis= phyloseq::distance(phylo, method="wUnifrac")
@@ -138,8 +169,8 @@ df <- data.frame(sample_data(phylo))
 
 # permanova comparative analysis of deterministic vs stochastic taxa
 print("Running Comparative Analysis with Permanova")
-#env material include mucus, tissue and skeleton, and outgroups without eDNA
 
+#env material include mucus, tissue and skeleton, and outgroups without eDNA
 distance_methods <-c("bray_dis","wuni_dis","uni_dis")
 set.seed(129)
 
@@ -161,12 +192,16 @@ write.table(result, file = anova_name, sep="\t",row.names = FALSE)
 
 # Ordination from Distance Matrix and PCoA Plots 
 print("Ordinating distance Matrices for PCoA Plots")
+
 ##Calculate the PCoA on Bray-Curtis Corals
 rt.pcoa = ordinate(phylo, method="PCoA", distance=bray_dis)
+
 # Set variables to zero for subsequent changes
-#Ofra
 pcoa<-0
+# Create plot title
 bray_title <-paste0(biosample," Neutral Community Bray-Curtis Distance")
+
+# Create plot
 pcoa <- plot_ordination(phylo, rt.pcoa ,color="neutrality")+  geom_point(size=3) + theme_bw() +
   ggtitle(bray_title)+theme(plot.title = element_text(hjust = 0.5))+
   scale_color_manual(values=c("#E41A1C","#FF7F00","#999999"))+
@@ -175,10 +210,14 @@ pcoa <- plot_ordination(phylo, rt.pcoa ,color="neutrality")+  geom_point(size=3)
 
 ##Calculate the PCoA on Unifrac Corals
 rt.pcoa2 = ordinate(phylo, method="PCoA", distance=uni_dis)
+
 # Set variables to zero for subsequent changes
-#Ofra
 pcoa2<-0
+
+# Create plot title
 uni_title <-paste0(biosample," Neutral Community UNweighted Unifrac Distance")
+
+# Create plot
 pcoa2 <- plot_ordination(phylo, rt.pcoa2 ,color="neutrality")+  geom_point(size=3) + theme_bw() +
   ggtitle(uni_title)+theme(plot.title = element_text(hjust = 0.5))+
   scale_color_manual(values=c("#E41A1C","#FF7F00","#999999")) +
@@ -187,16 +226,20 @@ pcoa2 <- plot_ordination(phylo, rt.pcoa2 ,color="neutrality")+  geom_point(size=
 
 ##Calculate the PCoA on Unifrac Corals
 rt.pcoa3 = ordinate(phylo, method="PCoA", distance=wuni_dis)
+
 # Set variables to zero for subsequent changes
-#Ofra
 pcoa3<-0
+# Create plot Title
 wuni_title <-paste0(biosample," Neutral Community Weighted Unifrac Distance")
+
+# Create plot
 pcoa3 <- plot_ordination(phylo, rt.pcoa3 ,color="neutrality")+  geom_point(size=3) + theme_bw() +
   ggtitle(wuni_title)+theme(plot.title = element_text(hjust = 0.5))+
   scale_color_manual(values=c("#E41A1C","#FF7F00","#999999")) +
   stat_ellipse(level = 0.95,type = "norm",aes(group=neutrality)) + theme(legend.text=element_text(size=12)) +
   theme(axis.text=element_text(size=12, face = "bold"), axis.title=element_text(size=14,face="bold") + theme(text = element_text(size = 20,face = "bold"))) 
 
+## Output each plot
 print(paste("Saving Neutral PcoA Graphs..."))
 neutral_bray_name <- paste0(biosample,"_neutrality_bray-curtis.pdf")
 ggsave(pcoa, filename=neutral_bray_name, width = 15, height = 15, dpi= 600)
@@ -207,10 +250,13 @@ ggsave(pcoa2, filename=neutral_uni_name, width = 15, height = 15, dpi= 600)
 neutral_wuni_name <- paste0(biosample,"_neutrality_Weighted_Unifrac.pdf")
 ggsave(pcoa3, filename=neutral_wuni_name, width = 15, height = 15, dpi= 600)
 
-
+##### Differential Abundance Analysis ##########
 print(paste("Running Differential Abundance Analysis..."))
+
+## Assign comparison between treatments
 compare = list(c("below","above"),c("below","neutral"),c("neutral","above"))
 
+## Run for loop across each comparison
 for (a in compare) {
   print(a)
   ## Subset samples for variables
@@ -253,8 +299,7 @@ for (a in compare) {
   sig_res <- resOrdered[!is.na(resOrdered$padj),]
   sig_res = sig_res[sig_res$padj < 0.05,]
   
-  # This is needed to remove an outlier. One microbe was found only twice and is a likely artifact.
-  #sig_res = sig_res[sig_res$baseMean >= 20,]
+ ## Assign Taxonomy to DE results table
   sig_res %>% as.data.frame() -> sig_table
   sig_table$asv <- row.names(sig_table)
   tax_table(phylo) %>% as.data.frame()-> tax_list
@@ -300,4 +345,6 @@ for (a in compare) {
   de_title_name <- paste0(biosample,"_",a[1],"_",a[2],"_DE_dotPlot.pdf")
   ggsave(de_neutral_plot,filename = de_title_name)
 }
+
+
 print("finished!")
