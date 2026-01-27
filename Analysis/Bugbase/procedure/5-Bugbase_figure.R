@@ -179,7 +179,10 @@ x = ggplot(Tukey_results_all, aes(x=factor(model_fit, level = level_order), trai
     theme_classic() +
   geom_text(data = Tukey_results_all, aes(x = model_fit, y = trait, label = TukeyHSD), size = 4, color = "black", hjust = -0.4, vjust = -0.8, fontface = "italic", check_overlap = TRUE) +
   scale_y_discrete(limits=rev) +
-  scale_colour_gradient2(low="darkcyan", mid="grey", high="purple4")
+  scale_colour_gradient2(low="darkcyan", mid="grey", high="purple4") +
+  scale_size_continuous(
+    guide = guide_legend(reverse = TRUE)
+  )
 
 x
 

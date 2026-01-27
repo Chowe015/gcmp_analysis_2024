@@ -27,24 +27,16 @@ biom convert -i otu_picked_output/indo_carib_table-with-taxonomy.biom -o otu_pic
 # Run BugBase:
 cd /Users/yifanli/Documents/PhD/Projects/GCMP/data/neutral_model_GG/
 
-## First, find the universal threshold value for the entire dataset (Mucus + Skeleton + Tissue).
-### default traits
-for i in all_compart_*/;
-    do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/${i%_biom/}_defaults -a;
-    done
-### custom traits from KEGG ID map
-for i in all_compart_*/;
-    do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/${i%_biom/}_custom_traits -a -k -p M00175_Nitrogen_fixation_nitrogen_ammonia_,M00176_Sulfur_reduction_sulfate_H2S_,M00506_CheA_CheYBV_chemotaxis_two_component_regulatory_system_,M00453_QseC_QseB_quorum_sensing_two_component_regulatory_system_,M00513_LuxQN_CqsS_LuxU_LuxO_quorum_sensing_two_component_regulatory_system_;
-    done
+## First, find the auto threshold value for the all compartments combined dataset.
+### Run the below commands without a defined threshold value (-T) to find the auto values.
+##### Then find the average threshold values of the all compartments combined folders and re-run the below commands with the average value.
 
-## Next, run through the individual above, neutral, and below tables using the threshold value found previously. Threshold values will be different for each trait (phenotype) predicted, so this code has to be run for each trait of interest individually.
+## Next, run through the individual above, neutral, and below tables using the threshold value found previously. Threshold values will be different for each trait (phenotype) and each model fit predicted, so this code has to be run for each trait of interest individually.
 TRAIT=Aerobic
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT
 for i in *neutral_model_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT T 0.001;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT -T 0.001;
     done
 
 TRAIT=Anaerobic
@@ -58,7 +50,7 @@ TRAIT=Contains_Mobile_Elements
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT
 for i in *neutral_model_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT -T 0.0.1022;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT -T 0.073333333;
     done
 
 TRAIT=Facultatively_Anaerobic
@@ -72,7 +64,7 @@ TRAIT=Forms_Biofilms
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT
 for i in *neutral_model_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT -T 0.09;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT -T 0.096666667;
     done
 
 TRAIT=Gram_Negative
@@ -93,35 +85,35 @@ TRAIT=Potentially_Pathogenic
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT
 for i in *neutral_model_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT -T 0.1011;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT -T 0.153333333;
     done
 
 TRAIT=Stress_Tolerant
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT
 for i in *neutral_model_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT -T 0.3322;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -p $TRAIT -T 0.366666667;
     done
 
 TRAIT=M00175_Nitrogen_fixation_nitrogen_ammonia_
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT
 for i in *neutral_model_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.7557;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.833333333;
     done
 
 TRAIT=M00176_Sulfur_reduction_sulfate_H2S_
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/${TRAIT}
 for i in *neutral_model_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/${TRAIT}/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.6778;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/${TRAIT}/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.666666667;
     done
 
 TRAIT=M00453_QseC_QseB_quorum_sensing_two_component_regulatory_system_
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT
 for i in *neutral_model_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.5334;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.6;
     done
 
 TRAIT=M00506_CheA_CheYBV_chemotaxis_two_component_regulatory_system_
@@ -135,7 +127,7 @@ TRAIT=M00513_LuxQN_CqsS_LuxU_LuxO_quorum_sensing_two_component_regulatory_system
 mkdir /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT
 for i in *neutral_model_*_biom/;
     do
-        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.2227;
+        /Users/yifanli/Documents/PhD/Projects/GCMP/BugBase/BugBase-v.0.1.0/bin/run.bugbase.r -i ${i}final-table-with-taxonomy.txt -t 5 -o /Users/yifanli/Documents/PhD/Projects/GCMP/Bugbase_output/$TRAIT/${i%_biom/}_$TRAIT -a -k -p $TRAIT -T 0.200333333;
     done
 
 

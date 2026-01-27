@@ -1,2 +1,2 @@
 	Threshold
-Contains_Mobile_Elements	NA
+Contains_Mobile_Elements	0.073333333

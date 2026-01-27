@@ -1,7 +1,7 @@
 
 Relative Abundance with trait (mean):
-0.007794561
+0.08900426
 Relative Abundance with trait (median):
 0
 Standard deviation:
-0.04710435 
+0.2650312 

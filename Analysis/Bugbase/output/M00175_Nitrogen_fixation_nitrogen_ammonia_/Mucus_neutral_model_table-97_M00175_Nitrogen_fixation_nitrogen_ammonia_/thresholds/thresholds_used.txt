@@ -1,2 +1,0 @@
-	Threshold
-M00175_Nitrogen_fixation_nitrogen_ammonia_	0.7557

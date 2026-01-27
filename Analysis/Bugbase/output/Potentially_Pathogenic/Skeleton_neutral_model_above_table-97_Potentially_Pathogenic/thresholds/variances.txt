@@ -1,2 +1,2 @@
-	0.1011
+	0.153333333
 Potentially_Pathogenic	NA

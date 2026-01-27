@@ -1,2 +1,2 @@
-	0.0.1022
-Contains_Mobile_Elements	0.376404816658258
+	0.073333333
+Contains_Mobile_Elements	NA

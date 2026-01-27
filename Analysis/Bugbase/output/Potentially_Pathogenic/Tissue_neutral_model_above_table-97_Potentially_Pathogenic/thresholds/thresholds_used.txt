@@ -1,2 +1,2 @@
 	Threshold
-Potentially_Pathogenic	0.1011
+Potentially_Pathogenic	0.153333333

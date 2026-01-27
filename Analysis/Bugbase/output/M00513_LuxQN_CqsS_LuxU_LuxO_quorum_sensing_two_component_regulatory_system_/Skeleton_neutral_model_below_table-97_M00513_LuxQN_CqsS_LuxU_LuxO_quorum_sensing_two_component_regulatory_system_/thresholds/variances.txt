@@ -1,2 +1,2 @@
-	0.2227
-M00513_LuxQN_CqsS_LuxU_LuxO_quorum_sensing_two_component_regulatory_system_	2.25009703163019
+	0.200333333
+M00513_LuxQN_CqsS_LuxU_LuxO_quorum_sensing_two_component_regulatory_system_	3.35749157427602

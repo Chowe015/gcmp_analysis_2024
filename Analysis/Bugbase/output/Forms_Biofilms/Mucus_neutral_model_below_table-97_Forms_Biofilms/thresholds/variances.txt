@@ -1,2 +1,2 @@
-	0.09
+	0.096666667
 Forms_Biofilms	NA
