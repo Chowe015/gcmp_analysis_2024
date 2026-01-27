@@ -1,2 +1,2 @@
-	0.1011
-Potentially_Pathogenic	4.74439463315831
+	0.153333333
+Potentially_Pathogenic	6.4352623127705

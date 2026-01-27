@@ -1,2 +1,2 @@
-	0.7557
-M00175_Nitrogen_fixation_nitrogen_ammonia_	3.22852772798528
+	0.833333333
+M00175_Nitrogen_fixation_nitrogen_ammonia_	20.5067525062999
