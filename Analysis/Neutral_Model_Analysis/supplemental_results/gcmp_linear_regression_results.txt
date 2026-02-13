@@ -1,0 +1,177 @@
+Supplementary Data 1b. Neutral Model R2 Linear Regression with Co-Variates of the GCMP Miseq dataset 							
+"Linear regression analysis with lm () function conducted in R for R2 migration results produced by the Sloan Neutral Model (methods). Input data comes from supplemental data tab: ""dataset_neutral_comp_exped"" (dataset=miseq or hiseq). Comparative analysis was conducted including all of the factors and re-run for each factor. Each section begins with Neutral Model output (i.e.R2 or migration) and co-variates that were incluced. Coral faith Pd calculated from coral host diversity within each data subset, compartment which includes coral mucus tissue and skeleton, sampling expedition which include locations/time of field sample collections  and sample size which represents total number of  samples that passed filtering and rarefraction criteria. Significance represented by (*** p<0.001); (**p<0.01);  (* p<0.05)"							
+							
+Rsquared	faith+compartment+region+expedition						
+Residuals:	Min	1Q	Median	3Q	Max		
+	-0.251243	-0.05867	-0.007323	0.060974	0.179749		
+							
+Coefficients:	Estimate	SE	t-stat	Pr(>|t|)			
+(Intercept)	1.1539431	1.3566924	0.851	0.41			
+faith	-0.0002725	0.0006407	-0.425	0.678			
+compartmentskeleton	-0.1022864	0.0744487	-1.374	0.193			
+compartmenttissue	-0.0929208	0.072082	-1.289	0.22			
+regionColombia	-0.4722967	0.7395987	-0.639	0.534			
+regionPanama	-0.198813	0.6513352	-0.305	0.765			
+regionSaudi Arabia	0.0366644	0.1833698	0.2	0.845			
+regionSingapore	-0.1122653	0.2777593	-0.404	0.693			
+expeditionE10	-0.240866	0.6007385	-0.401	0.695			
+expeditionE11	NA	NA	NA	NA			
+expeditionE3	-0.0061638	0.3091787	-0.02	0.984			
+expeditionE4	NA	NA	NA	NA			
+expeditionE5	NA	NA	NA	NA			
+expeditionE7	-0.1018498	0.3648157	-0.279	0.784			
+expeditionE9	NA	NA	NA	NA			
+							
+Model Stats	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+Residual	0.1432	0.4519	10	1.072	0.03029	"10,13"	0.4442
+							
+Rsquared	Faith Pd						
+Residuals:	Min	1Q	Median	3Q	Max		
+	-0.235338	-0.103183	0.002106	0.088123	0.309818		
+							
+Coefficients:	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+(Intercept)	3.98E-01	1.24E-01	3.197	0.00416	**	0.01	
+faith	8.63E-05	7.82E-05	1.104	0.2814			
+							
+Model Stats	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+	0.1447	0.05252	1	1.219	0.009451	"1,22"	0.2814
+							
+Rsquared	Coral Compartment						
+Residuals:	Min	1Q	Median	3Q	Max		
+	-0.28946	-0.0373	0.01796	0.08738	0.25652		
+							
+Coefficients:	Estimate	SE	t-stat	Pr(>|t|)			
+(Intercept)	0.59997	0.05049	11.882	8.73E-11	***		
+compartmentskeleton	-0.11095	0.07141	-1.554	0.135			
+compartmenttissue	-0.09643	0.07141	-1.35	0.191			
+							
+Model Stats	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+	0.1428	0.1196	2	1.426	0.03575	"2,21"	0.2625
+							
+							
+Rsquared	Sampling Expedition						
+Residuals:	Min	1Q	Median	3Q	Max		
+	-0.19093	-0.07197	-0.01289	0.08419	0.23184		
+							
+Coefficients:	Estimate	SE	t-stat	Pr(>|t|)			
+(Intercept)	0.509069	0.082733	6.153	1.39E-05	***		
+expeditionE10	0.00978	0.117002	0.084	0.934			
+expeditionE11	0.073741	0.117002	0.63	0.537			
+expeditionE3	0.115581	0.117002	0.988	0.338			
+expeditionE4	0.096745	0.117002	0.827	0.42			
+expeditionE5	-0.161654	0.117002	-1.382	0.186			
+expeditionE7	0.045142	0.117002	0.386	0.705			
+expeditionE9	-0.005097	0.117002	-0.044	0.966			
+							
+Model Stats	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+	0.1433	0.3247	7	1.099	0.02923	"7,16"	0.4093
+							
+							
+Rsquared	Samples						
+Residuals:	Min	1Q	Median	3Q	Max		
+	-0.26769	-0.08936	0.01593	0.07451	0.31989		
+							
+Coefficients:	Estimate	SE	t-stat	Pr(>|t|)			
+(Intercept)	0.4953744	0.1003693	4.936	6.16E-05	***		
+samples	0.0008962	0.0024177	0.371	0.714			
+							
+Model Stats	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+	0.1482	0.006207	1	0.1374	-0.03897	"1,22"	0.7144
+							
+							
+							
+							
+							
+migration	Coral Faithpd+Compartment+Expedition						
+Residuals:	Min	1Q	Median	3Q	Max		
+	-0.02701	-0.009199	-0.002415	0.012426	0.026475		
+							
+Coefficients:	Estimate	SE	t-stat	Pr(>|t|)			
+(Intercept)	-2.69E-03	1.92E-01	-0.014	0.989			
+faith	2.94E-05	9.07E-05	0.324	0.751			
+compartmentskeleton	-4.36E-03	1.05E-02	-0.414	0.686			
+compartmenttissue	9.75E-03	1.02E-02	0.955	0.357			
+regionColombia	1.21E-02	1.05E-01	0.116	0.91			
+regionPanama	3.25E-02	9.23E-02	0.352	0.731			
+regionSaudi Arabia	-1.56E-02	2.60E-02	-0.601	0.558			
+regionSingapore	-1.71E-02	3.93E-02	-0.435	0.671			
+expeditionE10	-7.15E-03	8.51E-02	-0.084	0.934			
+expeditionE11	NA	NA	NA	NA			
+expeditionE3	-1.44E-02	4.38E-02	-0.328	0.748			
+expeditionE4	NA	NA	NA	NA			
+expeditionE5	NA	NA	NA	NA			
+expeditionE7	-9.71E-03	5.17E-02	-0.188	0.854			
+expeditionE9	NA	NA	NA	NA			
+							
+Model Stats	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+	0.02028	0.4698	10	1.152	0.06187	"10,13"	0.3978
+							
+							
+migration	Coral Faith Pd						
+Residuals:	Min	1Q	Median	3Q	Max		
+	-0.033734	-0.011138	-0.004525	0.005906	0.058625		
+							
+Coefficients:	Estimate	SE	t-stat	Pr(>|t|)			
+(Intercept)	3.64E-02	1.84E-02	1.985	0.0597	.		
+faith	3.69E-06	1.15E-05	0.32	0.7522			
+							
+Model Stats	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+	0.02136	0.004625	1	0.1022	-0.04062	"1,22"	0.7522
+							
+migration	Coral Compartment						
+Residuals:	Min	1Q	Median	3Q	Max		
+	-0.031728	-0.013678	-0.003526	0.008171	0.049199		
+							
+Coefficients:	Estimate	SE	t-stat	Pr(>|t|)			
+(Intercept)	0.03989	0.007437	5.363	2.55E-05	***		
+compartmentskeleton	-0.003427	0.010518	-0.326	0.748			
+compartmenttissue	0.010126	0.010518	0.963	0.347			
+							
+Model Stats	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+	0.02104	0.07877	w	0.8978	-0.008964	"2,21"	0.4225
+							
+migration	Sample Expedition						
+Residuals:	Min	1Q	Median	3Q	Max		
+	-0.028932	-0.009953	0.00113	0.010353	0.034491		
+							
+Coefficients:	Estimate	SE	t-stat	Pr(>|t|)			
+(Intercept)	0.061673	0.011353	5.432	5.53E-05	***		
+expeditionE10	-0.0342	0.016056	-2.13	0.049	*		
+expeditionE11	0.003051	0.016056	0.19	0.8517			
+expeditionE3	-0.027502	0.016056	-1.713	0.106			
+expeditionE4	-0.022102	0.016056	-1.377	0.1876			
+expeditionE5	-0.021408	0.016056	-1.333	0.2011			
+expeditionE7	-0.025568	0.016056	-1.592	0.1308			
+expeditionE9	-0.028673	0.016056	-1.786	0.0931	.		
+							
+Model Stats	SE	R-squared:	df	F-statistic:	adjusted R-squared:	df	p-value:
+	0.01966	0.3867	7	1.441	0.1184	"7,16"	0.2566
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							

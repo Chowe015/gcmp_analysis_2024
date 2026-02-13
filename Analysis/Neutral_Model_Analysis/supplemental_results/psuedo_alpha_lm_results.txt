@@ -1,0 +1,258 @@
+[1] "feature_table .\\pseudo\\mucus\\mucus_feature_table.qza"
+[1] "tree_path .\\tree.nwk"
+[1] "Loading Taxonomy text files from path: .\\taxonomy.tsv"
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 576 taxa and 966 samples ]
+sample_data() Sample Data:       [ 966 samples by 8 sample variables ]
+tax_table()   Taxonomy Table:    [ 576 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 576 tips and 575 internal nodes ]
+
+ d__Archaea d__Bacteria 
+         25         551 
+
+ d__Archaea d__Bacteria 
+         25         551 
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 576 taxa and 886 samples ]
+sample_data() Sample Data:       [ 886 samples by 8 sample variables ]
+tax_table()   Taxonomy Table:    [ 576 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 576 tips and 575 internal nodes ]
+[1] "Running linear regression analysis for Rsquared and Migration"
+
+Call:
+lm(formula = observed ~ neutrality)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-18.651  -3.505  -0.971   1.708  70.349 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)        19.6505     0.6501   30.23   <2e-16 ***
+neutralitybelow   -15.3586     0.8955  -17.15   <2e-16 ***
+neutralityneutral -14.1451     0.9310  -15.19   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 11.05 on 883 degrees of freedom
+Multiple R-squared:  0.2844,	Adjusted R-squared:  0.2828 
+F-statistic: 175.5 on 2 and 883 DF,  p-value: < 2.2e-16
+
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  alpha$Observed and alpha$neutrality 
+
+        above  below
+below   <2e-16 -    
+neutral <2e-16 0.17 
+
+P value adjustment method: BH 
+
+	Kruskal-Wallis rank sum test
+
+data:  alpha$Observed by neutrality
+Kruskal-Wallis chi-squared = 186.12, df = 2, p-value < 2.2e-16
+
+[1] "mucus Median above microbes == 14"
+[1] "mucus Median below microbes == 4"
+[1] "mucus Median neutral microbes == 3"
+[1] "plotting richness alpha diversity scores"
+[1] "Creating Neutral alpha diversity Box Plots"
+[1] "Running Differential Abundance Analysis..."
+[1] "below" "above"
+
+out of 167 with nonzero total read count
+adjusted p-value < 0.1
+LFC > 0 (up)       : 108, 65%
+LFC < 0 (down)     : 11, 6.6%
+outliers [1]       : 0, 0%
+low counts [2]     : 17, 10%
+(mean count < 0)
+[1] see 'cooksCutoff' argument of ?results
+[2] see 'independentFiltering' argument of ?results
+
+[1] "below"   "neutral"
+
+out of 412 with nonzero total read count
+adjusted p-value < 0.1
+LFC > 0 (up)       : 0, 0%
+LFC < 0 (down)     : 11, 2.7%
+outliers [1]       : 0, 0%
+low counts [2]     : 8, 1.9%
+(mean count < 0)
+[1] see 'cooksCutoff' argument of ?results
+[2] see 'independentFiltering' argument of ?results
+
+[1] "neutral" "above"  
+
+out of 557 with nonzero total read count
+adjusted p-value < 0.1
+LFC > 0 (up)       : 83, 15%
+LFC < 0 (down)     : 0, 0%
+outliers [1]       : 0, 0%
+low counts [2]     : 450, 81%
+(mean count < 0)
+[1] see 'cooksCutoff' argument of ?results
+[2] see 'independentFiltering' argument of ?results
+
+[1] "finished!"
+
+
+
+
+
+[1] "feature_table .\\pseudo\\tissue\\tissue_feature_table.qza"
+[1] "tree_path .\\tree.nwk"
+[1] "Loading Taxonomy text files from path: .\\taxonomy.tsv"
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 662 taxa and 936 samples ]
+sample_data() Sample Data:       [ 936 samples by 8 sample variables ]
+tax_table()   Taxonomy Table:    [ 662 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 662 tips and 661 internal nodes ]
+
+ d__Archaea d__Bacteria 
+         25         637 
+
+ d__Archaea d__Bacteria 
+         25         637 
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 662 taxa and 879 samples ]
+sample_data() Sample Data:       [ 879 samples by 8 sample variables ]
+tax_table()   Taxonomy Table:    [ 662 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 662 tips and 661 internal nodes ]
+[1] "Running linear regression analysis for Rsquared and Migration"
+
+Call:
+lm(formula = observed ~ neutrality)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-34.484  -4.172  -0.484   2.828  89.516 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)        35.4843     0.9622   36.88   <2e-16 ***
+neutralitybelow   -29.3128     1.3363  -21.94   <2e-16 ***
+neutralityneutral -29.0744     1.3656  -21.29   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 16.3 on 876 degrees of freedom
+Multiple R-squared:  0.4145,	Adjusted R-squared:  0.4132 
+F-statistic: 310.1 on 2 and 876 DF,  p-value: < 2.2e-16
+
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  alpha$Observed and alpha$neutrality 
+
+        above  below
+below   <2e-16 -    
+neutral <2e-16 0.17 
+
+P value adjustment method: BH 
+
+	Kruskal-Wallis rank sum test
+
+data:  alpha$Observed by neutrality
+Kruskal-Wallis chi-squared = 288.47, df = 2, p-value < 2.2e-16
+
+[1] "tissue Median above microbes == 30"
+[1] "tissue Median below microbes == 6"
+[1] "tissue Median neutral microbes == 5"
+[1] "plotting richness alpha diversity scores"
+[1] "Creating Neutral alpha diversity Box Plots"
+[1] "Running Differential Abundance Analysis..."
+[1] "below" "above"
+
+out of 256 with nonzero total read count
+adjusted p-value < 0.1
+LFC > 0 (up)       : 181, 71%
+LFC < 0 (down)     : 18, 7%
+outliers [1]       : 0, 0%
+low counts [2]     : 0, 0%
+(mean count < 0)
+[1] see 'cooksCutoff' argument of ?results
+[2] see 'independentFiltering' argument of ?results
+
+[1] "below"   "neutral"
+
+out of 421 with nonzero total read count
+adjusted p-value < 0.1
+LFC > 0 (up)       : 8, 1.9%
+LFC < 0 (down)     : 18, 4.3%
+outliers [1]       : 0, 0%
+low counts [2]     : 383, 91%
+(mean count < 0)
+[1] see 'cooksCutoff' argument of ?results
+[2] see 'independentFiltering' argument of ?results
+
+[1] "neutral" "above"  
+
+out of 641 with nonzero total read count
+adjusted p-value < 0.1
+LFC > 0 (up)       : 137, 21%
+LFC < 0 (down)     : 2, 0.31%
+outliers [1]       : 0, 0%
+low counts [2]     : 449, 70%
+(mean count < 0)
+[1] see 'cooksCutoff' argument of ?results
+[2] see 'independentFiltering' argument of ?results
+
+[1] "finished!"
+
+
+
+
+
+[1] "feature_table .\\pseudo\\skeleton\\skeleton_feature_table.qza"
+[1] "tree_path .\\tree.nwk"
+[1] "Loading Taxonomy text files from path: .\\taxonomy.tsv"
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 644 taxa and 786 samples ]
+sample_data() Sample Data:       [ 786 samples by 8 sample variables ]
+tax_table()   Taxonomy Table:    [ 644 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 644 tips and 643 internal nodes ]
+
+ d__Archaea d__Bacteria 
+         27         617 
+
+ d__Archaea d__Bacteria 
+         27         617 
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 644 taxa and 758 samples ]
+sample_data() Sample Data:       [ 758 samples by 8 sample variables ]
+tax_table()   Taxonomy Table:    [ 644 taxa by 7 taxonomic ranks ]
+phy_tree()    Phylogenetic Tree: [ 644 tips and 643 internal nodes ]
+[1] "Running linear regression analysis for Rsquared and Migration"
+
+Call:
+lm(formula = observed ~ neutrality)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-32.191  -3.462  -0.462   2.820  64.809 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)         33.191      0.944   35.16   <2e-16 ***
+neutralitybelow    -28.011      1.316  -21.29   <2e-16 ***
+neutralityneutral  -26.729      1.328  -20.12   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 14.81 on 755 degrees of freedom
+Multiple R-squared:  0.4299,	Adjusted R-squared:  0.4284 
+F-statistic: 284.6 on 2 and 755 DF,  p-value: < 2.2e-16
+
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  alpha$Observed and alpha$neutrality 
+
+        above  below
+below   <2e-16 -    
+neutral <2e-16 0.88 
+
+P value adjustment method: BH 
