@@ -1,4 +1,4 @@
-# Z-score normalization and combine all datasets. #
+# Combine all datasets. #
 
 library(reshape2)
 library(tidyr)
@@ -104,7 +104,6 @@ for (i in all_traits){
     S_below$trait = i
     
     all_comp_fit = rbind(M_above, M_neutral, M_below, T_above, T_neutral, T_below, S_above, S_neutral, S_below)
-    all_comp_fit$Z = scale(all_comp_fit$value)
     
     assign(as.vector(paste0(i)), all_comp_fit)
 }
