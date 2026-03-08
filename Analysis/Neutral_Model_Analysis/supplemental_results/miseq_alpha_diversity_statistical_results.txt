@@ -1,0 +1,301 @@
+[1] "feature_table .\\miseq_complete_nomito_table.qza"
+[1] "Loading Taxonomy text files from path: .\\taxonomy.tsv"
+[1] "Loading metadata files from path: .\\gcmp_complete_mapping25.txt"
+
+Call:
+lm(formula = Shannon ~ expedition_number, data = gcmp_rich)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.8801 -0.5424  0.1459  0.6514  2.1723 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           2.72401    0.07786  34.987  < 2e-16 ***
+expedition_numberE10 -0.68300    0.13353  -5.115 3.84e-07 ***
+expedition_numberE11  0.27898    0.12353   2.258   0.0242 *  
+expedition_numberE12  0.15614    0.11826   1.320   0.1871    
+expedition_numberE15 -0.13703    0.14092  -0.972   0.3311    
+expedition_numberE2   0.07291    0.11011   0.662   0.5080    
+expedition_numberE3  -0.08361    0.10659  -0.784   0.4330    
+expedition_numberE5   0.12405    0.13928   0.891   0.3734    
+expedition_numberE7  -0.18596    0.11636  -1.598   0.1104    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.8945 on 887 degrees of freedom
+Multiple R-squared:  0.06264,	Adjusted R-squared:  0.05419 
+F-statistic:  7.41 on 8 and 887 DF,  p-value: 1.391e-09
+
+
+Call:
+lm(formula = Shannon ~ family, data = gcmp_rich)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.0914 -0.4631  0.1182  0.6021  1.8702 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(>|t|)    
+(Intercept)             2.16846    0.07263  29.856  < 2e-16 ***
+familyAgariciidae       0.80757    0.10906   7.405 3.07e-13 ***
+familyAstrocoeniidae    0.35301    0.15736   2.243 0.025127 *  
+familyDendrophylliidae  0.92291    0.16705   5.525 4.35e-08 ***
+familyDiploastreidae    0.96253    0.12881   7.473 1.90e-13 ***
+familyEuphylliidae      0.73302    0.17416   4.209 2.83e-05 ***
+familyFungiidae         0.51667    0.22164   2.331 0.019973 *  
+familyincertae sedis    0.56792    0.22164   2.562 0.010563 *  
+familyLobophylliidae    0.68570    0.14962   4.583 5.25e-06 ***
+familyMeandrinidae      0.56162    0.20543   2.734 0.006384 ** 
+familyMerulinidae       0.43729    0.09735   4.492 7.99e-06 ***
+familyMontastreidae     0.96084    0.20543   4.677 3.36e-06 ***
+familyMussidae          1.05936    0.14826   7.146 1.88e-12 ***
+familyPocilloporidae   -0.24012    0.12676  -1.894 0.058520 .  
+familyPoritidae         0.46740    0.12487   3.743 0.000194 ***
+familyPsammocoridae     0.69514    0.24340   2.856 0.004391 ** 
+familySiderastreidae    1.28571    0.16097   7.987 4.30e-15 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.8376 on 879 degrees of freedom
+Multiple R-squared:  0.1856,	Adjusted R-squared:  0.1707 
+F-statistic: 12.52 on 16 and 879 DF,  p-value: < 2.2e-16
+
+
+Call:
+lm(formula = Shannon ~ BiologicalMatter, data = gcmp_rich)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.8621 -0.5125  0.1918  0.6848  1.8874 
+
+Coefficients:
+                               Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                     2.50427    0.05065  49.446  < 2e-16 ***
+BiologicalMatterCoral Tissue    0.23501    0.07220   3.255  0.00118 ** 
+BiologicalMatterCoral Skeleton  0.35783    0.07561   4.732 2.58e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9088 on 893 degrees of freedom
+Multiple R-squared:  0.02592,	Adjusted R-squared:  0.02374 
+F-statistic: 11.88 on 2 and 893 DF,  p-value: 8.09e-06
+
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  gcmp_rich$Shannon and gcmp_rich$BiologicalMatter 
+
+               Coral Mucus Coral Tissue
+Coral Tissue   7.8e-06     -           
+Coral Skeleton 8.8e-08     0.4         
+
+P value adjustment method: fdr 
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  gcmp_rich$Shannon and gcmp_rich$expedition_number 
+
+    E1      E10     E11     E12     E15     E2      E3      E5     
+E10 9.2e-05 -       -       -       -       -       -       -      
+E11 0.03189 5.0e-07 -       -       -       -       -       -      
+E12 0.16082 6.7e-06 0.52980 -       -       -       -       -      
+E15 0.24100 0.01894 0.00772 0.02537 -       -       -       -      
+E2  0.34961 1.5e-05 0.30586 0.59006 0.13021 -       -       -      
+E3  0.15603 0.00058 0.00029 0.00331 0.75801 0.03443 -       -      
+E5  0.75240 0.00013 0.16082 0.38665 0.16082 0.75445 0.11880 -      
+E7  0.10804 0.01054 0.00029 0.00436 0.81515 0.01840 0.52980 0.06210
+
+P value adjustment method: fdr 
+
+	Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+
+data:  gcmp_rich$Shannon and gcmp_rich$family 
+
+                 Acroporidae Agariciidae Astrocoeniidae Dendrophylliidae
+Agariciidae      1.4e-11     -           -              -               
+Astrocoeniidae   0.13228     0.01623     -              -               
+Dendrophylliidae 2.8e-07     0.51106     0.01038        -               
+Diploastreidae   1.4e-11     0.23721     0.00127        0.81472         
+Euphylliidae     0.00046     0.94093     0.09633        0.70099         
+Fungiidae        0.04702     0.23049     0.54094        0.14086         
+incertae sedis   0.02333     0.32251     0.47377        0.16700         
+Lobophylliidae   1.8e-05     0.43857     0.15405        0.21178         
+Meandrinidae     0.02837     0.35149     0.54500        0.20561         
+Merulinidae      1.0e-04     0.00693     0.49485        0.01956         
+Montastreidae    0.00020     0.46605     0.03926        0.91454         
+Mussidae         6.6e-11     0.08034     0.00049        0.47377         
+Pocilloporidae   0.46605     5.9e-09     0.04646        6.2e-06         
+Poritidae        0.00050     0.10319     0.43561        0.07984         
+Psammocoridae    0.01591     0.84960     0.26995        0.98700         
+Siderastreidae   1.4e-11     0.00324     3.6e-05        0.06144         
+                 Diploastreidae Euphylliidae Fungiidae incertae sedis
+Agariciidae      -              -            -         -             
+Astrocoeniidae   -              -            -         -             
+Dendrophylliidae -              -            -         -             
+Diploastreidae   -              -            -         -             
+Euphylliidae     0.47411        -            -         -             
+Fungiidae        0.07931        0.50165      -         -             
+incertae sedis   0.10151        0.51806      0.84912   -             
+Lobophylliidae   0.06871        0.69415      0.50165   0.62113       
+Meandrinidae     0.08861        0.50165      0.82930   0.97525       
+Merulinidae      0.00046        0.20352      0.94315   0.78881       
+Montastreidae    0.84960        0.47411      0.22024   0.22024       
+Mussidae         0.53954        0.28705      0.02837   0.03850       
+Pocilloporidae   3.7e-09        0.00049      0.03476   0.01667       
+Poritidae        0.01844        0.44251      0.81472   0.99546       
+Psammocoridae    0.75872        0.86509      0.48752   0.50165       
+Siderastreidae   0.04646        0.01817      0.00324   0.00372       
+                 Lobophylliidae Meandrinidae Merulinidae Montastreidae Mussidae
+Agariciidae      -              -            -           -             -       
+Astrocoeniidae   -              -            -           -             -       
+Dendrophylliidae -              -            -           -             -       
+Diploastreidae   -              -            -           -             -       
+Euphylliidae     -              -            -           -             -       
+Fungiidae        -              -            -           -             -       
+incertae sedis   -              -            -           -             -       
+Lobophylliidae   -              -            -           -             -       
+Meandrinidae     0.69415        -            -           -             -       
+Merulinidae      0.29563        0.75362      -           -             -       
+Montastreidae    0.30585        0.22024      0.04646     -             -       
+Mussidae         0.01667        0.03424      0.00022     0.88025       -       
+Pocilloporidae   0.00010        0.01431      0.00019     0.00036       5.9e-09 
+Poritidae        0.51806        0.97525      0.71428     0.13228       0.00586 
+Psammocoridae    0.51806        0.50165      0.31355     0.57259       0.58552 
+Siderastreidae   0.00116        0.00541      3.4e-06     0.29563       0.20352 
+                 Pocilloporidae Poritidae Psammocoridae
+Agariciidae      -              -         -            
+Astrocoeniidae   -              -         -            
+Dendrophylliidae -              -         -            
+Diploastreidae   -              -         -            
+Euphylliidae     -              -         -            
+Fungiidae        -              -         -            
+incertae sedis   -              -         -            
+Lobophylliidae   -              -         -            
+Meandrinidae     -              -         -            
+Merulinidae      -              -         -            
+Montastreidae    -              -         -            
+Mussidae         -              -         -            
+Pocilloporidae   -              -         -            
+Poritidae        0.00054        -         -            
+Psammocoridae    0.01151        0.46605   -            
+Siderastreidae   1.4e-09        0.00020   0.13228      
+
+
+bray_curtis ~ BiologicalMatter
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = form, data = all_df)
+                  Df SumOfSqs      R2      F Pr(>F)    
+BiologicalMatter   2    16.40 0.04574 21.404  0.001 ***
+Residual         893   342.12 0.95426                  
+Total            895   358.52 1.00000                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+unifrac ~ BiologicalMatter
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = form, data = all_df)
+                  Df SumOfSqs      R2      F Pr(>F)    
+BiologicalMatter   2   12.149 0.03945 18.337  0.001 ***
+Residual         893  295.817 0.96055                  
+Total            895  307.966 1.00000                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+weighted_unifrac ~ BiologicalMatter
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = form, data = all_df)
+                  Df SumOfSqs      R2      F Pr(>F)    
+BiologicalMatter   2    4.917 0.05223 24.604  0.001 ***
+Residual         893   89.238 0.94777                  
+Total            895   94.156 1.00000                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+bray_curtis ~ expedition_number
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = form, data = all_df)
+                   Df SumOfSqs      R2      F Pr(>F)    
+expedition_number   8    27.10 0.07558 9.0651  0.001 ***
+Residual          887   331.42 0.92442                  
+Total             895   358.52 1.00000                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+unifrac ~ expedition_number
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = form, data = all_df)
+                   Df SumOfSqs      R2      F Pr(>F)    
+expedition_number   8    16.09 0.05225 6.1123  0.001 ***
+Residual          887   291.88 0.94775                  
+Total             895   307.97 1.00000                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+weighted_unifrac ~ expedition_number
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = form, data = all_df)
+                   Df SumOfSqs      R2      F Pr(>F)    
+expedition_number   8    7.976 0.08471 10.261  0.001 ***
+Residual          887   86.180 0.91529                  
+Total             895   94.156 1.00000                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+bray_curtis ~ family
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = form, data = all_df)
+          Df SumOfSqs      R2      F Pr(>F)    
+family    16    30.54 0.08518 5.1151  0.001 ***
+Residual 879   327.98 0.91482                  
+Total    895   358.52 1.00000                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+unifrac ~ family
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = form, data = all_df)
+          Df SumOfSqs      R2      F Pr(>F)    
+family    16   21.965 0.07132 4.2193  0.001 ***
+Residual 879  286.001 0.92868                  
+Total    895  307.966 1.00000                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+weighted_unifrac ~ family
+Permutation test for adonis under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+adonis2(formula = form, data = all_df)
+          Df SumOfSqs      R2      F Pr(>F)    
+family    16    9.389 0.09971 6.0848  0.001 ***
+Residual 879   84.767 0.90029                  
+Total    895   94.156 1.00000                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
