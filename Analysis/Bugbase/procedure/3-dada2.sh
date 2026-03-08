@@ -6,60 +6,60 @@ qiime tools import \
 --type 'FeatureData[Sequence]'
 
 ### step 6. assign taxonomy
-cd /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/rep-seqs/Mucus
+cd /u/scratch/y/yvl/gcmp/input/Bugbase_input/rep-seqs/Mucus
 for i in *.qza;
     do
-        mkdir /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza};
+        mkdir /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza};
         qiime vsearch cluster-features-closed-reference \
-            --i-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/Mucus/$i \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Mucus/$i \
             --i-sequences $i \
-            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes_ref/gg_97_otus.qza \
+            --i-reference-sequences /u/scratch/y/yvl/gcmp/input/greengenes_db/gg_97_otus.qza \
             --p-perc-identity 0.87 \
-            --o-clustered-table /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/table-97.qza \
-            --o-unmatched-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/unmatched.qza \
-            --o-clustered-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/clustered-features.qza;
+            --o-clustered-table /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/table-97.qza \
+            --o-unmatched-sequences /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/unmatched.qza \
+            --o-clustered-sequences /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/clustered-features.qza;
     done
 
 cd /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/rep-seqs/Tissue
 for i in *.qza;
     do
-        mkdir /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza};
+        mkdir /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza};
         qiime vsearch cluster-features-closed-reference \
-            --i-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/Tissue/$i \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Tissue/$i \
             --i-sequences $i \
-            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes_ref/gg_97_otus.qza \
+            --i-reference-sequences /u/scratch/y/yvl/gcmp/input/greengenes_db/gg_97_otus.qza \
             --p-perc-identity 0.87 \
-            --o-clustered-table /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/table-97.qza \
-            --o-unmatched-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/unmatched.qza \
-            --o-clustered-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/clustered-features.qza;
+            --o-clustered-table /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/table-97.qza \
+            --o-unmatched-sequences /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/unmatched.qza \
+            --o-clustered-sequences /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/clustered-features.qza;
     done
 
 cd /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/rep-seqs/Skeleton
 for i in *.qza;
     do
-        mkdir /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza};
+        mkdir /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza};
         qiime vsearch cluster-features-closed-reference \
-            --i-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/Skeleton/$i \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Skeleton/$i \
             --i-sequences $i \
-            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes_ref/gg_97_otus.qza \
+            --i-reference-sequences /u/scratch/y/yvl/gcmp/input/greengenes_db/gg_97_otus.qza \
             --p-perc-identity 0.87 \
-            --o-clustered-table /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/table-97.qza \
-            --o-unmatched-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/unmatched.qza \
-            --o-clustered-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/clustered-features.qza;
+            --o-clustered-table /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/table-97.qza \
+            --o-unmatched-sequences /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/unmatched.qza \
+            --o-clustered-sequences /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/clustered-features.qza;
     done
 
 cd /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/rep-seqs/all_compart
 for i in *.qza;
     do
-        mkdir /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza};
+        mkdir /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza};
         qiime vsearch cluster-features-closed-reference \
-            --i-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/all_compart/$i \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/all_compart/$i \
             --i-sequences $i \
-            --i-reference-sequences /storage/home/yvl6147/scratch/GCMP/Greengenes/gg_97_otus.qza \
-            --p-perc-identity 0.97 \
-            --o-clustered-table /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/table-97.qza \
-            --o-unmatched-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/unmatched.qza \
-            --o-clustered-sequences /storage/home/yvl6147/scratch/GCMP/otu_picked_output/${i%.qza}/clustered-features.qza;
+            --i-reference-sequences /u/scratch/y/yvl/gcmp/input/greengenes_db/gg_97_otus.qza \
+            --p-perc-identity 0.87 \
+            --o-clustered-table /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/table-97.qza \
+            --o-unmatched-sequences /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/unmatched.qza \
+            --o-clustered-sequences /u/scratch/y/yvl/gcmp/input/otu_picked_output/${i%.qza}/clustered-features.qza;
     done
 
 ### step 7. export biom
@@ -81,7 +81,7 @@ for i in *_biom/;
         biom add-metadata \
             -i ${i}feature-table.biom \
             -o ${i}final-table-with-taxonomy.biom \
-            --observation-metadata-fp ../Greengenes_ref/97_otu_taxonomy.txt \
+            --observation-metadata-fp ../greengenes_db/97_otu_taxonomy.txt \
             --sc-separated taxonomy;
     done
 

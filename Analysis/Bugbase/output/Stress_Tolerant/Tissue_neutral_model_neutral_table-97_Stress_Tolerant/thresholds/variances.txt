@@ -1,2 +1,2 @@
 	0.366666667
-Stress_Tolerant	11.4769997021895
+Stress_Tolerant	13.6381816969858

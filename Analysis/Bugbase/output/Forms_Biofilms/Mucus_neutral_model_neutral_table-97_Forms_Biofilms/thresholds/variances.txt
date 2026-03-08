@@ -1,2 +1,2 @@
 	0.096666667
-Forms_Biofilms	5.74756501320838
+Forms_Biofilms	4.1676147394794

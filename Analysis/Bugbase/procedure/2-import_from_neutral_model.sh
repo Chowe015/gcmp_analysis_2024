@@ -87,60 +87,67 @@ cd /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All
 
 # Filter feature table and rep seqs for just mucus samples
 qiime feature-table filter-samples \
-    --i-table /storage/home/yvl6147/scratch/GCMP/data/nomito/merged_table.qza \
-    --m-metadata-file /storage/home/yvl6147/scratch/GCMP/data/gcmp_complete_mapping2024_v1.txt \
+    --i-table /u/scratch/y/yvl/gcmp/input/nomito/miseq_complete_nomito_table.qza \
+    --m-metadata-file /u/scratch/y/yvl/gcmp/input/nomito/mapping_filtered.txt \
     --p-where '[tissue_compartment]="M"' \
-    --o-filtered-table /storage/home/yvl6147/scratch/GCMP/data/nomito/M_feature_table_bugbase.qza
+    --o-filtered-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Mucus/M_feature_table_bugbase.qza
 
 # Filter feature table for just tissue samples
 qiime feature-table filter-samples \
-    --i-table /storage/home/yvl6147/scratch/GCMP/data/nomito/merged_table.qza \
-    --m-metadata-file /storage/home/yvl6147/scratch/GCMP/data/gcmp_complete_mapping2024_v1.txt \
+    --i-table /u/scratch/y/yvl/gcmp/input/nomito/miseq_complete_nomito_table.qza \
+    --m-metadata-file /u/scratch/y/yvl/gcmp/input/nomito/mapping_filtered.txt \
     --p-where '[tissue_compartment]="T"' \
-    --o-filtered-table /storage/home/yvl6147/scratch/GCMP/data/nomito/T_feature_table_bugbase.qza
+    --o-filtered-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Tissue/T_feature_table_bugbase.qza
 
 # Filter feature table for just skeleton samples
 qiime feature-table filter-samples \
-    --i-table /storage/home/yvl6147/scratch/GCMP/data/nomito/merged_table.qza \
-    --m-metadata-file /storage/home/yvl6147/scratch/GCMP/data/gcmp_complete_mapping2024_v1.txt \
+    --i-table /u/scratch/y/yvl/gcmp/input/nomito/miseq_complete_nomito_table.qza \
+    --m-metadata-file /u/scratch/y/yvl/gcmp/input/nomito/mapping_filtered.txt \
     --p-where '[tissue_compartment]="S"' \
-    --o-filtered-table /storage/home/yvl6147/scratch/GCMP/data/nomito/S_feature_table_bugbase.qza
+    --o-filtered-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Skeleton/S_feature_table_bugbase.qza
+
+# Filter feature table for combined samples
+qiime feature-table filter-samples \
+    --i-table /u/scratch/y/yvl/gcmp/input/nomito/miseq_complete_nomito_table.qza \
+    --m-metadata-file /u/scratch/y/yvl/gcmp/input/nomito/mapping_filtered.txt \
+    --o-filtered-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/all_compart/Combined_feature_table_bugbase.qza
 
 # Filter feature table and rep-seqs by above, below and neutral.
+cd neutral_model_outputs
 for i in Mucus_*_seqIDs.txt;
     do
-        qiime feature-table filter-seqs \
-            --i-data /storage/home/yvl6147/scratch/GCMP/data/nomito/merged_rep-seqs.qza \
-            --o-filtered-data /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/rep-seqs/Mucus/${i%_seqIDs.txt}.qza \
-            --m-metadata-file $i;
         qiime feature-table filter-features \
-            --i-table /storage/home/yvl6147/scratch/GCMP/data/nomito/M_feature_table_bugbase.qza \
-            --o-filtered-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/Mucus/${i%_seqIDs.txt}.qza \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Mucus/M_feature_table_bugbase.qza \
+            --o-filtered-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Mucus/${i%_seqIDs.txt}.qza \
             --m-metadata-file $i;
+        qiime feature-table filter-seqs \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Mucus/${i%_seqIDs.txt}.qza \
+            --i-data /u/scratch/y/yvl/gcmp/input/nomito/miseq_completed_nomito_rep-seqs.qza \
+            --o-filtered-data /u/scratch/y/yvl/gcmp/input/Bugbase_input/rep-seqs/Mucus/${i%_seqIDs.txt}.qza
     done
 
 for i in Tissue_*_seqIDs.txt;
     do
-        qiime feature-table filter-seqs \
-            --i-data /storage/home/yvl6147/scratch/GCMP/data/nomito/merged_rep-seqs.qza \
-            --o-filtered-data /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/rep-seqs/Tissue/${i%_seqIDs.txt}.qza \
-            --m-metadata-file $i;
         qiime feature-table filter-features \
-            --i-table /storage/home/yvl6147/scratch/GCMP/data/nomito/T_feature_table_bugbase.qza \
-            --o-filtered-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/Tissue/${i%_seqIDs.txt}.qza \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Tissue/T_feature_table_bugbase.qza \
+            --o-filtered-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Tissue/${i%_seqIDs.txt}.qza \
             --m-metadata-file $i;
+        qiime feature-table filter-seqs \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Tissue/${i%_seqIDs.txt}.qza \
+            --i-data /u/scratch/y/yvl/gcmp/input/nomito/miseq_completed_nomito_rep-seqs.qza \
+            --o-filtered-data /u/scratch/y/yvl/gcmp/input/Bugbase_input/rep-seqs/Tissue/${i%_seqIDs.txt}.qza
     done
 
 for i in Skeleton_*_seqIDs.txt;
     do
-        qiime feature-table filter-seqs \
-            --i-data /storage/home/yvl6147/scratch/GCMP/data/nomito/merged_rep-seqs.qza \
-            --o-filtered-data /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/rep-seqs/Skeleton/${i%_seqIDs.txt}.qza \
-            --m-metadata-file $i;
         qiime feature-table filter-features \
-            --i-table /storage/home/yvl6147/scratch/GCMP/data/nomito/S_feature_table_bugbase.qza \
-            --o-filtered-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/Skeleton/${i%_seqIDs.txt}.qza \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Skeleton/S_feature_table_bugbase.qza \
+            --o-filtered-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Skeleton/${i%_seqIDs.txt}.qza \
             --m-metadata-file $i;
+        qiime feature-table filter-seqs \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/Skeleton/${i%_seqIDs.txt}.qza \
+            --i-data /u/scratch/y/yvl/gcmp/input/nomito/miseq_completed_nomito_rep-seqs.qza \
+            --o-filtered-data /u/scratch/y/yvl/gcmp/input/Bugbase_input/rep-seqs/Skeleton/${i%_seqIDs.txt}.qza
     done
 
 # Do the same for the all_compart portion.
@@ -149,14 +156,14 @@ cd /storage/home/yvl6147/scratch/GCMP/data
 mkdir Bugbase_input/rep-seqs/all_compart
 mkdir Bugbase_input/feature-table/all_compart
 cd /storage/home/yvl6147/scratch/GCMP/data/neutral_model_output/All
-for i in Combined_neutral_model_*_seqIDs.txt;
+for i in Combined_*_seqIDs.txt;
     do
-        qiime feature-table filter-seqs \
-            --i-data /storage/home/yvl6147/scratch/GCMP/data/nomito/merged_rep-seqs.qza \
-            --o-filtered-data /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/rep-seqs/all_compart/${i%_seqIDs.txt}.qza \
-            --m-metadata-file $i;
         qiime feature-table filter-features \
-            --i-table /storage/home/yvl6147/scratch/GCMP/data/nomito/merged_table.qza \
-            --o-filtered-table /storage/home/yvl6147/scratch/GCMP/data/Bugbase_input/feature-table/all_compart/${i%_seqIDs.txt}.qza \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/all_compart/Combined_feature_table_bugbase.qza \
+            --o-filtered-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/all_compart/${i%_seqIDs.txt}.qza \
             --m-metadata-file $i;
+        qiime feature-table filter-seqs \
+            --i-table /u/scratch/y/yvl/gcmp/input/Bugbase_input/feature-table/all_compart/${i%_seqIDs.txt}.qza \
+            --i-data /u/scratch/y/yvl/gcmp/input/nomito/miseq_completed_nomito_rep-seqs.qza \
+            --o-filtered-data /u/scratch/y/yvl/gcmp/input/Bugbase_input/rep-seqs/all_compart/${i%_seqIDs.txt}.qza
     done
