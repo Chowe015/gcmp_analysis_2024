@@ -1,2 +1,2 @@
 	0.833333333
-M00175_Nitrogen_fixation_nitrogen_ammonia_	20.5067525062999
+M00175_Nitrogen_fixation_nitrogen_ammonia_	NA

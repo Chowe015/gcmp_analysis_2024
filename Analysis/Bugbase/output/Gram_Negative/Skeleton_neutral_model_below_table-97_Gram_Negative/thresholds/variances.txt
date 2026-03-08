@@ -1,2 +1,2 @@
 	0.001
-Gram_Negative	0.47191560201554
+Gram_Negative	0.457137112455894

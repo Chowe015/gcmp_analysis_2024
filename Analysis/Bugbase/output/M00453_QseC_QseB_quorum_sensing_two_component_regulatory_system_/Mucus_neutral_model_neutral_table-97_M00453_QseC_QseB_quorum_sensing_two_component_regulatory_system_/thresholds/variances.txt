@@ -1,2 +1,2 @@
 	0.6
-M00453_QseC_QseB_quorum_sensing_two_component_regulatory_system_	5.3291385032561
+M00453_QseC_QseB_quorum_sensing_two_component_regulatory_system_	4.03807039518614

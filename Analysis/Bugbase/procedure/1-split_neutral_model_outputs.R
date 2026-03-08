@@ -9,7 +9,7 @@ neutral_table_below <- args[2]
 neutral_table_neutral <- args[3]
 neutral_table_above <- args[4]
 
-neutral_all = read.csv(file=neutral_output, header = T)
+neutral_all = read.delim(file=neutral_output, header = T)
 
 neutral_below = neutral_all[neutral_all$model=="below",]
 neutral_neutral = neutral_all[neutral_all$model=="neutral",]

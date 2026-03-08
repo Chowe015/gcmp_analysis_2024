@@ -1,2 +1,2 @@
 	0.666666667
-M00176_Sulfur_reduction_sulfate_H2S_	6.82598478130414
+M00176_Sulfur_reduction_sulfate_H2S_	8.05555334917746

@@ -111,10 +111,70 @@ for (i in all_traits){
 
 all_traits_tables = rbind(Aerobic, Anaerobic, Contains_Mobile_Elements, Facultatively_Anaerobic, Forms_Biofilms, Gram_Negative, Gram_Positive, Potentially_Pathogenic, Stress_Tolerant, M00175_Nitrogen_fixation_nitrogen_ammonia_, M00176_Sulfur_reduction_sulfate_H2S_, M00453_QseC_QseB_quorum_sensing_two_component_regulatory_system_, M00506_CheA_CheYBV_chemotaxis_two_component_regulatory_system_, M00513_LuxQN_CqsS_LuxU_LuxO_quorum_sensing_two_component_regulatory_system_)
 
+# Within-group stats
+## Normality test
+
+# Try linear model
+#library(lme4)
+#library(lmerTest)
+#model <- lmer(value ~ variable + (1|sampleID), data = all_traits_tables, subset=(trait=="Aerobic"))
+#qqnorm(residuals(model))
+# Residuals and data are not normal. Use GLMM instead.
+
+# Our data has huge zero-inflation so a regular glmer doesn't work (residuals distribution still looks terrible. Instead, we must use glmmTMB with a zero-inflated model. We need to check data distribution to determine what kind of zero-inflated model to use
+hist(Facultatively_Anaerobic$value)
+## Data is bimodal with humps at 0 and 1. Gemini suggests an Ordered Beta model.
+#library(glmmTMB)
+#gmodel <- glmmTMB(value ~ variable + (1|sampleID),
+#                  family = ordbeta(), 
+#                  data = all_traits_tables, subset=(trait=="Potentially_Pathogenic"))
+
+# Check residual distribution.
+#library(DHARMa)
+#res <- simulateResiduals(fit_ordbeta) 
+#plot(res)
+## This look much better!
+
+# Run omnibus test for a groupwise p-value and df for each trait
+#car::Anova(gmodel)
+
+## However, the Ordered Beta GLMM model crashes when datasets have very many zeros and only a handful of ones, such as in the Potentially_Pathogenic dataset. Gemini suggests we try a Bayesian approach using brm() with ordbetareg(). This is more robust but will take longer to run.
+
+library(brms)
+library(ordbetareg)
+fit_ordbeta <- ordbetareg(
+  formula = value ~ variable + (1|sampleID),
+  data = all_traits_tables[all_traits_tables$trait == "M00513_LuxQN_CqsS_LuxU_LuxO_quorum_sensing_two_component_regulatory_system_", ],
+  backend = "rstan",
+  # Increase iterations for better ESS
+  iter = 4000, 
+  warmup = 2000,
+  # Control parameters to eliminate divergent transitions
+  control = list(adapt_delta = 0.97, max_treedepth = 15),
+  chains = 4, 
+  cores = 4 # Use 4 CPU cores to run chains in parallel
+)
+
+## Check model fit
+library(ggplot2)
+# Check the overall distribution
+pp_check(fit_ordbeta, ndraws = 100)
+# Proportion of Zeros
+pp_check(fit_ordbeta, type = "stat", stat = function(y) mean(y == 0))
+# Proportion of Ones
+pp_check(fit_ordbeta, type = "stat", stat = function(y) mean(y == 1))
+# Trace plots
+plot(fit_ordbeta, ask = FALSE)
+
+# Omnibus significance testing
+library(emmeans)
+joint_tests(fit_ordbeta)
+
+
 # Calculate TukeyHSD
 library(multcompView)
 
-mod1 = all_traits_tables %>% group_by(trait) %>% do(model = lm(Z ~ variable, data = .))
+mod1 = all_traits_tables %>% group_by(trait) %>% do(model = lm(value ~ variable, data = .))
 all_traits_tables$conditions = paste(all_traits_tables$trait, all_traits_tables$variable, sep="_")
 
 for (i in 1:14){
@@ -163,9 +223,11 @@ trait_order <- c('Aerobic', 'Anaerobic', 'Contains_Mobile_Elements', 'Facultativ
 
 Tukey_results_all$compartment <- factor(Tukey_results_all$compartment, levels=c('Mucus', 'Tissue', 'Skeleton'))
 
+write.csv(Tukey_results_all, "~/Documents/PhD/Projects/gcmp_analysis_2024/Analysis/Bugbase/output/statistics.csv")
+
 myPalette <- colorRampPalette(rev(brewer.pal(3, "Spectral")))
 
-x = ggplot(Tukey_results_all, aes(x=factor(model_fit, level = level_order), trait, z = Z)) +
+x = ggplot(Tukey_results_all, aes(x=factor(model_fit, level = level_order), trait, z = value)) +
   #geom_point(aes(x = factor(model_fit, level = level_order))) +
   stat_summary_2d(aes(size = after_stat(value), color=after_stat(value)), geom = "point") +
   #scale_size_continuous(range = c(3, 10)) +
@@ -173,8 +235,8 @@ x = ggplot(Tukey_results_all, aes(x=factor(model_fit, level = level_order), trai
   #  title = "Aerobic", 
      x = "Compartment & Model Fit", 
      y = "Functional Traits",
-     size = "Z-score",
-     color = "Z-score") +
+     size = "value",
+     color = "value") +
     facet_wrap(~ compartment, strip.position="bottom") +
     theme_classic() +
   geom_text(data = Tukey_results_all, aes(x = model_fit, y = trait, label = TukeyHSD), size = 4, color = "black", hjust = -0.4, vjust = -0.8, fontface = "italic", check_overlap = TRUE) +
@@ -186,6 +248,8 @@ x = ggplot(Tukey_results_all, aes(x=factor(model_fit, level = level_order), trai
 
 x
 
+
+ggsave(filename="/Users/yifanli/Documents/PhD/Projects/gcmp_analysis_2024/Analysis/Bugbase/figures/new_bubble_plot.pdf", plot=x)
 
 
 ------
