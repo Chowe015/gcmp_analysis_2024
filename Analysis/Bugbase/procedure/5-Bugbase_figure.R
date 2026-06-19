@@ -231,22 +231,33 @@ x = ggplot(Tukey_results_all, aes(x=factor(model_fit, level = level_order), trai
   stat_summary_2d(aes(size = after_stat(value)), geom = "point") +
   #scale_size_continuous(range = c(3, 10)) +
   labs(
-  #  title = "Aerobic", 
-     x = "Compartment & Model Fit", 
-     y = "Functional Traits",
-     size = "value") +
-    facet_wrap(~ compartment, strip.position="bottom") +
-    theme_classic() +
-  geom_text(data = Tukey_results_all, aes(x = model_fit, y = trait, label = TukeyHSD), size = 4, color = "black", hjust = -0.4, vjust = -0.8, fontface = "italic", check_overlap = TRUE) +
+    #  title = "Aerobic", 
+    x = "Compartment & Model Fit", 
+    y = "Functional Traits",
+    size = "value") +
+  facet_wrap(~ compartment, strip.position="bottom") +
+  theme_classic() +
+  geom_text(
+    data = Tukey_results_all, 
+    aes(label = TukeyHSD), 
+    size = 4, 
+    color = "black", 
+    fontface = "italic", 
+    hjust = 0,             
+    nudge_x = 0.25,        
+    nudge_y = 0.3,        
+    check_overlap = TRUE
+  ) +
+  scale_x_discrete(expand = expansion(mult = c(0.25, 0.5))) +
+  
   scale_y_discrete(limits=rev) +
   scale_size_continuous(
     guide = guide_legend(reverse = TRUE)
-  ) + guides(color = "none", fill = "none")
+  ) +
+  guides(color = "none", fill = "none")
 
-x
 
-
-ggsave(filename="/Users/yifanli/Documents/PhD/Projects/gcmp_analysis_2024/Analysis/Bugbase/figures/new_bubble_plot.pdf", plot=x)
+ggsave(filename="/Users/yifanli/Documents/PhD/Projects/gcmp_analysis_2024/Analysis/Bugbase/figures/new_bubble_plot.pdf", plot=x, width=12, height=6, units="in")
 
 
 ------
