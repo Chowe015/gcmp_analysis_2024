@@ -228,22 +228,20 @@ myPalette <- colorRampPalette(rev(brewer.pal(3, "Spectral")))
 
 x = ggplot(Tukey_results_all, aes(x=factor(model_fit, level = level_order), trait, z = value)) +
   #geom_point(aes(x = factor(model_fit, level = level_order))) +
-  stat_summary_2d(aes(size = after_stat(value), color=after_stat(value)), geom = "point") +
+  stat_summary_2d(aes(size = after_stat(value)), geom = "point") +
   #scale_size_continuous(range = c(3, 10)) +
   labs(
   #  title = "Aerobic", 
      x = "Compartment & Model Fit", 
      y = "Functional Traits",
-     size = "value",
-     color = "value") +
+     size = "value") +
     facet_wrap(~ compartment, strip.position="bottom") +
     theme_classic() +
   geom_text(data = Tukey_results_all, aes(x = model_fit, y = trait, label = TukeyHSD), size = 4, color = "black", hjust = -0.4, vjust = -0.8, fontface = "italic", check_overlap = TRUE) +
   scale_y_discrete(limits=rev) +
-  scale_colour_gradient2(low="darkcyan", mid="grey", high="purple4") +
   scale_size_continuous(
     guide = guide_legend(reverse = TRUE)
-  )
+  ) + guides(color = "none", fill = "none")
 
 x
 
